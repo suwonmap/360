@@ -16,6 +16,201 @@
    *  - 영흥수목원 씬명 형식: yharbor_1, yharbor_5 ... (괄호 없음)
    */
 
+  /* ==========================================================
+   * PC / 모바일 미니맵 컨테이너 호환 레이어
+   * ----------------------------------------------------------
+   * 모바일 : viewer.html의 #map-pane 내부 #map 사용
+   * PC     : 예전 정상 구조처럼 우측 하단 고정 프레임을 생성하고
+   *          동일한 #map 요소를 그 안으로 이동하여 사용
+   * ========================================================== */
+  const DESKTOP_BREAKPOINT = 769;
+  let mobileMapAnchor = null;
+  let desktopMapWrapper = null;
+  let desktopResizeState = null;
+
+  function injectResponsiveMapCss() {
+    if (document.getElementById("suwon360-responsive-map-css")) return;
+
+    const style = document.createElement("style");
+    style.id = "suwon360-responsive-map-css";
+    style.textContent = `
+      #suwon360-desktop-map-wrapper {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 6500;
+        width: 300px;
+        height: 205px;
+        min-width: 235px;
+        min-height: 160px;
+        overflow: hidden;
+        background: #f8fafc;
+        border: 2px solid rgba(255,255,255,.88);
+        border-radius: 10px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.42);
+      }
+      #suwon360-desktop-map-wrapper[hidden] {
+        display: none !important;
+      }
+      #suwon360-desktop-map-wrapper .suwon360-desktop-map-title {
+        position: absolute;
+        top: 7px;
+        right: 8px;
+        z-index: 120;
+        padding: 4px 8px;
+        color: #fff;
+        background: rgba(15,23,42,.72);
+        border-radius: 6px;
+        font: 700 11px/1.2 "Malgun Gothic", sans-serif;
+        pointer-events: none;
+      }
+      #suwon360-desktop-map-wrapper .suwon360-map-resize-handle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 130;
+        width: 26px;
+        height: 26px;
+        cursor: nwse-resize;
+        touch-action: none;
+        background: linear-gradient(315deg, transparent 0, transparent 45%, rgba(15,23,42,.88) 46%, rgba(15,23,42,.88) 100%);
+      }
+      #suwon360-desktop-map-wrapper .suwon360-map-resize-handle::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        width: 9px;
+        height: 9px;
+        border-left: 2px solid #fff;
+        border-top: 2px solid #fff;
+      }
+      #suwon360-desktop-map-wrapper > #map {
+        position: absolute !important;
+        inset: 0 !important;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 1px !important;
+        min-height: 1px !important;
+      }
+      #map-pane > #map {
+        width: 100%;
+        height: 100%;
+        min-width: 1px;
+        min-height: 1px;
+      }
+      @media (max-width: 768px) {
+        #suwon360-desktop-map-wrapper {
+          display: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function isDesktopMapMode() {
+    return window.innerWidth >= DESKTOP_BREAKPOINT &&
+      !document.documentElement.classList.contains("s360-mobile");
+  }
+
+  function ensureMobileMapAnchor() {
+    const mapElement = document.getElementById("map");
+    if (!mapElement) return null;
+
+    if (!mobileMapAnchor) {
+      mobileMapAnchor = document.createComment("suwon360-map-mobile-anchor");
+      mapElement.parentNode?.insertBefore(mobileMapAnchor, mapElement);
+    }
+    return mapElement;
+  }
+
+  function ensureDesktopMapWrapper() {
+    if (desktopMapWrapper?.isConnected) return desktopMapWrapper;
+
+    desktopMapWrapper = document.createElement("section");
+    desktopMapWrapper.id = "suwon360-desktop-map-wrapper";
+    desktopMapWrapper.setAttribute("aria-label", "PC 카카오 미니맵");
+    desktopMapWrapper.innerHTML = `
+      <div class="suwon360-desktop-map-title">미니맵</div>
+      <div class="suwon360-map-resize-handle" title="드래그하여 지도 크기 조절"></div>
+    `;
+    document.body.appendChild(desktopMapWrapper);
+    initializeDesktopMapResize(desktopMapWrapper);
+    return desktopMapWrapper;
+  }
+
+  function restoreMapToMobilePane(mapElement) {
+    if (!mapElement || !mobileMapAnchor?.parentNode) return;
+    mobileMapAnchor.parentNode.insertBefore(mapElement, mobileMapAnchor.nextSibling);
+  }
+
+  function syncResponsiveMapHost() {
+    injectResponsiveMapCss();
+    const mapElement = ensureMobileMapAnchor();
+    if (!mapElement) return;
+
+    const wrapper = ensureDesktopMapWrapper();
+    const desktop = isDesktopMapMode();
+
+    if (desktop) {
+      wrapper.hidden = false;
+      if (mapElement.parentNode !== wrapper) wrapper.appendChild(mapElement);
+    } else {
+      wrapper.hidden = true;
+      restoreMapToMobilePane(mapElement);
+    }
+
+    window.setTimeout(() => {
+      if (typeof forceRelayout === "function") forceRelayout();
+    }, 40);
+  }
+
+  function initializeDesktopMapResize(wrapper) {
+    const handle = wrapper.querySelector(".suwon360-map-resize-handle");
+    if (!handle || handle.dataset.bound === "true") return;
+    handle.dataset.bound = "true";
+
+    const stopResize = () => {
+      if (!desktopResizeState) return;
+      desktopResizeState = null;
+      document.body.style.userSelect = "";
+      forceRelayout();
+    };
+
+    handle.addEventListener("pointerdown", (event) => {
+      if (!isDesktopMapMode()) return;
+      event.preventDefault();
+      handle.setPointerCapture?.(event.pointerId);
+      const rect = wrapper.getBoundingClientRect();
+      desktopResizeState = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        startWidth: rect.width,
+        startHeight: rect.height
+      };
+      document.body.style.userSelect = "none";
+    });
+
+    handle.addEventListener("pointermove", (event) => {
+      if (!desktopResizeState || desktopResizeState.pointerId !== event.pointerId) return;
+      event.preventDefault();
+
+      const width = Math.max(235, Math.min(window.innerWidth * 0.72,
+        desktopResizeState.startWidth + (desktopResizeState.startX - event.clientX)));
+      const height = Math.max(160, Math.min(window.innerHeight * 0.72,
+        desktopResizeState.startHeight + (desktopResizeState.startY - event.clientY)));
+
+      wrapper.style.width = `${Math.round(width)}px`;
+      wrapper.style.height = `${Math.round(height)}px`;
+      forceRelayout();
+    });
+
+    handle.addEventListener("pointerup", stopResize);
+    handle.addEventListener("pointercancel", stopResize);
+  }
+
   const DEFAULT_CENTER = { lat: 37.2636, lng: 127.0286 };
   const DEFAULT_LEVEL = 4;
 
@@ -731,6 +926,8 @@
   }
 
   function init(xmlFilename = "") {
+    syncResponsiveMapHost();
+
     if (mapInitStarted && map) {
       forceRelayout();
       return;
@@ -854,6 +1051,17 @@
   } else {
     initWhenReady();
   }
-  window.addEventListener("resize", () => window.setTimeout(forceRelayout, 120));
-  window.addEventListener("orientationchange", () => window.setTimeout(forceRelayout, 250));
+  window.addEventListener("resize", () => {
+    window.setTimeout(() => {
+      syncResponsiveMapHost();
+      forceRelayout();
+    }, 120);
+  });
+
+  window.addEventListener("orientationchange", () => {
+    window.setTimeout(() => {
+      syncResponsiveMapHost();
+      forceRelayout();
+    }, 250);
+  });
 })();
