@@ -469,9 +469,16 @@
       const { lat, lng } = readSceneCoordinate(sceneElement);
       if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
 
+      const menuShow = ["true", "1", "yes", "on"].includes(
+        String(sceneElement.getAttribute("menu_show") || "").trim().toLowerCase()
+      );
+      const menuParent = String(sceneElement.getAttribute("menu_parent") || "").trim();
+
       result.push({
         name,
         title: readSceneTitle(sceneElement, name),
+        menuShow,
+        menuParent,
         lat,
         lng
       });
@@ -907,8 +914,19 @@
       if (!sceneCoords.length) sceneCoords = extractScenes(xmlDoc);
 
       if (!menuSceneCoords.length) {
+        // XML의 scene 속성 menu_show="true"를 직접 기준으로 사용합니다.
+        // krpano API에서 사용자 정의 scene 속성을 늦게 반환하는 경우에도 동작합니다.
+        menuSceneCoords = sceneCoords.filter((scene) => scene.menuShow === true);
+
+        // 기존 공유 데이터가 정상적으로 준비된 경우에는 이름 기준 결과도 병합합니다.
         const menuNames = new Set(window.Suwon360?.menuScenes?.map((scene) => scene.name) || []);
-        menuSceneCoords = sceneCoords.filter((scene) => menuNames.has(scene.name));
+        if (menuNames.size) {
+          const merged = new Map(menuSceneCoords.map((scene) => [scene.name, scene]));
+          sceneCoords.forEach((scene) => {
+            if (menuNames.has(scene.name)) merged.set(scene.name, scene);
+          });
+          menuSceneCoords = Array.from(merged.values());
+        }
       }
 
       if (!sceneCoords.length) {
