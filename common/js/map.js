@@ -216,20 +216,14 @@
 
   const ALLOWED_MAP_XML = ["namsuheon.xml", "yharbor.xml"];
 
-  // 콘텐츠별 주요 씬 번호만 관리합니다.
-  // 씬 이름은 "yharbor_1"처럼 괄호와 scene_ 접두사 없이 자동 생성됩니다.
-  // 새 공원을 추가할 때도 번호 배열 한 줄만 추가하면 됩니다.
-  const MAIN_SCENE_NUMBERS_BY_XML = {
-    "yharbor.xml": [
-      1, 5, 13, 17, 21, 25, 37, 39, 48, 53, 60, 66,
-      70, 72, 74, 78, 84, 86, 92, 107, 109, 113, 119, 123
-    ]
-  };
+  // 메뉴와 지도 포인트는 XML scene의 menu_show="true" 기준으로 생성합니다.
+
 
   let map = null;
   let currentXmlFilename = "";
   let currentSceneName = "";
   let sceneCoords = [];
+  let menuSceneCoords = [];
   let sceneMarkers = [];
   let indoorOverlay = null;
   let indoorOverlayElement = null;
@@ -506,10 +500,8 @@
     clearIndoorOverlay();
   }
 
-  function getMainSceneOrder(xmlFilename) {
-    const numbers = MAIN_SCENE_NUMBERS_BY_XML[xmlFilename] || [];
-    const prefix = xmlFilename.replace(/\.xml$/i, "");
-    return numbers.map((number) => `${prefix}_${number}`);
+  function getMainSceneOrder() {
+    return menuSceneCoords.map((scene) => scene.name);
   }
 
   function createNumberMarkerElement(number, sceneName, sceneTitle) {
@@ -626,7 +618,7 @@
   function drawOutdoorMarkers(xmlFilename) {
     clearAllOverlays();
 
-    const mainOrder = getMainSceneOrder(xmlFilename);
+    const mainOrder = getMainSceneOrder();
     if (!mainOrder.length) return;
 
     const sceneByName = new Map(sceneCoords.map((scene) => [scene.name, scene]));
@@ -642,7 +634,7 @@
       const number = index + 1;
       const position = new window.kakao.maps.LatLng(scene.lat, scene.lng);
       const element = createNumberMarkerElement(number, scene.name, scene.title);
-      applyMarkerStyle(element, scene.name === currentSceneName);
+      applyMarkerStyle(element, scene.name === resolveMenuSceneName(currentSceneName));
 
       const overlay = new window.kakao.maps.CustomOverlay({
         map,
@@ -777,14 +769,27 @@
     return sceneCoords.find((item) => item.name === sceneName) || null;
   }
 
+  function resolveMenuSceneName(sceneName) {
+    return window.Suwon360?.resolveMenuScene?.(sceneName) || sceneName || "";
+  }
+
   function highlightCurrentScene(sceneName) {
     currentSceneName = sceneName || currentSceneName;
+    const activeMenuScene = resolveMenuSceneName(currentSceneName);
 
     sceneMarkers.forEach((item) => {
-      const selected = item.name === currentSceneName;
+      const selected = item.name === activeMenuScene;
       applyMarkerStyle(item.element, selected);
       item.overlay.setZIndex(selected ? 15 : 10);
     });
+  }
+
+  function selectMenuScene(sceneName) {
+    const resolved = resolveMenuSceneName(sceneName);
+    if (!resolved) return;
+    currentSceneName = resolved;
+    highlightCurrentScene(resolved);
+    window.Suwon360Menu?.select?.(resolved);
   }
 
   function updateDirection(hlookat, fov) {
@@ -899,7 +904,12 @@
       const loaded = await fetchXml(xmlUrls);
       const xmlDoc = loaded.doc;
       const xmlUrl = loaded.url;
-      sceneCoords = extractScenes(xmlDoc);
+      if (!sceneCoords.length) sceneCoords = extractScenes(xmlDoc);
+
+      if (!menuSceneCoords.length) {
+        const menuNames = new Set(window.Suwon360?.menuScenes?.map((scene) => scene.name) || []);
+        menuSceneCoords = sceneCoords.filter((scene) => menuNames.has(scene.name));
+      }
 
       if (!sceneCoords.length) {
         showPlaceholder("XML에서 위·경도 좌표를 찾지 못했습니다.");
@@ -911,6 +921,10 @@
       }
 
       if (filename === "yharbor.xml") {
+        if (!menuSceneCoords.length) {
+          showPlaceholder("menu_show=\"true\"인 좌표 Scene을 찾지 못했습니다.");
+          return;
+        }
         drawOutdoorMarkers(filename);
       } else if (filename === "namsuheon.xml") {
         const target = findScene(currentSceneName) || sceneCoords[0];
@@ -922,6 +936,22 @@
     } catch (error) {
       warn(error);
       showPlaceholder("미니맵 데이터를 불러오지 못했습니다.");
+    }
+  }
+
+  function setScenes(allScenes = [], visibleMenuScenes = []) {
+    sceneCoords = Array.isArray(allScenes)
+      ? allScenes.filter((scene) => Number.isFinite(scene.lat) && Number.isFinite(scene.lng))
+      : [];
+
+    menuSceneCoords = Array.isArray(visibleMenuScenes)
+      ? visibleMenuScenes.filter((scene) => Number.isFinite(scene.lat) && Number.isFinite(scene.lng))
+      : [];
+
+    if (map && currentXmlFilename === "yharbor.xml" && menuSceneCoords.length) {
+      drawOutdoorMarkers(currentXmlFilename);
+      highlightCurrentScene(currentSceneName);
+      forceRelayout();
     }
   }
 
@@ -941,7 +971,22 @@
     }
 
     ensureKakaoMaps(() => {
-      loadXmlAndDrawMarkers(xmlFilename);
+      const filename = resolveXmlFilename(xmlFilename);
+      currentXmlFilename = filename;
+
+      if (sceneCoords.length) {
+        if (!map) createMap(sceneCoords[0]);
+        if (filename === "yharbor.xml" && menuSceneCoords.length) {
+          drawOutdoorMarkers(filename);
+        } else if (filename === "namsuheon.xml") {
+          const target = findScene(currentSceneName) || sceneCoords[0];
+          drawIndoorMarker(target);
+        }
+        forceRelayout();
+        return;
+      }
+
+      loadXmlAndDrawMarkers(filename);
     });
   }
 
@@ -1007,11 +1052,13 @@
 
   window.Suwon360Map = {
     init,
+    setScenes,
     loadXmlAndDrawMarkers,
     updatePosition,
     updateMapPosition: updatePosition,
     updateFromScene,
     highlightCurrentScene,
+    selectMenuScene,
     onViewChanged,
     forceRelayout,
     resetView,
