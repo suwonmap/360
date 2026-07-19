@@ -1,13 +1,13 @@
 (() => {
   "use strict";
 
-  function render(scenes) {
-    renderList("menu-track", scenes, "desktop");
-    renderList("mobile-menu-list", scenes, "mobile");
+  function render(scenes = []) {
+    renderInto("menu-track", scenes, "menu-chip");
+    renderInto("mobile-menu-list", scenes, "mobile-menu-item");
     bindControls();
   }
 
-  function renderList(containerId, scenes, mode) {
+  function renderInto(containerId, scenes, className) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -16,31 +16,42 @@
     scenes.forEach((scene, index) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.className = mode === "desktop" ? "menu-chip" : "mobile-menu-item";
+      button.className = className;
       button.dataset.scene = scene.name;
       button.textContent = `${String(index + 1).padStart(2, "0")} ${scene.title}`;
+
       button.addEventListener("click", () => {
         window.Suwon360Panorama?.loadScene?.(scene.name);
         select(scene.name);
       });
+
       container.appendChild(button);
     });
   }
 
   function select(sceneName) {
     document.querySelectorAll("[data-scene]").forEach((button) => {
-      const selected = button.dataset.scene === sceneName;
-      button.classList.toggle("is-active", selected);
-      button.setAttribute("aria-current", selected ? "true" : "false");
+      const active = button.dataset.scene === sceneName;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-current", active ? "true" : "false");
 
-      if (selected) {
-        button.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      if (active) {
+        button.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center"
+        });
       }
     });
   }
 
   function bindControls() {
+    if (document.body.dataset.menuBound === "true") return;
+    document.body.dataset.menuBound = "true";
+
+    const app = document.getElementById("app");
     const track = document.getElementById("menu-track");
+    const panelToggle = document.getElementById("panel-toggle");
 
     document.getElementById("menu-prev")?.addEventListener("click", () => {
       track?.scrollBy({ left: -320, behavior: "smooth" });
@@ -50,8 +61,6 @@
       track?.scrollBy({ left: 320, behavior: "smooth" });
     });
 
-    const app = document.getElementById("app");
-    const panelToggle = document.getElementById("panel-toggle");
     panelToggle?.addEventListener("click", () => {
       const hidden = app?.classList.toggle("panels-hidden") || false;
       panelToggle.textContent = hidden ? "전체 보기" : "전체 숨김";

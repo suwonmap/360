@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  let sceneWatcher = null;
+
   function init() {
     const state = window.Suwon360;
     const app = window.Suwon360App;
@@ -8,7 +10,7 @@
     if (!state || !app) return;
 
     if (typeof window.embedpano !== "function") {
-      app.setStatus("krpano 로더(common/krpano/tour.js)를 찾을 수 없습니다.", true);
+      app.setStatus("common/krpano/tour.js를 찾을 수 없습니다.", true);
       return;
     }
 
@@ -17,81 +19,102 @@
       target: state.config.panoTarget,
       html5: "only",
       mobilescale: 1.0,
-      consolelog: true,
+      consolelog: false,
       debugmode: false,
+      showerrors: false,
       passQueryParameters: true,
-      onready: onKrpanoReady,
-      onerror: (error) => {
-        console.error("krpano embed error:", error);
+      onready: onReady,
+      onerror: () => {
         app.setStatus(`파노라마를 불러오지 못했습니다: ${state.config.xmlPath}`, true);
       }
     });
   }
 
-  function onKrpanoReady(krpano) {
+  function onReady(krpano) {
     const state = window.Suwon360;
     const app = window.Suwon360App;
 
     state.krpano = krpano;
     state.ready = true;
 
+    hideKrpanoConsole(krpano);
     hideDefaultSkin(krpano);
     readScenes(krpano);
 
-    const title = safeGet(krpano, "xml.scene") || state.config.tour;
+    const title = get(krpano, "xml.scene") || state.config.tour;
     app.setTitle(title);
     app.setStatus("");
     app.setBusy(false);
 
-    if (typeof window.Suwon360Menu?.render === "function") {
-      window.Suwon360Menu.render(state.scenes);
-    }
+    window.Suwon360Menu?.render?.(state.scenes);
+    watchScene(krpano);
+  }
 
-    bindSceneWatcher(krpano);
+  function hideKrpanoConsole(krpano) {
+    try {
+      krpano.set("debugmode", false);
+      krpano.set("showerrors", false);
+      krpano.call("showlog(false);");
+    } catch (error) {
+      console.warn("krpano 콘솔 숨김 처리 경고:", error);
+    }
   }
 
   function hideDefaultSkin(krpano) {
-    const actions = [
-      "set(layer[skin_control_bar].visible,false);",
-      "set(layer[skin_control_bar].height,0);",
-      "set(layer[skin_layer].visible,false);",
-      "set(layer[skin_layer].height,0);"
+    const layerNames = [
+      "skin_control_bar",
+      "skin_layer",
+      "skin_scroll_layer",
+      "skin_map",
+      "skin_thumbs",
+      "skin_title"
     ];
 
-    try {
-      krpano.call(actions.join(""));
-    } catch (error) {
-      console.warn("기본 스킨 숨김 처리 중 경고:", error);
-    }
+    layerNames.forEach((name) => {
+      try {
+        if (krpano.get(`layer[${name}]`)) {
+          krpano.set(`layer[${name}].visible`, false);
+          krpano.set(`layer[${name}].height`, 0);
+          krpano.set(`layer[${name}].alpha`, 0);
+        }
+      } catch {
+        // 해당 레이어가 없는 경우 무시
+      }
+    });
   }
 
   function readScenes(krpano) {
     const scenes = [];
-    const count = Number(safeGet(krpano, "scene.count") || 0);
+    const count = Number(get(krpano, "scene.count") || 0);
 
-    for (let i = 0; i < count; i += 1) {
-      const name = safeGet(krpano, `scene[${i}].name`);
-      const title = safeGet(krpano, `scene[${i}].title`) || name;
-      if (name) scenes.push({ name, title });
+    for (let index = 0; index < count; index += 1) {
+      const name = get(krpano, `scene[${index}].name`);
+      const title = get(krpano, `scene[${index}].title`) || name;
+
+      if (name) {
+        scenes.push({ name, title });
+      }
     }
 
     window.Suwon360.scenes = scenes;
   }
 
-  function bindSceneWatcher(krpano) {
-    let previous = "";
+  function watchScene(krpano) {
+    if (sceneWatcher) {
+      window.clearInterval(sceneWatcher);
+    }
 
-    window.setInterval(() => {
-      if (!window.Suwon360?.ready) return;
+    let previousScene = "";
 
-      const current = safeGet(krpano, "xml.scene") || "";
-      if (!current || current === previous) return;
+    sceneWatcher = window.setInterval(() => {
+      const currentScene = get(krpano, "xml.scene") || "";
+      if (!currentScene || currentScene === previousScene) return;
 
-      previous = current;
-      window.Suwon360.currentScene = current;
+      previousScene = currentScene;
+      window.Suwon360.currentScene = currentScene;
 
-      window.Suwon360Menu?.select?.(current);
-      window.Suwon360Map?.updateFromScene?.(current);
+      window.Suwon360Menu?.select?.(currentScene);
+      window.Suwon360Map?.updateFromScene?.(currentScene);
     }, 250);
   }
 
@@ -103,7 +126,7 @@
     krpano.call(`loadscene('${escaped}', null, MERGE, BLEND(0.5));`);
   }
 
-  function safeGet(krpano, path) {
+  function get(krpano, path) {
     try {
       return krpano.get(path);
     } catch {
@@ -111,8 +134,40 @@
     }
   }
 
+  /* 기존 XML 호환 함수 */
+  window.js_suwon360_on_view_changed = function () {
+    const krpano = window.Suwon360?.krpano;
+    if (!krpano) return;
+
+    const sceneName = get(krpano, "xml.scene") || "";
+    const hlookat = Number(get(krpano, "view.hlookat") || 0);
+    const vlookat = Number(get(krpano, "view.vlookat") || 0);
+    const fov = Number(get(krpano, "view.fov") || 0);
+
+    window.Suwon360Map?.onViewChanged?.({
+      sceneName,
+      hlookat,
+      vlookat,
+      fov
+    });
+  };
+
+  window.js_force_minimap_relayout = function () {
+    window.Suwon360Map?.forceRelayout?.();
+  };
+
+  window.js_update_minimap_position = function (lat, lng, sceneName) {
+    window.Suwon360Map?.updatePosition?.(lat, lng, sceneName);
+  };
+
+  window.updateMapPosition = function (lat, lng, sceneName) {
+    window.Suwon360Map?.updatePosition?.(lat, lng, sceneName);
+  };
+
   window.Suwon360Panorama = {
     init,
-    loadScene
+    loadScene,
+    hideKrpanoConsole,
+    hideDefaultSkin
   };
 })();
