@@ -5,7 +5,7 @@
          maplat="37.28389167"
          maplng="127.02193333">
 
-    <include url="../common/skin/vtourskin.xml" />
+    <include url="../common/krpano/skin/vtourskin.xml" />
     <include url="../common/common_layout.xml" />
 
   <!-- =========================================================================

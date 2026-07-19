@@ -3,7 +3,7 @@
          capturedate="2026.06"
          mapmode="multi">
 
-    <include url="../common/skin/vtourskin.xml" />
+    <include url="../common/krpano/skin/vtourskin.xml" />
     <include url="../common/common_layout.xml" />
 
   <!-- =========================================================================

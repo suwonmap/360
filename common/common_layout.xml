@@ -1,16 +1,110 @@
-<krpano version="1.22">
-  <!-- 프로젝트 XML을 수정하지 않고 공통 진입 XML에서 포함합니다. -->
-  <include url="%$project_xml%" />
+<krpano>
 
-  <!-- HTML/JS에서 읽는 공통 메타데이터 기본값입니다.
-       콘텐츠 XML에 같은 변수 이름을 지정하면 해당 값이 사용됩니다.
-       예: <set var="tour_title" val="영흥수목원" />
-           <set var="shooting_date" val="2026-06-22" /> -->
-  <set var="project_name" val="%$project_name%" />
-  <set var="tour_name" val="%$tour_name%" />
+    <action name="s360_hide_skin">
+        set(skin_settings.controlbar_visible, false);
+        set(skin_settings.thumbs_opened, false);
 
-  <!-- 프로젝트 XML에 이미 events가 있어도 충돌하지 않도록 고유 이름을 사용합니다. -->
-  <events name="suwon360_common_events"
-          keep="true"
-          onnewscene="js(window.dispatchEvent(new CustomEvent('suwon360-krpano-scene')));" />
+        if(layer[skin_layer],
+            set(layer[skin_layer].visible, false);
+            set(layer[skin_layer].enabled, false);
+            set(layer[skin_layer].alpha, 0);
+            set(layer[skin_layer].height, 0);
+        );
+
+        if(layer[skin_control_bar],
+            set(layer[skin_control_bar].visible, false);
+            set(layer[skin_control_bar].enabled, false);
+            set(layer[skin_control_bar].alpha, 0);
+            set(layer[skin_control_bar].height, 0);
+            set(layer[skin_control_bar].y, -1000);
+        );
+
+        if(layer[skin_splitter_bottom],
+            set(layer[skin_splitter_bottom].visible, false);
+            set(layer[skin_splitter_bottom].enabled, false);
+            set(layer[skin_splitter_bottom].alpha, 0);
+            set(layer[skin_splitter_bottom].height, 0);
+            set(layer[skin_splitter_bottom].y, -1000);
+        );
+
+        if(layer[skin_scroll_window],
+            set(layer[skin_scroll_window].visible, false);
+            set(layer[skin_scroll_window].enabled, false);
+            set(layer[skin_scroll_window].alpha, 0);
+            set(layer[skin_scroll_window].height, 0);
+            set(layer[skin_scroll_window].y, -1000);
+        );
+
+        if(layer[skin_btn_show],
+            set(layer[skin_btn_show].visible, false);
+            set(layer[skin_btn_show].enabled, false);
+            set(layer[skin_btn_show].alpha, 0);
+            set(layer[skin_btn_show].height, 0);
+        );
+
+        if(layer[skin_thumbs],
+            set(layer[skin_thumbs].visible, false);
+            set(layer[skin_thumbs].enabled, false);
+            set(layer[skin_thumbs].alpha, 0);
+            set(layer[skin_thumbs].height, 0);
+        );
+
+        if(layer[skin_map],
+            set(layer[skin_map].visible, false);
+            set(layer[skin_map].enabled, false);
+            set(layer[skin_map].alpha, 0);
+            set(layer[skin_map].height, 0);
+        );
+    </action>
+
+    <action name="s360_initialize">
+        s360_hide_skin();
+        delayedcall(0.10, s360_hide_skin(););
+        delayedcall(0.50, s360_hide_skin(););
+        js(window.js_initialize_suwon360());
+    </action>
+
+    <action name="s360_scene_changed">
+        js(window.js_suwon360_on_scene_changed());
+    </action>
+
+    <action name="s360_view_changed">
+        js(window.js_suwon360_on_view_changed());
+    </action>
+
+    <action name="s360_map_relayout">
+        js(window.js_force_minimap_relayout());
+    </action>
+
+    <action name="s360_xml_ready">
+        s360_initialize();
+
+        delayedcall(0.20,
+            s360_hide_skin();
+            s360_scene_changed();
+            s360_view_changed();
+            s360_map_relayout();
+        );
+    </action>
+
+    <action name="s360_new_scene">
+        s360_hide_skin();
+
+        delayedcall(0.08,
+            s360_hide_skin();
+            s360_scene_changed();
+            s360_view_changed();
+        );
+    </action>
+
+    <events
+        name="s360_common_events"
+        keep="true"
+        onxmlcomplete="s360_xml_ready();"
+        onnewscene="s360_new_scene();"
+        onloadcomplete="s360_hide_skin();"
+        onviewchange="s360_view_changed();"
+        onresize="s360_hide_skin(); s360_map_relayout();"
+    />
+
 </krpano>
