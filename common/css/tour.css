@@ -1,2695 +1,307 @@
-/* ==========================================================
-   수원360°투어 통합 스타일시트
-   - 기존 tour.html 내부의 모든 <style> 블록을 원래 순서대로 분리
-   - 화면 디자인과 CSS 우선순위를 그대로 유지
-========================================================== */
-
-:root{
-    --blue:#005bac;
-    --blue-dark:#00427d;
-    --panel:rgba(15,23,42,.88);
-    --app-height:100dvh;
-    --mobile-bottom-height:35%;
-    --mobile-menu-width:45%;
-    --mobile-map-width:55%;
-}
-*{box-sizing:border-box}
-html,body{
-    width:100%;
-    height:var(--app-height);
-    margin:0;
-    overflow:hidden;
-    overscroll-behavior:none;
-    background:#000;
-    font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
-}
-button{font-family:inherit}
-#vr-overlay-container{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:var(--app-height);
-    overflow:hidden;
-    background:#000;
-}
-#pano{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    z-index:1;
-    background:#000;
-    transition:height .25s ease;
-}
-#ui-container{
-    position:absolute;
-    inset:0;
-    z-index:9000;
-    pointer-events:none;
-}
-#ui-container button,
-#tour-information,
-#pc-menu-panel,
-#bottom-panel,
-#krpano-minimap-wrapper{
-    pointer-events:auto;
-}
-
-/* 상단 타이틀 */
-#tour-information{
-    position:absolute;
-    top:calc(20px + env(safe-area-inset-top));
-    left:20px;
-    z-index:9100;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    min-height:58px;
-    max-width:calc(100% - 180px);
-    padding:8px 14px 8px 9px;
-    color:#fff;
-    background:var(--panel);
-    border:1px solid rgba(255,255,255,.22);
-    border-radius:10px;
-    box-shadow:0 5px 18px rgba(0,0,0,.35);
-    cursor:pointer;
-}
-#tour-information:active{transform:scale(.97)}
-#tour-mascot{width:42px;height:42px;flex:0 0 42px;object-fit:contain}
-#tour-information-text{min-width:0;line-height:1.25}
-#tour-title-line{
-    display:flex;
-    align-items:center;
-    flex-wrap:nowrap;
-    gap:6px;
-    overflow:hidden;
-    white-space:nowrap;
-    font-size:18px;
-    font-weight:700;
-}
-#tour-brand-title,#tour-title-divider{flex:0 0 auto}
-#tour-title-divider{display:inline;color:rgba(255,255,255,.58);font-weight:400}
-#tour-content-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#tour-content-title::before{content:none}
-#tour-capture-date{margin-top:4px;color:rgba(255,255,255,.78);font-size:12px;white-space:nowrap}
-
-/* 공통 버튼 */
-.circle-button{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0;
-    color:#fff;
-    background:rgba(15,23,42,.9);
-    border:2px solid rgba(255,255,255,.8);
-    border-radius:50%;
-    box-shadow:0 4px 10px rgba(0,0,0,.3);
-    cursor:pointer;
-}
-.circle-button:active{transform:scale(.91)}
-.circle-button svg{
-    width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;
-    stroke-linecap:round;stroke-linejoin:round;pointer-events:none;
-}
-
-/* 우측 상단 */
-#top-action-buttons{
-    position:absolute;
-    top:calc(20px + env(safe-area-inset-top));
-    right:20px;
-    z-index:99999;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-.top-action-wrapper{position:relative}
-.top-action-button{width:44px;height:44px}
-.top-action-tooltip{
-    position:absolute;
-    top:50%;
-    right:54px;
-    transform:translateY(-50%);
-    padding:5px 9px;
-    color:#fff;
-    background:rgba(15,23,42,.92);
-    border-radius:5px;
-    font-size:12px;
-    white-space:nowrap;
-    opacity:0;
-    visibility:hidden;
-}
-.top-action-wrapper:hover .top-action-tooltip{opacity:1;visibility:visible}
-
-/* PC 메뉴 패널 */
-#pc-menu-panel{
-    position:absolute;
-    top:calc(96px + env(safe-area-inset-top));
-    left:20px;
-    z-index:9050;
-    width:198px;
-    max-height:calc(100% - 126px - env(safe-area-inset-top));
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-    color:#fff;
-    background:rgba(15,23,42,.72);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,.17);
-    border-radius:14px;
-    box-shadow:0 10px 30px rgba(0,0,0,.32);
-    transition:width .2s ease,opacity .2s ease;
-}
-#pc-menu-panel.is-collapsed{
-    width:76px;
-}
-
-#pc-menu-panel.is-collapsed #pc-menu{
-    display:none;
-}
-
-#pc-menu-panel.is-collapsed #pc-menu-header{
-    justify-content:center;
-    padding:0;
-    border-bottom:0;
-}
-
-#pc-menu-panel.is-collapsed #pc-menu-title{
-    display:block;
-    width:100%;
-    text-align:center;
-}
-#pc-menu-header{
-    height:34px;
-    flex:0 0 34px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0;
-    border-bottom:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.045);
-}
-
-#pc-menu-title{
-    width:100%;
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0 14px;
-
-    /* 기본 글씨는 흰색 */
-    color:#ffffff;
-
-    /* 둥글고 부드러운 느낌의 글꼴 우선 적용 */
-    font-family:
-        "Arial Rounded MT Bold",
-        "Trebuchet MS",
-        "Malgun Gothic",
-        "맑은 고딕",
-        sans-serif;
-
-    font-size:13px;
-    font-weight:800;
-
-    /* 글자 사이를 조금 띄워 귀엽고 여유 있게 표현 */
-    letter-spacing:.18em;
-    line-height:34px;
-
-    cursor:pointer;
-    user-select:none;
-
-    text-shadow:
-        0 1px 2px rgba(0,0,0,.45);
-
-    transition:
-        background-color .18s ease,
-        box-shadow .18s ease,
-        transform .18s ease;
-}
-
-/* 마우스를 올리거나 메뉴를 접은 상태에서는 선택 메뉴와 같은 파란 음영 */
-#pc-menu-title:hover,
-#pc-menu-panel.is-collapsed #pc-menu-title{
-    color:#ffffff;
-
-    background:
-        linear-gradient(
-            135deg,
-            #1683d8,
-            #005bac
-        );
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.32),
-        0 5px 14px rgba(0,91,172,.32);
-}
-
-#pc-menu-title:active{
-    transform:scale(.97);
-}
-#pc-menu{
-    padding:9px 7px 10px 10px;
-    overflow-x:hidden;
-    overflow-y:auto;
-    scrollbar-width:thin;
-    scrollbar-color:rgba(255,255,255,.38) transparent;
-}
-#pc-menu::-webkit-scrollbar{width:8px}
-#pc-menu::-webkit-scrollbar-track{background:transparent;margin:9px 0}
-#pc-menu::-webkit-scrollbar-thumb{
-    background:linear-gradient(180deg,rgba(255,255,255,.46),rgba(255,255,255,.22));
-    border:2px solid transparent;
-    background-clip:padding-box;
-    border-radius:999px;
-}
-#pc-menu::-webkit-scrollbar-thumb:hover{
-    background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.38));
-    border:2px solid transparent;
-    background-clip:padding-box;
-}
-.tour-menu-item{
-    width:100%;
-    min-height:40px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin:0 0 7px;
-    padding:9px 10px;
-    color:#fff;
-    background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:10px;
-    font-size:13px;
-    font-weight:600;
-    text-align:left;
-    cursor:pointer;
-    transition:background .18s,border-color .18s,transform .18s,box-shadow .18s;
-}
-.tour-menu-item:last-child{margin-bottom:0}
-.tour-menu-item:hover{
-    background:rgba(0,91,172,.72);
-    border-color:rgba(255,255,255,.38);
-    transform:translateX(2px);
-}
-.tour-menu-item.is-active{
-    background:linear-gradient(135deg,#1683d8,#005bac);
-    border-color:rgba(255,255,255,.72);
-    box-shadow:0 5px 14px rgba(0,91,172,.32);
-}
-.tour-menu-number{min-width:24px;font-size:11px;opacity:.82}
-.tour-menu-title{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-/* PC 지도 */
-#krpano-minimap-wrapper{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    z-index:5000;
-    width:300px;
-    height:205px;
-    overflow:hidden;
-    background:#f8fafc;
-    border:2px solid rgba(255,255,255,.82);
-    border-radius:9px;
-    box-shadow:0 5px 18px rgba(0,0,0,.42);
-}
-#map-resize-handle{
-    position:absolute;
-    left:0;
-    top:0;
-    z-index:100;
-    width:25px;
-    height:25px;
-    cursor:nwse-resize;
-    touch-action:none;
-    background:linear-gradient(315deg,transparent 0,transparent 45%,rgba(15,23,42,.88) 46%,rgba(15,23,42,.88) 100%);
-}
-#map-resize-handle::after{
-    content:"";
-    position:absolute;
-    left:4px;
-    top:4px;
-    width:9px;
-    height:9px;
-    border-left:2px solid #fff;
-    border-top:2px solid #fff;
-}
-
-/* 모바일 */
-#mobile-menu-button{
-    position:absolute;
-    top:calc(18px + env(safe-area-inset-top));
-    left:14px;
-    z-index:9300;
-    width:44px;
-    height:44px;
-    display:none;
-}
-#bottom-panel{
-    position:static;
-    z-index:9200;
-}
-
-/* PC에서는 모바일용 메뉴 영역과 모바일용 버튼을 숨깁니다. */
-#bottom-menu-pane{
-    display:none;
-}
-
-#bottom-map-pane{
-    position:static;
-    height:auto;
-    overflow:visible;
-}
-
-#bottom-map-view{
-    position:static;
-}
-
-.mobile-pane{
-    position:relative;
-    min-width:0;
-    height:100%;
-    overflow:hidden;
-}
-
-.mobile-pane-title,
-.pane-collapse-button{
-    display:none;
-}
-
-.mobile-pane-title{
-    position:absolute;
-    left:10px;
-    top:8px;
-    z-index:20;
-    padding:4px 8px;
-    color:#fff;
-    background:rgba(15,23,42,.78);
-    border-radius:6px;
-    font-size:11px;
-    font-weight:700;
-    pointer-events:none;
-}
-.pane-collapse-button{
-    position:absolute;
-    z-index:30;
-    top:7px;
-    width:30px;
-    height:30px;
-    border:1px solid rgba(255,255,255,.78);
-    background:rgba(15,23,42,.84);
-}
-#menu-pane-collapse{right:7px}
-#map-pane-collapse{left:7px}
-#mobile-map-restore-button{
-    position:absolute;
-    right:12px;
-    bottom:calc(12px + env(safe-area-inset-bottom));
-    z-index:9500;
-    width:42px;
-    height:42px;
-    display:none;
-    background:rgba(0,91,172,.94);
-}
-#share-toast{
-    position:fixed;
-    left:50%;
-    bottom:34px;
-    z-index:100000;
-    padding:10px 16px;
-    color:#fff;
-    background:rgba(15,23,42,.94);
-    border-radius:8px;
-    font-size:13px;
-    font-weight:600;
-    opacity:0;
-    visibility:hidden;
-    transform:translate(-50%,10px);
-    transition:.22s;
-    pointer-events:none;
-}
-#share-toast.is-visible{opacity:1;visibility:visible;transform:translate(-50%,0)}
-#tour-error-message{
-    position:fixed;inset:0;z-index:200000;display:none;align-items:center;justify-content:center;
-    padding:24px;color:#fff;background:#111827;text-align:center;
-}
-
-@media(max-width:768px){
-    #pano{height:65%}
-
-    #bottom-menu-pane,
-    #bottom-map-pane{
-        display:block;
-    }
-
-    .mobile-pane-title{
-        display:block;
-    }
-
-    .pane-collapse-button{
-        display:flex;
-    }
-    #mobile-menu-button{display:none!important}
-    #tour-information{
-        top:calc(14px + env(safe-area-inset-top));
-        left:10px;
-        min-height:52px;
-        max-width:calc(100% - 76px);
-        padding:6px 10px 6px 7px;
-        gap:7px;
-    }
-    #tour-mascot{width:36px;height:36px;flex-basis:36px}
-    #tour-title-line{gap:4px;font-size:14px}
-    #tour-capture-date{margin-top:3px;font-size:10px}
-    #top-action-buttons{top:calc(14px + env(safe-area-inset-top));right:10px;gap:8px}
-    .top-action-button{width:40px;height:40px}
-    .top-action-tooltip{display:none}
-    #pc-menu-panel{display:none!important}
-
-    #bottom-panel{
-        position:absolute;
-        left:0;
-        right:0;
-        bottom:0;
-        width:100%;
-        height:var(--mobile-bottom-height);
-        display:grid;
-        grid-template-columns:var(--mobile-menu-width) var(--mobile-map-width);
-        overflow:hidden;
-        background:#fff;
-        border-top:1px solid rgba(0,0,0,.18);
-        box-shadow:0 -4px 14px rgba(0,0,0,.28);
-        transition:transform .25s;
-    }
-    #bottom-menu-pane{background:#f3f4f6;border-right:1px solid rgba(0,0,0,.13)}
-    #bottom-map-pane{background:#f8fafc}
-    #bottom-menu-view{
-        position:absolute;
-        inset:0;
-        padding:46px 8px calc(10px + env(safe-area-inset-bottom)) 8px;
-        overflow-x:hidden;
-        overflow-y:auto;
-        scrollbar-width:thin;
-        scrollbar-color:#aeb8c5 transparent;
-    }
-    #bottom-menu-view::-webkit-scrollbar{width:5px}
-    #bottom-menu-view::-webkit-scrollbar-thumb{background:#aeb8c5;border-radius:999px}
-    #bottom-map-view{position:absolute;inset:0;width:100%;height:100%}
-    #bottom-menu-view .tour-menu-item{
-        min-height:38px;
-        margin-bottom:6px;
-        padding:7px 8px;
-        color:#1f2937;
-        background:#fff;
-        border-color:#d8dee6;
-        border-radius:9px;
-        box-shadow:0 2px 6px rgba(0,0,0,.06);
-        font-size:12px;
-    }
-    #bottom-menu-view .tour-menu-number{min-width:20px;font-size:10px}
-    #bottom-menu-view .tour-menu-item.is-active{
-        color:#fff;
-        background:linear-gradient(135deg,#1683d8,#005bac);
-        border-color:var(--blue-dark);
-    }
-    #krpano-minimap-wrapper{
-        position:absolute;
-        inset:0;
-        width:100%;
-        height:100%;
-        border:0;
-        border-radius:0;
-        box-shadow:none;
-    }
-    #map-resize-handle{display:none}
-
-    /* 모바일 초기화면: 왼쪽 메뉴 + 오른쪽 지도 */
-    #bottom-panel{
-        grid-template-columns:var(--mobile-menu-width) var(--mobile-map-width);
-    }
-
-    /* 메뉴 Scene 선택 후: 지도만 하단 전체 폭으로 표시 */
-    #bottom-panel.map-expanded{
-        grid-template-columns:0 1fr;
-    }
-    #bottom-panel.map-expanded #bottom-menu-pane{
-        display:none;
-    }
-    #bottom-panel.map-expanded #bottom-map-pane{
-        display:block;
-    }
-
-    #bottom-panel.menu-hidden{grid-template-columns:0 1fr}
-    #bottom-panel.menu-hidden #bottom-menu-pane{display:none}
-    #bottom-panel.map-hidden{grid-template-columns:1fr 0}
-    #bottom-panel.map-hidden #bottom-map-pane{display:none}
-    #vr-overlay-container.both-hidden #pano{height:100%}
-    #vr-overlay-container.both-hidden #bottom-panel{transform:translateY(100%)}
-    #mobile-map-restore-button{display:flex}
-    #share-toast{bottom:calc(35% + 18px)}
-}
-@media(max-width:430px){
-    :root{--mobile-menu-width:42%;--mobile-map-width:58%}
-    #tour-information{max-width:calc(100% - 124px)}
-    #tour-title-line{display:flex;align-items:center;flex-wrap:nowrap;gap:4px;overflow:hidden;white-space:nowrap}
-    #tour-title-divider{display:inline;flex:0 0 auto}
-    #tour-content-title::before{content:none}
-}
-
-/* ==========================================================
-   모바일 하단 레이아웃 최종 상태
-========================================================== */
-#mobile-hide-all-button{
-    display:none;
-}
-
-@media(max-width:768px){
-
-    #bottom-panel{
-        position:absolute !important;
-        left:0 !important;
-        right:0 !important;
-        bottom:0 !important;
-        width:100% !important;
-        height:35% !important;
-        display:grid !important;
-        overflow:hidden !important;
-        transition:transform .25s ease !important;
-        grid-template-columns:45% 55% !important;
-    }
-
-    #bottom-menu-pane,
-    #bottom-map-pane{
-        display:block !important;
-        min-width:0 !important;
-        width:auto !important;
-    }
-
-    #bottom-panel[data-layout="split"]{
-        grid-template-columns:45% 55% !important;
-        transform:translateY(0) !important;
-    }
-
-    #bottom-panel[data-layout="split"] #bottom-menu-pane,
-    #bottom-panel[data-layout="split"] #bottom-map-pane{
-        display:block !important;
-    }
-
-    #bottom-panel[data-layout="menu"]{
-        grid-template-columns:100% !important;
-        transform:translateY(0) !important;
-    }
-
-    #bottom-panel[data-layout="menu"] #bottom-menu-pane{
-        display:block !important;
-    }
-
-    #bottom-panel[data-layout="menu"] #bottom-map-pane{
-        display:none !important;
-    }
-
-    #bottom-panel[data-layout="map"]{
-        grid-template-columns:100% !important;
-        transform:translateY(0) !important;
-    }
-
-    #bottom-panel[data-layout="map"] #bottom-menu-pane{
-        display:none !important;
-    }
-
-    #bottom-panel[data-layout="map"] #bottom-map-pane{
-        display:block !important;
-    }
-
-    #bottom-panel[data-layout="hidden"]{
-        transform:translateY(100%) !important;
-        pointer-events:none !important;
-    }
-
-    #vr-overlay-container.mobile-layout-hidden #pano{
-        height:100% !important;
-    }
-
-    #mobile-hide-all-button{
-        position:absolute;
-        left:50%;
-        bottom:calc(8px + env(safe-area-inset-bottom));
-        z-index:9600;
-        width:38px;
-        height:30px;
-        display:flex;
-        transform:translateX(-50%);
-        border-radius:16px;
-        background:rgba(15,23,42,.86);
-        border:1px solid rgba(255,255,255,.78);
-    }
-
-    #mobile-map-restore-button{
-        position:absolute;
-        left:50%;
-        right:auto;
-        bottom:calc(10px + env(safe-area-inset-bottom));
-        z-index:9700;
-        width:auto;
-        min-width:112px;
-        height:38px;
-        display:none;
-        gap:6px;
-        padding:0 13px;
-        transform:translateX(-50%);
-        border-radius:20px;
-        font-size:12px;
-        font-weight:700;
-        white-space:nowrap;
-        background:rgba(0,91,172,.95);
-    }
-
-    #mobile-map-restore-button::after{
-        content:"메뉴·지도 열기";
-    }
-
-    #vr-overlay-container.mobile-layout-hidden #mobile-map-restore-button{
-        display:flex !important;
-    }
-
-    #vr-overlay-container.mobile-layout-hidden #mobile-hide-all-button{
-        display:none !important;
-    }
-}
-
-@media(max-width:430px){
-    #bottom-panel[data-layout="split"]{
-        grid-template-columns:42% 58% !important;
-    }
-}
-
-
-@media(max-width:768px){
-    #bottom-menu-view:empty::before{
-        content:"메뉴를 불러오는 중...";
-        display:block;
-        padding:52px 10px 10px;
-        color:#6b7280;
-        font-size:12px;
-        text-align:center;
-    }
-
-    #krpano-minimap-wrapper:empty::before{
-        content:"지도를 불러오는 중...";
-        position:absolute;
-        left:50%;
-        top:50%;
-        transform:translate(-50%,-50%);
-        color:#6b7280;
-        font-size:12px;
-        white-space:nowrap;
-    }
-}
-
-
-/* ==========================================================
-   터치 모바일·태블릿 모바일 UI 강제 적용
-========================================================== */
-html.s360-mobile #pano{
-    height:70% !important;
-}
-
-html.s360-mobile #pc-menu-panel{
-    display:none !important;
-}
-
-html.s360-mobile #bottom-panel{
-    position:absolute !important;
-    left:0 !important;
-    right:0 !important;
-    bottom:0 !important;
-    width:100% !important;
-    height:35% !important;
-    display:grid !important;
-    grid-template-columns:45% 55% !important;
-    overflow:hidden !important;
-    transform:translateY(0) !important;
-    background:#ffffff !important;
-    z-index:9200 !important;
-}
-
-html.s360-mobile #bottom-menu-pane,
-html.s360-mobile #bottom-map-pane{
-    position:relative !important;
-    display:block !important;
-    min-width:0 !important;
-    width:auto !important;
-    height:100% !important;
-    overflow:hidden !important;
-}
-
-html.s360-mobile #bottom-menu-pane{
-    grid-column:1 !important;
-    background:#f3f4f6 !important;
-    border-right:1px solid rgba(0,0,0,.14) !important;
-}
-
-html.s360-mobile #bottom-map-pane{
-    grid-column:2 !important;
-    background:#f8fafc !important;
-}
-
-html.s360-mobile #bottom-menu-view{
-    position:absolute !important;
-    inset:0 !important;
-    display:block !important;
-    padding:44px 8px calc(10px + env(safe-area-inset-bottom)) 8px !important;
-    overflow-y:auto !important;
-    background:#f3f4f6 !important;
-}
-
-html.s360-mobile #bottom-map-view{
-    position:absolute !important;
-    inset:0 !important;
-    display:block !important;
-    width:100% !important;
-    height:100% !important;
-}
-
-html.s360-mobile #krpano-minimap-wrapper{
-    position:absolute !important;
-    inset:0 !important;
-    display:block !important;
-    width:100% !important;
-    height:100% !important;
-    border:0 !important;
-    border-radius:0 !important;
-    box-shadow:none !important;
-}
-
-html.s360-mobile .mobile-pane-title{
-    display:block !important;
-}
-
-html.s360-mobile .pane-collapse-button{
-    display:flex !important;
-}
-
-/* 상태별 배치 */
-html.s360-mobile #bottom-panel[data-layout="split"]{
-    grid-template-columns:45% 55% !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="split"] #bottom-menu-pane,
-html.s360-mobile #bottom-panel[data-layout="split"] #bottom-map-pane{
-    display:block !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="menu"]{
-    grid-template-columns:100% !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="menu"] #bottom-menu-pane{
-    display:block !important;
-    grid-column:1 !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="menu"] #bottom-map-pane{
-    display:none !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="map"]{
-    grid-template-columns:100% !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="map"] #bottom-menu-pane{
-    display:none !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="map"] #bottom-map-pane{
-    display:block !important;
-    grid-column:1 !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="hidden"]{
-    transform:translateY(100%) !important;
-    pointer-events:none !important;
-}
-
-html.s360-mobile.mobile-layout-hidden #pano,
-html.s360-mobile #vr-overlay-container.mobile-layout-hidden #pano{
-    height:100% !important;
-}
-
-html.s360-mobile #mobile-hide-all-button{
-    display:flex !important;
-}
-
-html.s360-mobile #vr-overlay-container.mobile-layout-hidden #mobile-hide-all-button{
-    display:none !important;
-}
-
-html.s360-mobile #vr-overlay-container.mobile-layout-hidden #mobile-map-restore-button{
-    display:flex !important;
-}
-
-@media(max-width:430px){
-    html.s360-mobile #bottom-panel[data-layout="split"]{
-        grid-template-columns:42% 58% !important;
-    }
-}
-
-
-/* 모바일 메뉴/미니맵 감추기 버튼 최상단 표시 */
-html.s360-mobile #menu-pane-collapse,
-html.s360-mobile #map-pane-collapse{
-    position:absolute !important;
-    z-index:7000 !important;
-    display:flex !important;
-    opacity:1 !important;
-    visibility:visible !important;
-    pointer-events:auto !important;
-}
-
-html.s360-mobile #menu-pane-collapse{
-    right:7px !important;
-    left:auto !important;
-    top:7px !important;
-}
-
-html.s360-mobile #map-pane-collapse{
-    left:7px !important;
-    right:auto !important;
-    top:7px !important;
-}
-
-/* 지도만/메뉴만 상태에서는 현재 보이는 영역의 복귀 버튼만 표시 */
-html.s360-mobile #bottom-panel[data-layout="menu"] #menu-pane-collapse{
-    display:flex !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="menu"] #map-pane-collapse{
-    display:none !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="map"] #menu-pane-collapse{
-    display:none !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="map"] #map-pane-collapse{
-    display:flex !important;
-}
-
-html.s360-mobile #bottom-panel[data-layout="hidden"] #menu-pane-collapse,
-html.s360-mobile #bottom-panel[data-layout="hidden"] #map-pane-collapse{
-    display:none !important;
-}
-
-
-/* 메뉴 글씨 크기 소폭 확대 */
-#bottom-menu-view button,
-#bottom-menu-view .menu-item,
-#bottom-menu-view .scene-menu-item{
-    font-size:16px !important;
-    line-height:1.45;
-}
-
-
-/* ==========================================================
-   v24 최종 UI 보정
-========================================================== */
-
-:root{
-    --app-height:100dvh;
-    --viewport-top:0px;
+* {
+  box-sizing: border-box;
 }
 
-/* 실제 보이는 모바일 화면 영역을 기준으로 배치 */
 html,
-body{
-    height:var(--app-height) !important;
-    min-height:var(--app-height) !important;
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+  background: #000;
 }
 
-#vr-overlay-container{
-    position:fixed !important;
-    left:0 !important;
-    top:var(--viewport-top) !important;
-    width:100% !important;
-    height:var(--app-height) !important;
-    min-height:var(--app-height) !important;
+button {
+  font: inherit;
 }
 
-/* ----------------------------------------------------------
-   PC 메뉴 프레임
----------------------------------------------------------- */
-#pc-menu-panel{
-    width:265px !important;
-    max-height:63vh !important;
+.app,
+.pano-wrap,
+.pano {
+  width: 100%;
+  height: 100%;
 }
 
-/* 접었을 때는 메뉴 글씨만 남도록 기존 폭 유지 */
-#pc-menu-panel.is-collapsed{
-    width:76px !important;
+.app {
+  position: relative;
+  overflow: hidden;
 }
 
-/* PC 메뉴 상단 제목 */
-#pc-menu-title{
-    font-size:15px !important;
+.pano-wrap {
+  position: relative;
+  overflow: hidden;
 }
 
-/* PC 메뉴 목록 글씨 확대 및 프레임 내부 밀도 조절 */
-#pc-menu .tour-menu-item{
-    min-height:43px !important;
-    padding:10px 12px !important;
-    margin-bottom:7px !important;
-    font-size:15px !important;
-    line-height:1.35 !important;
+.pano {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #000;
 }
 
-#pc-menu .tour-menu-number{
-    min-width:27px !important;
-    font-size:12px !important;
+.topbar {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  left: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  pointer-events: none;
 }
 
-#pc-menu .tour-menu-title{
-    font-size:15px !important;
+.topbar > * {
+  pointer-events: auto;
 }
 
-/* ----------------------------------------------------------
-   모바일
----------------------------------------------------------- */
-
-/* 햄버거 버튼은 HTML에 남아 있어도 표시하지 않음 */
-#mobile-menu-button{
-    display:none !important;
+.title-card,
+.desktop-menu,
+.share-btn {
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(17,24,39,.78);
+  color: #fff;
+  backdrop-filter: blur(9px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.22);
 }
 
-@media(max-width:768px){
-
-    /* 타이틀을 화면 왼쪽으로 이동 */
-    #tour-information{
-        left:8px !important;
-        right:auto !important;
-        top:calc(8px + env(safe-area-inset-top)) !important;
-        max-width:calc(100% - 66px) !important;
-    }
-
-    /* 종료·공유 버튼도 현재 보이는 화면 상단에 유지 */
-    #top-action-buttons{
-        top:calc(8px + env(safe-area-inset-top)) !important;
-        right:8px !important;
-    }
-
-    html,
-    body,
-    #vr-overlay-container{
-        height:var(--app-height) !important;
-        min-height:var(--app-height) !important;
-    }
+.title-card {
+  flex: 0 0 auto;
+  max-width: 430px;
+  padding: 10px 14px;
+  border-radius: 12px;
 }
 
-
-/* ==========================================================
-   v25 PC 메뉴 크기 재조정
-========================================================== */
-
-/* 프레임 가로 폭 축소 */
-#pc-menu-panel{
-    width:238px !important;
+.title-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 
-/* 접힌 상태 폭 */
-#pc-menu-panel.is-collapsed{
-    width:72px !important;
+.brand,
+#content-title {
+  font-size: 16px;
 }
 
-/* 메뉴 상단 제목 */
-#pc-menu-title{
-    font-size:14px !important;
-    letter-spacing:.14em !important;
+.shooting-date {
+  margin-top: 4px;
+  font-size: 12px;
+  opacity: .82;
 }
 
-/* 메뉴 항목의 좌우 여백과 높이 축소 */
-#pc-menu .tour-menu-item{
-    min-height:39px !important;
-    padding:8px 9px !important;
-    margin-bottom:6px !important;
-    font-size:15px !important;
-    line-height:1.3 !important;
+.desktop-menu {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-/* 번호 영역도 조금 작게 */
-#pc-menu .tour-menu-number{
-    min-width:24px !important;
-    margin-right:7px !important;
-    font-size:11px !important;
+.menu-track {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  padding: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-/* 메뉴명 글씨 */
-#pc-menu .tour-menu-title{
-    font-size:15px !important;
-    letter-spacing:0 !important;
+.menu-track::-webkit-scrollbar {
+  display: none;
 }
 
-
-/* ==========================================================
-   v26 PC 메뉴 상단 헤더 고정 색상
-========================================================== */
-#pc-menu-header{
-    height:34px !important;
-    flex:0 0 34px !important;
-
-    background:#005BAC !important;
-    border-bottom:1px solid rgba(255,255,255,.20) !important;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,.20) !important;
+.menu-scroll-btn,
+.menu-chip,
+.share-btn,
+.pane-toggle,
+.panel-toggle,
+.mobile-menu-item {
+  border: 0;
+  cursor: pointer;
 }
 
-#pc-menu-title{
-    color:#FFFFFF !important;
-
-    font-size:14px !important;
-    font-weight:800 !important;
-    letter-spacing:.14em !important;
-
-    background:#005BAC !important;
-    text-shadow:
-        0 1px 2px rgba(0,0,0,.28) !important;
+.menu-scroll-btn {
+  flex: 0 0 34px;
+  height: 100%;
+  background: transparent;
+  color: #fff;
+  font-size: 26px;
 }
 
-/* 마우스를 올려도 같은 계열의 고정 색상 유지 */
-#pc-menu-title:hover{
-    color:#FFFFFF !important;
-    background:#0066C7 !important;
+.menu-chip {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  white-space: nowrap;
 }
 
-/* 메뉴를 접은 상태에서도 같은 헤더 색상 유지 */
-#pc-menu-panel.is-collapsed #pc-menu-header,
-#pc-menu-panel.is-collapsed #pc-menu-title{
-    color:#FFFFFF !important;
-    background:#005BAC !important;
+.menu-chip.is-active,
+.mobile-menu-item.is-active {
+  background: #2563eb;
+  color: #fff;
 }
 
-
-/* ==========================================================
-   v28 모바일 가로모드
-   왼쪽 파노라마 65% / 오른쪽 패널 35%
-========================================================== */
-@media
-    (orientation:landscape)
-    and (max-height:600px)
-    and (pointer:coarse){
-
-    html.s360-mobile #vr-overlay-container{
-        position:fixed !important;
-        inset:0 !important;
-        width:100% !important;
-        height:var(--app-height) !important;
-        display:block !important;
-        overflow:hidden !important;
-    }
-
-    html.s360-mobile #pano{
-        position:absolute !important;
-        left:0 !important;
-        top:0 !important;
-        width:65% !important;
-        height:100% !important;
-    }
-
-    html.s360-mobile #bottom-panel{
-        position:absolute !important;
-        left:65% !important;
-        right:0 !important;
-        top:0 !important;
-        bottom:auto !important;
-
-        width:35% !important;
-        height:100% !important;
-
-        display:grid !important;
-        grid-template-columns:100% !important;
-        grid-template-rows:45% 55% !important;
-
-        border-top:0 !important;
-        border-left:1px solid rgba(0,0,0,.18) !important;
-        box-shadow:-4px 0 14px rgba(0,0,0,.22) !important;
-        transform:translateX(0) !important;
-    }
-
-    html.s360-mobile #bottom-panel[data-layout="split"]{
-        grid-template-columns:100% !important;
-        grid-template-rows:45% 55% !important;
-    }
-
-    html.s360-mobile #bottom-panel[data-layout="split"] #bottom-menu-pane{
-        display:block !important;
-        grid-column:1 !important;
-        grid-row:1 !important;
-    }
-
-    html.s360-mobile #bottom-panel[data-layout="split"] #bottom-map-pane{
-        display:block !important;
-        grid-column:1 !important;
-        grid-row:2 !important;
-    }
-
-    /* 메뉴만 표시 */
-    html.s360-mobile #bottom-panel[data-layout="menu"]{
-        grid-template-columns:100% !important;
-        grid-template-rows:100% !important;
-    }
-
-    html.s360-mobile #bottom-panel[data-layout="menu"] #bottom-menu-pane{
-        display:block !important;
-        grid-column:1 !important;
-        grid-row:1 !important;
-    }
-
-    html.s360-mobile #bottom-panel[data-layout="menu"] #bottom-map-pane{
-        display:none !important;
-    }
-
-    /* 지도만 표시 */
-    html.s360-mobile #bottom-panel[data-layout="map"]{
-        grid-template-columns:100% !important;
-        grid-template-rows:100% !important;
-    }
-
-    html.s360-mobile #bottom-panel[data-layout="map"] #bottom-menu-pane{
-        display:none !important;
-    }
-
-    html.s360-mobile #bottom-panel[data-layout="map"] #bottom-map-pane{
-        display:block !important;
-        grid-column:1 !important;
-        grid-row:1 !important;
-    }
-
-    /* 메뉴·지도 모두 감추면 파노라마 전체 폭 */
-    html.s360-mobile #vr-overlay-container.mobile-layout-hidden #pano{
-        width:100% !important;
-    }
-
-    html.s360-mobile #bottom-panel[data-layout="hidden"]{
-        transform:translateX(100%) !important;
-    }
-
-    html.s360-mobile #bottom-menu-view{
-        padding-top:40px !important;
-    }
-
-    /* 가로모드에서 제목과 종료 버튼은 파노라마 영역 안쪽에 배치 */
-    html.s360-mobile #tour-information{
-        max-width:calc(65% - 76px) !important;
-    }
-
-    html.s360-mobile #top-action-buttons{
-        right:calc(35% + 8px) !important;
-    }
+.share-btn {
+  flex: 0 0 auto;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 12px;
 }
 
-
-/* ==========================================================
-   v29 PC 좌측 상단 타이틀과 메뉴 좌측 간격 통일
-========================================================== */
-@media(min-width:769px){
-
-    /*
-     * PC 메뉴 프레임과 좌측 상단 타이틀 프레임의
-     * 화면 왼쪽 간격을 동일하게 맞춥니다.
-     */
-    #pc-menu-panel{
-        left:20px !important;
-    }
-
-    #tour-information{
-        left:20px !important;
-    }
+.status {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1200;
+  transform: translate(-50%, -50%);
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(0,0,0,.72);
+  color: #fff;
 }
 
-
-/* ==========================================================
-   v30 PC 타이틀 프레임 위치·글씨 크기 통일
-========================================================== */
-@media(min-width:769px){
-
-    /* 메뉴 프레임과 동일한 화면 좌측 간격 */
-    #tour-information{
-        left:20px !important;
-        top:20px !important;
-
-        /* 큰 글씨 때문에 프레임이 불필요하게 넓어지지 않도록 조정 */
-        min-height:48px !important;
-        max-width:420px !important;
-        padding:6px 10px 6px 7px !important;
-        gap:7px !important;
-    }
-
-    #tour-mascot{
-        width:38px !important;
-        height:38px !important;
-        flex:0 0 38px !important;
-    }
-
-    #tour-information-text{
-        gap:1px !important;
-    }
-
-    /* 타이틀 글씨를 PC 메뉴명과 동일한 크기로 통일 */
-    #tour-title-line,
-    #tour-brand-title,
-    #tour-content-title{
-        font-size:15px !important;
-        line-height:1.25 !important;
-    }
-
-    #tour-title-divider{
-        font-size:15px !important;
-        margin:0 5px !important;
-    }
-
-    /* 촬영일은 본문보다 한 단계 작게 */
-    #tour-capture-date{
-        font-size:12px !important;
-        line-height:1.25 !important;
-        margin-top:1px !important;
-    }
-
-    /* 메뉴 프레임도 같은 20px 기준을 다시 확정 */
-    #pc-menu-panel{
-        left:20px !important;
-    }
+.status.is-error {
+  background: rgba(153,27,27,.92);
 }
 
-
-/* ==========================================================
-   v31 메뉴 글씨 잘림 방지 및 표시 높이 조정
-========================================================== */
-
-/* PC: 12번 시크릿가든 항목까지 온전히 보이도록 높이 확대 */
-@media(min-width:769px){
-
-    #pc-menu-panel{
-        max-height:69vh !important;
-        height:auto !important;
-    }
-
-    #pc-menu{
-        padding-bottom:12px !important;
-        overflow-y:auto !important;
-        overflow-x:hidden !important;
-    }
-
-    #pc-menu .tour-menu-item{
-        min-height:42px !important;
-        height:auto !important;
-        padding:9px 10px !important;
-        line-height:1.4 !important;
-        overflow:visible !important;
-    }
-
-    #pc-menu .tour-menu-title{
-        display:block !important;
-        line-height:1.4 !important;
-        white-space:normal !important;
-        overflow:visible !important;
-        text-overflow:clip !important;
-        word-break:keep-all !important;
-    }
+.mobile-panel,
+.panel-toggle {
+  display: none;
 }
 
-/* 모바일 가로모드: 초기화면에서도 메뉴 글씨가 위아래로 잘리지 않게 조정 */
-@media
-    (orientation:landscape)
-    and (max-height:600px)
-    and (pointer:coarse){
-
-    html.s360-mobile #bottom-panel[data-layout="split"]{
-        /* 메뉴 영역을 조금 더 확보 */
-        grid-template-rows:48% 52% !important;
-    }
-
-    html.s360-mobile #bottom-menu-pane{
-        min-height:0 !important;
-        overflow:hidden !important;
-    }
-
-    html.s360-mobile #bottom-menu-view{
-        top:0 !important;
-        bottom:0 !important;
-        height:100% !important;
-
-        padding:
-            38px
-            7px
-            calc(10px + env(safe-area-inset-bottom))
-            7px !important;
-
-        overflow-y:auto !important;
-        overflow-x:hidden !important;
-        -webkit-overflow-scrolling:touch;
-    }
-
-    html.s360-mobile #bottom-menu-view .tour-menu-item{
-        min-height:38px !important;
-        height:auto !important;
-        padding:7px 8px !important;
-        margin-bottom:5px !important;
-
-        font-size:14px !important;
-        line-height:1.35 !important;
-
-        overflow:visible !important;
-    }
-
-    html.s360-mobile #bottom-menu-view .tour-menu-title{
-        display:block !important;
-        font-size:14px !important;
-        line-height:1.35 !important;
-
-        white-space:normal !important;
-        overflow:visible !important;
-        text-overflow:clip !important;
-        word-break:keep-all !important;
-    }
-
-    html.s360-mobile #bottom-menu-view .tour-menu-number{
-        flex:0 0 24px !important;
-        min-width:24px !important;
-        line-height:1.35 !important;
-    }
-
-    /* 메뉴만 전체화면일 때도 동일하게 글씨 잘림 방지 */
-    html.s360-mobile #bottom-panel[data-layout="menu"] #bottom-menu-view{
-        padding-bottom:calc(12px + env(safe-area-inset-bottom)) !important;
-    }
-}
-
-
-/* ==========================================================
-   v33 모바일 화면 비율 및 오버레이 디자인 완화
-========================================================== */
-@media(max-width:768px){
-
-    /* 세로 화면: 파노라마 65% / 하단 패널 35% */
-    html.s360-mobile #pano{
-        height:65% !important;
-    }
-
-    html.s360-mobile #bottom-panel{
-        height:35% !important;
-    }
-
-    /* 좌측 상단 타이틀: 검은 음영을 더 투명하게 */
-    html.s360-mobile #tour-information{
-        background:rgba(15,23,42,.52) !important;
-        border:0 !important;
-        box-shadow:0 3px 10px rgba(0,0,0,.18) !important;
-        backdrop-filter:blur(3px);
-        -webkit-backdrop-filter:blur(3px);
-    }
-
-    /* 메뉴 글자 라벨 */
-    html.s360-mobile .mobile-pane-title{
-        background:rgba(15,23,42,.48) !important;
-        border:0 !important;
-        box-shadow:none !important;
-    }
-
-    /* 메뉴/지도 감추기 단추 */
-    html.s360-mobile #menu-pane-collapse,
-    html.s360-mobile #map-pane-collapse{
-        background:rgba(15,23,42,.42) !important;
-        border:0 !important;
-        box-shadow:0 2px 7px rgba(0,0,0,.16) !important;
-    }
-
-    /* 상단 종료·공유 버튼도 같은 계열로 부드럽게 */
-    html.s360-mobile #top-action-buttons .circle-button{
-        background:rgba(15,23,42,.52) !important;
-        border:0 !important;
-        box-shadow:0 3px 9px rgba(0,0,0,.18) !important;
-    }
-}
-
-
-/* ==========================================================
-   v34 모바일 토글 음영 완화 + 주소창 대응
-========================================================== */
-@media(max-width:768px){
-
-    /* 하단 메뉴·지도 전체 감추기 토글 */
-    html.s360-mobile #mobile-hide-all-button{
-        background:rgba(15,23,42,.30) !important;
-        border:0 !important;
-        box-shadow:0 2px 6px rgba(0,0,0,.12) !important;
-        opacity:.88 !important;
-    }
-
-    html.s360-mobile #mobile-hide-all-button svg{
-        stroke:rgba(255,255,255,.92) !important;
-    }
-
-    /* 전체 숨김 후 다시 열기 버튼도 같은 계열 */
-    html.s360-mobile #mobile-map-restore-button{
-        background:rgba(0,91,172,.68) !important;
-        border:0 !important;
-        box-shadow:0 2px 7px rgba(0,0,0,.14) !important;
-    }
-
-    /*
-     * 주소창이 내려오면 visualViewport의 실제 상단 위치만큼
-     * 타이틀과 상단 버튼을 아래로 이동시킵니다.
-     */
-    html.s360-mobile #tour-information{
-        top:calc(
-            var(--viewport-top, 0px)
-            + 8px
-            + env(safe-area-inset-top)
-        ) !important;
-    }
-
-    html.s360-mobile #top-action-buttons{
-        top:calc(
-            var(--viewport-top, 0px)
-            + 8px
-            + env(safe-area-inset-top)
-        ) !important;
-    }
-
-    /*
-     * 모바일 메뉴 상단 제목·접기 버튼도 주소창 아래쪽으로 이동.
-     * 세로모드에서만 적용하고, 가로모드는 별도 배치를 유지합니다.
-     */
-    html.s360-mobile #bottom-menu-pane .mobile-pane-title,
-    html.s360-mobile #bottom-map-pane .mobile-pane-title,
-    html.s360-mobile #menu-pane-collapse,
-    html.s360-mobile #map-pane-collapse{
-        top:calc(var(--viewport-top, 0px) + 7px) !important;
-    }
-}
-
-/* 가로모드에서는 오른쪽 패널 내부 기준으로 다시 고정 */
-@media
-    (orientation:landscape)
-    and (max-height:600px)
-    and (pointer:coarse){
-
-    html.s360-mobile #bottom-menu-pane .mobile-pane-title,
-    html.s360-mobile #bottom-map-pane .mobile-pane-title,
-    html.s360-mobile #menu-pane-collapse,
-    html.s360-mobile #map-pane-collapse{
-        top:7px !important;
-    }
-}
-
-
-/* ==========================================================
-   v35 PC 메뉴 마감 및 화살표 Scene 제목 툴팁
-========================================================== */
-@media(min-width:769px){
-
-    #pc-menu-panel{
-        max-height:74vh !important;
-        height:auto !important;
-        border-radius:14px !important;
-        overflow:hidden !important;
-    }
-
-    #pc-menu{
-        padding-bottom:28px !important;
-        scroll-padding-bottom:30px !important;
-        overflow-y:auto !important;
-        overflow-x:hidden !important;
-    }
-
-    #pc-menu .tour-menu-item{
-        min-height:42px !important;
-        height:auto !important;
-        line-height:1.4 !important;
-        overflow:visible !important;
-    }
-
-    #pc-menu .tour-menu-title{
-        line-height:1.4 !important;
-        overflow:visible !important;
-        text-overflow:clip !important;
-        white-space:normal !important;
-        word-break:keep-all !important;
-    }
-}
-
-/* krpano 이동 화살표 툴팁 */
-#hotspot-scene-tooltip{
-    position:fixed;
-    left:0;
-    top:0;
-    z-index:2147483600;
-
-    display:none;
-    max-width:240px;
-    padding:7px 11px;
-
-    color:#ffffff;
-    background:rgba(15,23,42,.76);
-    border:0;
-    border-radius:8px;
-
-    font-size:13px;
-    font-weight:700;
-    line-height:1.35;
-    letter-spacing:.01em;
-    white-space:nowrap;
-
-    box-shadow:0 3px 10px rgba(0,0,0,.24);
-    pointer-events:none;
-    transform:translate(12px,12px);
-}
-
-#hotspot-scene-tooltip.is-visible{
-    display:block;
-}
-
-
-
-
-/* ==========================================================
-   v36 PC 메뉴 12번 항목까지 완전 표시
-========================================================== */
-@media(min-width:769px){
-
-    /*
-     * 상단 96px 위치를 제외한 화면 높이를 최대한 사용합니다.
-     * 일반 PC 화면에서는 약 82vh까지 확보됩니다.
-     */
-    #pc-menu-panel{
-        height:min(82vh, calc(100vh - 116px)) !important;
-        max-height:min(82vh, calc(100vh - 116px)) !important;
-        min-height:610px !important;
-        box-sizing:border-box !important;
-        overflow:hidden !important;
-    }
-
-    #pc-menu-header{
-        flex:0 0 34px !important;
-        height:34px !important;
-    }
-
-    #pc-menu{
-        flex:1 1 auto !important;
-        min-height:0 !important;
-
-        padding:
-            8px
-            8px
-            18px
-            8px !important;
-
-        overflow-y:auto !important;
-        overflow-x:hidden !important;
-        box-sizing:border-box !important;
-    }
-
-    /*
-     * 12개 항목이 프레임 안에서 온전히 보이도록
-     * 항목 높이와 여백을 균형 있게 조정합니다.
-     */
-    #pc-menu .tour-menu-item{
-        min-height:39px !important;
-        height:auto !important;
-        padding:8px 9px !important;
-        margin-bottom:5px !important;
-
-        line-height:1.35 !important;
-        box-sizing:border-box !important;
-        overflow:visible !important;
-    }
-
-    #pc-menu .tour-menu-title{
-        display:block !important;
-        font-size:15px !important;
-        line-height:1.35 !important;
-
-        white-space:normal !important;
-        overflow:visible !important;
-        text-overflow:clip !important;
-        word-break:keep-all !important;
-    }
-
-    #pc-menu .tour-menu-item:last-child{
-        margin-bottom:0 !important;
-    }
-}
-
-/* 세로 해상도가 낮은 PC에서도 화면 밖으로 나가지 않게 보정 */
-@media(min-width:769px) and (max-height:760px){
-
-    #pc-menu-panel{
-        min-height:0 !important;
-        height:calc(100vh - 112px) !important;
-        max-height:calc(100vh - 112px) !important;
-    }
-
-    #pc-menu .tour-menu-item{
-        min-height:37px !important;
-        padding:7px 8px !important;
-        margin-bottom:4px !important;
-    }
-
-    #pc-menu .tour-menu-title{
-        font-size:14px !important;
-    }
-}
-
-
-/* ==========================================================
-   v37 모바일 화살표 Scene 이름 표시
-========================================================== */
-@media(max-width:768px), (pointer:coarse){
-
-    #hotspot-scene-tooltip{
-        z-index:2147483646 !important;
-
-        max-width:min(74vw, 240px) !important;
-        padding:7px 11px !important;
-
-        color:#ffffff !important;
-        background:rgba(15,23,42,.68) !important;
-        border:0 !important;
-        border-radius:8px !important;
-
-        font-size:13px !important;
-        font-weight:700 !important;
-        line-height:1.35 !important;
-        text-align:center !important;
-        white-space:normal !important;
-
-        box-shadow:0 3px 10px rgba(0,0,0,.18) !important;
-        pointer-events:none !important;
-    }
-
-    #hotspot-scene-tooltip.is-visible{
-        display:block !important;
-    }
-}
-
-
-/* ==========================================================
-   v38 모바일 상단 브라우저 주소창 대응
-========================================================== */
-:root{
-    --browser-ui-top:0px;
-}
-
-@media(max-width:768px), (pointer:coarse){
-
-    /*
-     * 주소창이 내려온 만큼 타이틀과 종료·공유 버튼을 아래로 이동
-     */
-    html.s360-mobile #tour-information{
-        top:calc(
-            var(--browser-ui-top, 0px)
-            + 8px
-            + env(safe-area-inset-top)
-        ) !important;
-    }
-
-    html.s360-mobile #top-action-buttons{
-        top:calc(
-            var(--browser-ui-top, 0px)
-            + 8px
-            + env(safe-area-inset-top)
-        ) !important;
-    }
-}
-
-/*
- * 모바일 가로모드에서는 오른쪽 메뉴·지도 패널이 화면 상단부터
- * 시작하므로 주소창 높이만큼 패널 전체를 아래로 이동합니다.
- */
-@media
-    (orientation:landscape)
-    and (max-height:600px)
-    and (pointer:coarse){
-
-    html.s360-mobile #bottom-panel{
-        top:var(--browser-ui-top, 0px) !important;
-        bottom:auto !important;
-        height:calc(
-            100% - var(--browser-ui-top, 0px)
-        ) !important;
-    }
-
-    html.s360-mobile #bottom-menu-pane .mobile-pane-title,
-    html.s360-mobile #bottom-map-pane .mobile-pane-title,
-    html.s360-mobile #menu-pane-collapse,
-    html.s360-mobile #map-pane-collapse{
-        top:7px !important;
-    }
-
-    html.s360-mobile #bottom-menu-view{
-        padding-top:38px !important;
-    }
-}
-
-
-/* ==========================================================
-   v39 PC 우측 상단 종료·공유 버튼 테두리 제거
-========================================================== */
-@media(min-width:769px){
-
-    #top-action-buttons .circle-button{
-        background:rgba(15,23,42,.58) !important;
-        border:0 !important;
-        outline:0 !important;
-
-        box-shadow:
-            0 3px 10px rgba(0,0,0,.18) !important;
-    }
-
-    #top-action-buttons .circle-button:hover{
-        background:rgba(0,91,172,.82) !important;
-        border:0 !important;
-        outline:0 !important;
-    }
-
-    #top-action-buttons .circle-button:focus,
-    #top-action-buttons .circle-button:focus-visible,
-    #top-action-buttons .circle-button:active{
-        border:0 !important;
-        outline:0 !important;
-    }
-
-    #top-action-buttons .circle-button svg{
-        stroke:#FFFFFF !important;
-    }
-}
-
-
-/* ==========================================================
-   v40 PC 상단 버튼 - 원래 진한 배경 유지, 흰 테두리만 제거
-========================================================== */
-@media (min-width:769px){
-
-  #top-action-buttons .circle-button{
-      background:rgba(15,23,42,.82) !important;
-      border:none !important;
-      outline:none !important;
-      box-shadow:0 3px 10px rgba(0,0,0,.22) !important;
+@media (max-width: 768px) {
+  .topbar {
+    left: 10px;
+    right: 10px;
+    gap: 8px;
   }
 
-  #top-action-buttons .circle-button:hover{
-      background:rgba(15,23,42,.92) !important;
-      border:none !important;
+  .desktop-menu {
+    display: none;
   }
 
-  #top-action-buttons .circle-button:focus,
-  #top-action-buttons .circle-button:focus-visible,
-  #top-action-buttons .circle-button:active{
-      border:none !important;
-      outline:none !important;
+  .title-card {
+    max-width: calc(100% - 110px);
   }
-}
 
-
-/* ==========================================================
-   v41 PC 메뉴 접기 시 헤더만 남기기
-========================================================== */
-@media(min-width:769px){
-
-    /*
-     * 메뉴를 접으면 기존의 긴 패널 높이도 함께 줄이고,
-     * 상단 '메뉴' 헤더만 보이도록 합니다.
-     */
-    #pc-menu-panel.is-collapsed{
-        width:72px !important;
-        height:34px !important;
-        min-height:34px !important;
-        max-height:34px !important;
-
-        overflow:hidden !important;
-    }
-
-    #pc-menu-panel.is-collapsed #pc-menu{
-        display:none !important;
-        height:0 !important;
-        min-height:0 !important;
-        padding:0 !important;
-        margin:0 !important;
-    }
-
-    #pc-menu-panel.is-collapsed #pc-menu-header{
-        display:flex !important;
-        flex:0 0 34px !important;
-        width:100% !important;
-        height:34px !important;
-
-        padding:0 !important;
-        border-bottom:0 !important;
-    }
-
-    #pc-menu-panel.is-collapsed #pc-menu-title{
-        width:100% !important;
-        height:34px !important;
-        padding:0 !important;
-
-        display:flex !important;
-        align-items:center !important;
-        justify-content:center !important;
-    }
-}
-
-
-
-/* ==========================================================
-   v48 모바일 방향전환 안정화
-========================================================== */
-html.s360-mobile{
-    --s360-visible-height:100dvh;
-}
-
-/* 공통 모바일 전체 영역 */
-html.s360-mobile,
-html.s360-mobile body{
-    margin:0 !important;
-    width:100% !important;
-    height:100% !important;
-    overflow:hidden !important;
-}
-
-html.s360-mobile #vr-overlay-container{
-    position:fixed !important;
-    left:0 !important;
-    top:0 !important;
-    right:auto !important;
-    bottom:auto !important;
-    width:100% !important;
-    height:var(--s360-visible-height) !important;
-    min-height:0 !important;
-    overflow:hidden !important;
-    transform:none !important;
-}
-
-/* 세로 화면 */
-html.s360-mobile.s360-portrait #pano{
-    position:absolute !important;
-    left:0 !important;
-    top:0 !important;
-    right:auto !important;
-    bottom:auto !important;
-    width:100% !important;
-    height:65% !important;
-    min-height:0 !important;
-    transform:none !important;
-}
-
-html.s360-mobile.s360-portrait #bottom-panel{
-    position:absolute !important;
-    left:0 !important;
-    top:65% !important;
-    right:auto !important;
-    bottom:auto !important;
-    width:100% !important;
-    height:35% !important;
-    min-height:0 !important;
-    transform:none !important;
-}
-
-html.s360-mobile.s360-portrait #bottom-panel[data-layout="split"]{
-    display:grid !important;
-    grid-template-columns:45% 55% !important;
-    grid-template-rows:100% !important;
-}
-
-/* 가로 화면 */
-html.s360-mobile.s360-landscape #pano{
-    position:absolute !important;
-    left:0 !important;
-    top:0 !important;
-    right:auto !important;
-    bottom:auto !important;
-    width:65% !important;
-    height:100% !important;
-    min-height:0 !important;
-    transform:none !important;
-}
-
-html.s360-mobile.s360-landscape #bottom-panel{
-    position:absolute !important;
-    left:65% !important;
-    top:0 !important;
-    right:auto !important;
-    bottom:auto !important;
-    width:35% !important;
-    height:100% !important;
-    min-height:0 !important;
-    transform:none !important;
-}
-
-html.s360-mobile.s360-landscape #bottom-panel[data-layout="split"]{
-    display:grid !important;
-    grid-template-columns:100% !important;
-    grid-template-rows:45% 55% !important;
-}
-
-/* 가로화면 상단 UI는 항상 화면 위쪽에 고정 */
-html.s360-mobile.s360-landscape #tour-information{
-    position:absolute !important;
-    left:8px !important;
-    top:calc(8px + env(safe-area-inset-top)) !important;
-    right:auto !important;
-    bottom:auto !important;
-    transform:none !important;
-    max-width:calc(65% - 76px) !important;
-}
-
-html.s360-mobile.s360-landscape #top-action-buttons{
-    position:absolute !important;
-    top:calc(8px + env(safe-area-inset-top)) !important;
-    right:calc(35% + 8px) !important;
-    bottom:auto !important;
-    transform:none !important;
-}
-
-html.s360-mobile.s360-landscape #bottom-menu-pane .mobile-pane-title,
-html.s360-mobile.s360-landscape #bottom-map-pane .mobile-pane-title,
-html.s360-mobile.s360-landscape #menu-pane-collapse,
-html.s360-mobile.s360-landscape #map-pane-collapse,
-html.s360-mobile.s360-landscape #mobile-hide-all-button{
-    top:7px !important;
-    bottom:auto !important;
-}
-
-/* 모바일 화살표 씬명은 깜빡임 없이 유지 */
-@media(max-width:768px), (pointer:coarse){
-    .mobile-hotspot-scene-label{
-        transition:none !important;
-    }
-
-    .mobile-hotspot-scene-label.is-visible{
-        opacity:1 !important;
-        visibility:visible !important;
-    }
-}
-
-
-/* ==========================================================
-   v49 PC·모바일 화살표 Scene 이름 상시 표시
-========================================================== */
-
-/* PC에서도 상시 Scene 이름 레이어 표시 */
-#mobile-hotspot-label-layer{
-    display:block !important;
-}
-
-/* PC/모바일 공통 말풍선 */
-.mobile-hotspot-scene-label{
-    opacity:0;
-    visibility:hidden;
-    transition:none !important;
-
-    max-width:240px;
-    padding:6px 10px;
-
-    color:#ffffff;
-    background:rgba(15,23,42,.72);
-    border:0;
-    border-radius:8px;
-
-    font-size:13px;
-    font-weight:700;
-    line-height:1.3;
-    text-align:center;
-    white-space:nowrap;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.20);
-    pointer-events:none;
-}
-
-.mobile-hotspot-scene-label.is-visible{
-    opacity:1 !important;
-    visibility:visible !important;
-}
-
-/* 기존 마우스 hover용 단일 툴팁은 중복 방지를 위해 사용하지 않음 */
-#hotspot-scene-tooltip{
-    display:none !important;
-}
-
-@media(min-width:769px) and (pointer:fine){
-    .mobile-hotspot-scene-label{
-        max-width:260px;
-        font-size:13px;
-        background:rgba(15,23,42,.76);
-    }
-}
-
-
-/* ==========================================================
-   v50 화살표 씬명은 krpano 네이티브 hotspot으로 표시
-========================================================== */
-#mobile-hotspot-label-layer,
-#hotspot-scene-tooltip{
-    display:none !important;
-}
-
-
-
-/* ==========================================================
-   최종 화살표 씬명 직사각형 라벨
-   - 자동 생성 콘텐츠 XML 수정 없음
-   - PC 18px / 모바일 16px
-   - 화살표의 축소·기울기 효과를 JavaScript에서 역보정
-========================================================== */
-.s360-arrow-scene-label{
-    position:absolute !important;
-    left:50% !important;
-    top:0 !important;
-
-    display:block !important;
-    visibility:visible !important;
-    opacity:1 !important;
-
-    box-sizing:border-box !important;
-    min-width:max-content !important;
-    max-width:320px !important;
-    padding:7px 14px !important;
-
-    color:#ffffff !important;
-    background:rgba(15,23,42,.88) !important;
-    border:0 !important;
-    border-radius:4px !important;
-
-    font-family:"Malgun Gothic","맑은 고딕",Arial,sans-serif !important;
-    font-size:14px !important;
-    font-weight:800 !important;
-    line-height:1.35 !important;
-    letter-spacing:-.2px !important;
-    text-align:center !important;
-    white-space:nowrap !important;
-
-    box-shadow:0 4px 14px rgba(0,0,0,.30) !important;
-
-    pointer-events:none !important;
-    user-select:none !important;
-    backface-visibility:hidden !important;
-    -webkit-backface-visibility:hidden !important;
-
-    transform-origin:center center !important;
-    will-change:transform !important;
-    z-index:2147483000 !important;
-}
-
-.s360-arrow-scene-label::before{
-    content:none !important;
-    display:none !important;
-}
-
-.s360-arrow-scene-label::after{
-    content:none !important;
-    display:none !important;
-}
-
-/* 이전 방식의 임시 툴팁은 중복 방지를 위해 표시하지 않음 */
-#hotspot-scene-tooltip,
-#mobile-hotspot-label-layer{
-    display:none !important;
-}
-
-@media(max-width:768px), (pointer:coarse){
-    .s360-arrow-scene-label{
-        max-width:min(76vw,280px) !important;
-        padding:7px 13px !important;
-        font-size:13px !important;
-        border-radius:4px !important;
-    }
-
-    .s360-arrow-scene-label::before{
-        content:none !important;
-        display:none !important;
-    }
-}
-
-
-/* ==========================================================
-   v58 최종 보정
-   - PC 좌측 제목을 목록과 같은 크기로 통일
-   - 제목/목록/항목 간격 확대
-   - 제목 명칭: 둘러보기
-========================================================== */
-@media(min-width:769px){
-    #pc-menu-header{
-        height:44px !important;
-        flex:0 0 44px !important;
-    }
-
-    #pc-menu-title{
-        padding:0 16px !important;
-        font-size:15px !important;
-        font-weight:700 !important;
-        line-height:44px !important;
-        letter-spacing:.03em !important;
-    }
-
-    #pc-menu{
-        padding:14px 10px 22px 10px !important;
-        scroll-padding-top:14px !important;
-        scroll-padding-bottom:22px !important;
-    }
-
-    #pc-menu .tour-menu-item{
-        min-height:46px !important;
-        padding:11px 12px !important;
-        margin-bottom:9px !important;
-        gap:10px !important;
-        font-size:15px !important;
-        line-height:1.4 !important;
-    }
-
-    #pc-menu .tour-menu-number{
-        min-width:26px !important;
-        margin-right:2px !important;
-        font-size:12px !important;
-    }
-
-    #pc-menu .tour-menu-title{
-        font-size:15px !important;
-        line-height:1.4 !important;
-    }
-
-    #pc-menu .tour-menu-item:last-child{
-        margin-bottom:0 !important;
-    }
-}
-
-/* ==========================================================
-   v66 모바일 메뉴·지도 개별 토글 화살표 보정
-   - 전체 감추기 버튼은 기존 디자인 유지
-   - 메뉴/지도 개별 버튼만 화살표(← / →)로 표시
-========================================================== */
-html.s360-mobile #menu-pane-collapse svg,
-html.s360-mobile #map-pane-collapse svg{
-    display:none !important;
-}
-
-html.s360-mobile #menu-pane-collapse::before,
-html.s360-mobile #map-pane-collapse::before{
-    display:block;
-    color:#fff;
-    font-size:22px;
-    font-weight:700;
-    line-height:1;
-}
-
-/* 분할 상태: 메뉴는 왼쪽으로, 지도는 오른쪽으로 감추기 */
-html.s360-mobile #menu-pane-collapse::before{content:"←";}
-html.s360-mobile #map-pane-collapse::before{content:"→";}
-
-/* 메뉴만 보이는 상태: 오른쪽 지도를 다시 펼치기 */
-html.s360-mobile #bottom-panel[data-layout="menu"] #menu-pane-collapse::before{
-    content:"→";
-}
-
-/* 지도만 보이는 상태: 왼쪽 메뉴를 다시 펼치기 */
-html.s360-mobile #bottom-panel[data-layout="map"] #map-pane-collapse::before{
-    content:"←";
-}
-
-/* ==========================================================
-   v66 모바일 방향별 개별 토글 화살표
-   - 세로: 메뉴/지도가 좌우 배치 → 좌우 화살표
-   - 가로: 메뉴/지도가 상하 배치 → 상하 화살표
-   - 한쪽을 감춘 뒤 복원할 때는 펼쳐질 방향으로 반전
-========================================================== */
-
-/* 세로 화면: 분할 상태 */
-html.s360-mobile.s360-portrait #bottom-panel[data-layout="split"] #menu-pane-collapse::before{
-    content:"←";
-}
-html.s360-mobile.s360-portrait #bottom-panel[data-layout="split"] #map-pane-collapse::before{
-    content:"→";
-}
-
-/* 세로 화면: 지도 숨김 → 오른쪽으로 지도 복원 */
-html.s360-mobile.s360-portrait #bottom-panel[data-layout="menu"] #menu-pane-collapse::before{
-    content:"→";
-}
-
-/* 세로 화면: 메뉴 숨김 → 왼쪽으로 메뉴 복원 */
-html.s360-mobile.s360-portrait #bottom-panel[data-layout="map"] #map-pane-collapse::before{
-    content:"←";
-}
-
-/* 가로 화면: 분할 상태에서 메뉴는 위로, 지도는 아래로 감추기 */
-html.s360-mobile.s360-landscape #bottom-panel[data-layout="split"] #menu-pane-collapse::before{
-    content:"↑";
-}
-html.s360-mobile.s360-landscape #bottom-panel[data-layout="split"] #map-pane-collapse::before{
-    content:"↓";
-}
-
-/* 가로 화면: 지도 숨김 → 아래 방향으로 지도 복원 */
-html.s360-mobile.s360-landscape #bottom-panel[data-layout="menu"] #menu-pane-collapse::before{
-    content:"↓";
-}
-
-/* 가로 화면: 메뉴 숨김 → 위 방향으로 메뉴 복원 */
-html.s360-mobile.s360-landscape #bottom-panel[data-layout="map"] #map-pane-collapse::before{
-    content:"↑";
-}
-
-@media (min-width:769px){
-    #pc-menu-panel{
-        left:50% !important;
-        right:auto !important;
-        width:min(760px, calc(100vw - 220px)) !important;
-        max-width:760px !important;
-        transform:translateX(-50%) !important;
-        justify-content:flex-start !important;
-        gap:7px !important;
-    }
-
-    #pc-menu,
-    #pc-menu-panel.is-collapsed #pc-menu{
-        order:1 !important;
-        flex:1 1 auto !important;
-        width:auto !important;
-        min-width:0 !important;
-        max-width:none !important;
-    }
-
-    #pc-menu-more{
-        order:2 !important;
-        flex:0 0 40px !important;
-        width:40px !important;
-        height:40px !important;
-        margin-left:0 !important;
-    }
-
-    #pc-menu .tour-menu-item.is-active{
-        color:#ffffff !important;
-        background:#2F80ED !important;
-        border-color:#2F80ED !important;
-        box-shadow:0 4px 12px rgba(47,128,237,.34) !important;
-    }
-
-    #pc-menu-more:hover,
-    #pc-menu-more:focus-visible,
-    #pc-menu-more[aria-expanded="true"]{
-        background:#2F80ED !important;
-        border-color:#2F80ED !important;
-    }
-}
-
-@media (min-width:769px){
-    #pc-menu-panel,
-    #pc-menu-panel.is-collapsed{
-        left:50% !important;
-        right:auto !important;
-        transform:translateX(-50%) !important;
-        justify-content:flex-start !important;
-    }
-
-    #pc-menu,
-    #pc-menu-panel.is-collapsed #pc-menu{
-        flex:0 0 auto !important;
-    }
-
-    #pc-menu .tour-menu-item.is-active{
-        color:#fff !important;
-        background:#2F80ED !important;
-        border-color:#2F80ED !important;
-        box-shadow:0 4px 14px rgba(47,128,237,.36) !important;
-    }
-
-    #pc-menu-more{
-        margin-left:0 !important;
-    }
-
-    #pc-menu-more:hover,
-    #pc-menu-more[aria-expanded="true"]{
-        background:#2F80ED !important;
-        border-color:#2F80ED !important;
-    }
-
-    #v77-pc-menu-overflow .v77-overflow-button.is-active{
-        color:#fff !important;
-        background:#2F80ED !important;
-    }
-}
-
-@media (min-width:769px){
-    #pc-menu-panel{
-        position:absolute !important;
-        top:calc(27px + env(safe-area-inset-top)) !important;
-        left:340px !important; /* JS에서 타이틀 실제 폭 기준 재계산 */
-        right:112px !important; /* JS에서 우측 버튼 실제 위치 기준 재계산 */
-        width:auto !important;
-        height:44px !important;
-        display:flex !important;
-        align-items:center !important;
-        gap:10px !important;
-        overflow:visible !important;
-        padding:0 !important;
-        background:transparent !important;
-        border:0 !important;
-        box-shadow:none !important;
-        z-index:9200 !important;
-    }
-
-    #pc-menu{
-        order:1 !important;
-        min-width:0 !important;
-        height:44px !important;
-        flex:1 1 auto !important;
-        display:flex !important;
-        align-items:center !important;
-        gap:8px !important;
-        overflow:hidden !important;
-        white-space:nowrap !important;
-    }
-
-    #pc-menu-more{
-        order:2 !important;
-        width:44px !important;
-        height:44px !important;
-        flex:0 0 44px !important;
-        margin-left:2px !important;
-        background:rgba(255,255,255,.97) !important;
-        border:1px solid rgba(0,0,0,.10) !important;
-        border-radius:22px !important;
-        box-shadow:0 3px 12px rgba(0,0,0,.18) !important;
-        transform:none !important;
-    }
-
-    #pc-menu-more:hover,
-    #pc-menu-more:focus-visible{
-        background:#fff !important;
-        box-shadow:0 5px 16px rgba(0,0,0,.24) !important;
-        transform:translateY(-1px) !important;
-    }
-
-    #pc-menu .tour-menu-item.v75-overflow-hidden{
-        display:none !important;
-    }
-
-    /* v74의 클릭형 전체 팝업은 사용하지 않음 */
-    #pc-menu-panel.is-expanded #pc-menu{
-        position:static !important;
-        width:auto !important;
-        height:44px !important;
-        max-height:none !important;
-        display:flex !important;
-        grid-template-columns:none !important;
-        padding:0 !important;
-        overflow:hidden !important;
-        background:transparent !important;
-        border:0 !important;
-        border-radius:0 !important;
-        box-shadow:none !important;
-        backdrop-filter:none !important;
-        -webkit-backdrop-filter:none !important;
-    }
-
-    #pc-menu-overflow{
-        position:absolute !important;
-        top:52px !important;
-        right:0 !important;
-        width:min(620px,calc(100vw - 80px)) !important;
-        max-height:calc(100vh - 130px) !important;
-        display:none !important;
-        grid-template-columns:repeat(auto-fill,minmax(165px,1fr)) !important;
-        gap:8px !important;
-        padding:12px !important;
-        overflow-y:auto !important;
-        background:rgba(255,255,255,.98) !important;
-        border:1px solid rgba(0,0,0,.09) !important;
-        border-radius:14px !important;
-        box-shadow:0 10px 30px rgba(0,0,0,.24) !important;
-        backdrop-filter:blur(10px) !important;
-        -webkit-backdrop-filter:blur(10px) !important;
-        z-index:9300 !important;
-    }
-
-    #pc-menu-panel.v75-hover-open #pc-menu-overflow{
-        display:grid !important;
-    }
-
-    #pc-menu-overflow .tour-menu-item{
-        width:100% !important;
-        min-width:0 !important;
-        height:42px !important;
-        min-height:42px !important;
-        display:flex !important;
-        align-items:center !important;
-        justify-content:flex-start !important;
-        gap:7px !important;
-        padding:0 13px !important;
-        color:#222 !important;
-        background:#fff !important;
-        border:1px solid rgba(0,0,0,.07) !important;
-        border-radius:10px !important;
-        box-shadow:none !important;
-        font-size:14px !important;
-        font-weight:700 !important;
-        cursor:pointer !important;
-    }
-
-    #pc-menu-overflow .tour-menu-item:hover{
-        background:#F4F4F4 !important;
-    }
-
-    #pc-menu-overflow .tour-menu-item.is-active{
-        color:#fff !important;
-        background:#C89B3C !important;
-        border-color:#C89B3C !important;
-    }
-
-    #pc-menu-overflow .tour-menu-number{
-        font-size:12px !important;
-        font-weight:900 !important;
-        color:inherit !important;
-    }
-
-    #pc-menu-overflow .tour-menu-title{
-        min-width:0 !important;
-        overflow:hidden !important;
-        text-overflow:ellipsis !important;
-        white-space:nowrap !important;
-        color:inherit !important;
-    }
-}
-
-@media (max-width:768px){
-    #pc-menu-overflow{display:none !important;}
-}
-
-@media (min-width:769px){
-    #pc-menu-panel{
-        top:calc(8px + env(safe-area-inset-top)) !important;
-        right:auto !important;
-        width:auto !important;
-        max-width:calc(100vw - 240px) !important;
-        height:40px !important;
-        gap:7px !important;
-    }
-
-    #pc-menu{
-        height:40px !important;
-        flex:0 0 auto !important;
-        gap:6px !important;
-    }
-
-    #pc-menu .tour-menu-item{
-        height:40px !important;
-        min-height:40px !important;
-        padding:0 12px !important;
-        font-size:13px !important;
-    }
-
-    #pc-menu-more{
-        order:2 !important;
-        width:40px !important;
-        height:40px !important;
-        flex:0 0 40px !important;
-        margin-left:0 !important;
-        border-radius:20px !important;
-    }
-
-    #pc-menu-overflow{
-        top:48px !important;
-        bottom:auto !important;
-        right:0 !important;
-        transform:none !important;
-        transform-origin:top right !important;
-    }
-}
-
-@media screen and (min-width:769px){
-    :root{--panel:rgba(10,18,32,.42)!important;}
-
-    #tour-information{
-        position:fixed!important;top:12px!important;left:16px!important;
-        width:auto!important;min-width:340px!important;max-width:460px!important;
-        min-height:58px!important;height:58px!important;
-        display:flex!important;align-items:center!important;gap:10px!important;
-        padding:7px 15px 7px 9px!important;
-        color:#fff!important;background:rgba(10,18,32,.42)!important;
-        border:1px solid rgba(255,255,255,.17)!important;border-radius:15px!important;
-        box-shadow:0 4px 16px rgba(0,0,0,.14)!important;
-        backdrop-filter:blur(10px) saturate(120%)!important;
-        -webkit-backdrop-filter:blur(10px) saturate(120%)!important;
-        z-index:99995!important;
-    }
-    #tour-mascot{width:40px!important;height:40px!important;flex:0 0 40px!important;}
-    #tour-information-text{display:flex!important;flex-direction:column!important;justify-content:center!important;min-width:0!important;line-height:1.15!important;}
-    #tour-title-line{display:flex!important;align-items:center!important;gap:8px!important;white-space:nowrap!important;overflow:hidden!important;}
-    #tour-brand-title,#tour-content-title{font-size:16px!important;line-height:20px!important;}
-    #tour-brand-title{font-weight:800!important;flex:0 0 auto!important;}
-    #tour-title-divider{display:inline-block!important;color:rgba(255,255,255,.55)!important;font-weight:400!important;line-height:20px!important;flex:0 0 auto!important;}
-    #tour-content-title{font-weight:700!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;}
-    #tour-date-divider{display:none!important;}
-    #tour-capture-date{display:block!important;margin:4px 0 0!important;color:rgba(255,255,255,.72)!important;font-size:12px!important;font-weight:500!important;line-height:15px!important;white-space:nowrap!important;}
-
-    #pc-menu-panel,#pc-menu-panel.is-collapsed{
-        position:fixed!important;top:88px!important;left:20px!important;right:auto!important;bottom:auto!important;
-        width:min(1140px,calc(100vw - 400px))!important;min-width:620px!important;
-        height:126px!important;min-height:126px!important;max-height:126px!important;
-        display:flex!important;flex-direction:column!important;align-items:stretch!important;
-        padding:0!important;margin:0!important;overflow:hidden!important;
-        color:#fff!important;background:rgba(10,18,32,.42)!important;
-        border:1px solid rgba(255,255,255,.17)!important;border-radius:18px!important;
-        box-shadow:0 5px 18px rgba(0,0,0,.14)!important;
-        backdrop-filter:blur(10px) saturate(120%)!important;
-        -webkit-backdrop-filter:blur(10px) saturate(120%)!important;
-        transform:none!important;z-index:99990!important;
-    }
-    #pc-menu-header,#pc-menu-title{display:none!important;}
-    #pc-chip-header{
-        position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
-        width:100%!important;height:40px!important;min-height:40px!important;flex:0 0 40px!important;
-        padding:0 18px!important;margin:0!important;
-        border-bottom:1px solid rgba(255,255,255,.11)!important;background:rgba(255,255,255,.025)!important;
-    }
-    #pc-chip-heading{font-size:14px!important;font-weight:800!important;letter-spacing:.02em!important;}
-    #pc-chip-counter{min-width:54px!important;padding:4px 10px!important;text-align:center!important;font-size:12px!important;font-weight:700!important;color:rgba(255,255,255,.9)!important;background:rgba(255,255,255,.10)!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:999px!important;}
-    #pc-chip-body{
-        width:100%!important;height:86px!important;min-height:86px!important;flex:0 0 86px!important;
-        display:grid!important;grid-template-columns:44px minmax(0,1fr) 44px!important;align-items:center!important;
-        gap:8px!important;padding:8px 10px!important;margin:0!important;overflow:hidden!important;
-    }
-    .pc-chip-arrow{
-        width:44px!important;height:70px!important;align-self:center!important;display:flex!important;align-items:center!important;justify-content:center!important;
-        margin:0!important;padding:0!important;border:0!important;border-radius:13px!important;
-        color:#fff!important;background:rgba(255,255,255,.09)!important;font-size:30px!important;font-weight:300!important;line-height:1!important;
-        cursor:pointer!important;opacity:.64!important;transition:.16s ease!important;
-    }
-    .pc-chip-arrow:hover{opacity:1!important;background:rgba(47,128,237,.72)!important;}
-    .pc-chip-arrow:disabled{opacity:.14!important;cursor:default!important;background:rgba(255,255,255,.04)!important;}
-    #pc-menu,#pc-menu-panel.is-collapsed #pc-menu{
-        position:relative!important;width:100%!important;height:70px!important;min-width:0!important;min-height:70px!important;
-        display:grid!important;grid-template-rows:repeat(2,31px)!important;grid-auto-flow:column!important;grid-auto-columns:max-content!important;
-        align-content:center!important;justify-content:start!important;column-gap:8px!important;row-gap:8px!important;
-        padding:0 4px!important;margin:0!important;overflow-x:auto!important;overflow-y:hidden!important;
-        white-space:nowrap!important;scroll-behavior:smooth!important;scrollbar-width:none!important;-ms-overflow-style:none!important;
-        touch-action:pan-x!important;cursor:grab!important;
-    }
-    #pc-menu::-webkit-scrollbar{display:none!important;width:0!important;height:0!important;}
-    #pc-menu.is-dragging{cursor:grabbing!important;scroll-behavior:auto!important;user-select:none!important;}
-    #pc-menu .tour-menu-item{
-        position:relative!important;flex:none!important;width:auto!important;min-width:max-content!important;height:31px!important;min-height:31px!important;max-height:31px!important;
-        display:flex!important;align-items:center!important;gap:7px!important;margin:0!important;padding:0 14px!important;
-        color:rgba(255,255,255,.94)!important;background:rgba(255,255,255,.105)!important;border:1px solid rgba(255,255,255,.15)!important;
-        border-radius:999px!important;box-shadow:none!important;font-size:13px!important;font-weight:700!important;line-height:31px!important;text-align:left!important;transform:none!important;
-    }
-    #pc-menu .tour-menu-item:hover{background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.30)!important;transform:translateY(-1px)!important;}
-    #pc-menu .tour-menu-item.is-active,#pc-menu .tour-menu-item[aria-current="true"]{
-        height:33px!important;min-height:33px!important;max-height:33px!important;margin-top:-1px!important;
-        color:#fff!important;background:#2F80ED!important;border-color:rgba(255,255,255,.76)!important;
-        box-shadow:0 4px 13px rgba(47,128,237,.32)!important;font-size:14px!important;font-weight:900!important;
-    }
-    #pc-menu .tour-menu-number{min-width:auto!important;margin:0!important;font-size:11px!important;font-weight:900!important;opacity:.95!important;}
-    #pc-menu .tour-menu-title{display:block!important;max-width:190px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:13px!important;font-weight:inherit!important;line-height:inherit!important;}
-}
-@media screen and (min-width:769px) and (max-width:1150px){
-    #pc-menu-panel,#pc-menu-panel.is-collapsed{width:calc(100vw - 300px)!important;min-width:520px!important;}
-}
-@media screen and (max-width:768px){
-    #pc-chip-header,.pc-chip-arrow{display:none!important;}
-}
-
-
-/* ==========================================================
-   v91 PC 하단 검은 음영 제거 + 모바일 표시 안정화
-========================================================== */
-
-/* PC에서는 모바일 하단 패널 자체가 공간이나 음영을 만들지 않도록 완전히 제거 */
-@media (min-width:769px) and (pointer:fine){
-    #bottom-panel{
-        display:none !important;
-        visibility:hidden !important;
-        width:0 !important;
-        height:0 !important;
-        min-height:0 !important;
-        margin:0 !important;
-        padding:0 !important;
-        background:transparent !important;
-        border:0 !important;
-        box-shadow:none !important;
-        filter:none !important;
-        backdrop-filter:none !important;
-        -webkit-backdrop-filter:none !important;
-        overflow:hidden !important;
-        pointer-events:none !important;
-    }
-
-    #pano{
-        left:0 !important;
-        top:0 !important;
-        right:0 !important;
-        bottom:0 !important;
-        width:100% !important;
-        height:100% !important;
-        max-height:none !important;
-    }
-
-    #vr-overlay-container,
-    #ui-container{
-        bottom:0 !important;
-        height:100% !important;
-        background:transparent !important;
-        box-shadow:none !important;
-    }
-}
-
-/* 휴대전화 및 터치 태블릿 */
-@media (max-width:1024px) and (pointer:coarse),
-       (max-width:768px){
-    html.s360-mobile #bottom-panel{
-        background:#ffffff !important;
-        box-shadow:none !important;
-        border:0 !important;
-    }
-
-    html.s360-mobile #bottom-menu-pane,
-    html.s360-mobile #bottom-map-pane,
-    html.s360-mobile #bottom-menu-view,
-    html.s360-mobile #bottom-map-view{
-        min-width:0 !important;
-        min-height:0 !important;
-        overflow:hidden !important;
-    }
-
-    html.s360-mobile.s360-portrait #pano{
-        width:100% !important;
-        height:65% !important;
-    }
-
-    html.s360-mobile.s360-portrait #bottom-panel{
-        left:0 !important;
-        top:65% !important;
-        width:100% !important;
-        height:35% !important;
-        display:grid !important;
-        visibility:visible !important;
-    }
+  .share-btn {
+    margin-left: auto;
+  }
+
+  .pano-wrap {
+    height: 65%;
+  }
+
+  .mobile-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 35%;
+    background: #fff;
+  }
+
+  .mobile-pane {
+    min-width: 0;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .mobile-menu-pane {
+    border-right: 1px solid #d1d5db;
+  }
+
+  .pane-header {
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px 0 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .pane-toggle {
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    font-size: 24px;
+  }
+
+  .mobile-menu-list {
+    height: calc(100% - 42px);
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .mobile-menu-item {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    text-align: left;
+    background: #f3f4f6;
+  }
+
+  .map {
+    height: calc(100% - 42px);
+    background: #e5e7eb;
+  }
+
+  .map-placeholder {
+    height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    text-align: center;
+    color: #4b5563;
+  }
+
+  .panel-toggle {
+    position: fixed;
+    left: 50%;
+    bottom: calc(35% - 18px);
+    z-index: 1200;
+    display: block;
+    transform: translateX(-50%);
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(17,24,39,.88);
+    color: #fff;
+  }
+
+  .app.panels-hidden .pano-wrap {
+    height: 100%;
+  }
+
+  .app.panels-hidden .mobile-panel {
+    display: none;
+  }
+
+  .app.panels-hidden .panel-toggle {
+    bottom: 12px;
+  }
+
+  .app.menu-pane-hidden .mobile-panel {
+    grid-template-columns: 0 1fr;
+  }
+
+  .app.map-pane-hidden .mobile-panel {
+    grid-template-columns: 1fr 0;
+  }
+
+  .app.menu-pane-hidden .mobile-menu-pane,
+  .app.map-pane-hidden .map-pane {
+    visibility: hidden;
+  }
 }
