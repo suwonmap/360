@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>수원360°</title>
+  <link rel="stylesheet" href="./tour.css">
+</head>
+<body>
+  <main id="app" class="app" aria-busy="true">
+    <section id="pano-wrap" class="pano-wrap" aria-label="360도 파노라마">
+      <div id="pano" class="pano"></div>
+
+      <header class="topbar">
+        <div class="title-card">
+          <div class="title-line">
+            <span class="brand">수원360°</span>
+            <span class="divider" aria-hidden="true">│</span>
+            <strong id="content-title">콘텐츠 불러오는 중</strong>
+          </div>
+          <div id="shooting-date" class="shooting-date"></div>
+        </div>
+
+        <nav id="desktop-menu" class="desktop-menu" aria-label="장소 메뉴">
+          <button id="menu-prev" class="menu-scroll-btn" type="button" aria-label="이전 메뉴">‹</button>
+          <div id="menu-track" class="menu-track"></div>
+          <button id="menu-next" class="menu-scroll-btn" type="button" aria-label="다음 메뉴">›</button>
+        </nav>
+
+        <button id="share-btn" class="share-btn" type="button">링크 공유</button>
+      </header>
+
+      <div id="status" class="status" role="status" aria-live="polite">초기화 중…</div>
+    </section>
+
+    <section id="mobile-panel" class="mobile-panel" aria-label="모바일 메뉴와 지도">
+      <div id="mobile-menu-pane" class="mobile-pane mobile-menu-pane">
+        <div class="pane-header">
+          <strong>둘러보기</strong>
+          <button id="mobile-menu-close" class="pane-toggle" type="button" aria-label="메뉴 접기">‹</button>
+        </div>
+        <div id="mobile-menu-list" class="mobile-menu-list"></div>
+      </div>
+
+      <div id="map-pane" class="mobile-pane map-pane">
+        <div class="pane-header map-header">
+          <button id="map-restore" class="pane-toggle" type="button" aria-label="메뉴와 지도 같이 보기">‹</button>
+          <strong>미니맵</strong>
+          <button id="map-close" class="pane-toggle" type="button" aria-label="지도 접기">›</button>
+        </div>
+        <div id="map" class="map" aria-label="카카오 미니맵"></div>
+      </div>
+    </section>
+
+    <button id="panel-toggle" class="panel-toggle" type="button" aria-expanded="true">전체 숨김</button>
+  </main>
+
+  <script src="./app.js"></script>
+  <script src="./panorama.js"></script>
+  <script src="./menu.js"></script>
+  <script src="./map.js"></script>
+</body>
+</html>

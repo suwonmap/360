@@ -1,0 +1,1547 @@
+<krpano version="1.22"
+         title="남수헌"
+         capturedate="2026.06"
+         mapmode="single"
+         maplat="37.28389167"
+         maplng="127.02193333">
+
+    <include url="../common/skin/vtourskin.xml" />
+    <include url="../common/common_layout.xml" />
+
+  <!-- =========================================================================
+     [SCENE 데이터]
+   ========================================================================= -->
+
+       <scene name="scene_namsuheon_1" title="남수헌 정문1" onstart="" thumburl="panos/namsuheon_1.tiles/thumb.jpg" lat="37.28389167" lng="127.02193333" alt="79.38" heading="0.0">
+        
+        <control bouncinglimits="calc:image.cube ? true : false" />
+
+        <view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+        <preview url="panos/namsuheon_1.tiles/preview.jpg" />
+
+        <image>
+            <cube url="panos/namsuheon_1.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+        </image>
+
+        <hotspot name="spot2043959543" style="skin_hotspotstyle" ath="17.757" atv="7.753" depth="1000.0" linkedscene="scene_namsuheon_2" linkedscene_lookat="10.1,5.63,120.0" />
+        <hotspot name="spot2044593841" style="skin_hotspotstyle" ath="60.841" atv="4.728" depth="1000.0" linkedscene="scene_namsuheon_79" linkedscene_lookat="-22.02,-8.65,141.36" />
+
+    </scene>
+
+	<scene name="scene_namsuheon_2" title="남수헌 정문2" onstart="" thumburl="panos/namsuheon_2.tiles/thumb.jpg" lat="37.28389167" lng="127.02185833" alt="78.19" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_2.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_2.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043959837" style="skin_hotspotstyle" ath="1.502" atv="6.564" depth="1000.0" linkedscene="scene_namsuheon_3" linkedscene_lookat="1.39,6.58,120.0" />
+		<hotspot name="spot2043960308" style="skin_hotspotstyle" ath="-179.227" atv="14.101" depth="1000.0" linkedscene="scene_namsuheon_1" linkedscene_lookat="0.0,0.0,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_3" title="엘리베이터1" onstart="" thumburl="panos/namsuheon_3.tiles/thumb.jpg" lat="37.28396944" lng="127.02222778" alt="79.25" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_3.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_3.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043960035" style="skin_hotspotstyle" ath="-95.679" atv="24.204" depth="1000.0" linkedscene="scene_namsuheon_2" linkedscene_lookat="-168.96,10.45,120.0" />
+		<hotspot name="spot2043960536" style="skin_hotspotstyle" ath="-1.884" atv="18.175" depth="1000.0" linkedscene="scene_namsuheon_4" linkedscene_lookat="5.2,0.69,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_4" title="엘리베이터2" onstart="" thumburl="panos/namsuheon_4.tiles/thumb.jpg" lat="37.28386667" lng="127.02219722" alt="78.24" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_4.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_4.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043960724" style="skin_hotspotstyle" ath="-106.385" atv="21.716" depth="1000.0" linkedscene="scene_namsuheon_3" linkedscene_lookat="-82.32,1.62,120.0" />
+		<hotspot name="spot2043960891" style="skin_hotspotstyle" ath="-2.706" atv="26.816" depth="1000.0" linkedscene="scene_namsuheon_5" linkedscene_lookat="-79.9,9.73,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_5" title="엘리베이터3" onstart="" thumburl="panos/namsuheon_5.tiles/thumb.jpg" lat="37.28382778" lng="127.02218889" alt="75.87" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_5.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_5.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043961391" style="skin_hotspotstyle" ath="-88.005" atv="27.346" depth="1000.0" linkedscene="scene_namsuheon_6" linkedscene_lookat="3.04,-9.01,120.0" />
+		<hotspot name="spot2043961542" style="skin_hotspotstyle" ath="-176.985" atv="35.437" depth="1000.0" linkedscene="scene_namsuheon_4" linkedscene_lookat="-85.87,6.05,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_6" title="엘리베이터4" onstart="" thumburl="panos/namsuheon_6.tiles/thumb.jpg" lat="37.28375833" lng="127.02217778" alt="93.12" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_6.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_6.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043961737" style="skin_hotspotstyle" ath="-2.398" atv="17.511" depth="1000.0" linkedscene="scene_namsuheon_7" linkedscene_lookat="3.35,-0.35,120.0" />
+		<hotspot name="spot2043961878" style="skin_hotspotstyle" ath="-84.402" atv="13.19" depth="1000.0" linkedscene="scene_namsuheon_5" linkedscene_hoffset="0.0" use3dtransition="true" />
+		<hotspot name="spot2044598658" style="skin_hotspotstyle" ath="77.8" atv="15.051" depth="1000.0" linkedscene="scene_namsuheon_86" linkedscene_lookat="-95.26,-5.98,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_7" title="안내데스크 가는길1" onstart="" thumburl="panos/namsuheon_7.tiles/thumb.jpg" lat="37.28374722" lng="127.02226944" alt="88.82" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_7.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_7.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043962168" style="skin_hotspotstyle" ath="-9.907" atv="-5.833" depth="1000.0" linkedscene="scene_namsuheon_8" linkedscene_lookat="-89.72,2.07,120.0" />
+		<hotspot name="spot2043962391" style="skin_hotspotstyle" ath="88.844" atv="37.499" depth="1000.0" linkedscene="scene_namsuheon_6" linkedscene_lookat="-83.29,-2.43,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_8" title="안내데스크 가는길2" onstart="" thumburl="panos/namsuheon_8.tiles/thumb.jpg" lat="37.28370833" lng="127.02237778" alt="89.94" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_8.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_8.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043962563" style="skin_hotspotstyle" ath="-90.968" atv="10.837" depth="1000.0" linkedscene="scene_namsuheon_9" linkedscene_lookat="62.12,-0.46,141.34" />
+		<hotspot name="spot2043962883" style="skin_hotspotstyle" ath="-179.405" atv="25.667" depth="1000.0" linkedscene="scene_namsuheon_7" linkedscene_lookat="84.47,12.5,120.0" />
+		<hotspot name="spot2043997152" style="skin_hotspotstyle" ath="77.43" atv="4.543" depth="1000.0" linkedscene="scene_namsuheon_41" linkedscene_lookat="235.68,-0.84,120.0" />
+		<hotspot name="spot2044579213" style="skin_hotspotstyle" ath="98.074" atv="5.835" depth="1000.0" linkedscene="scene_namsuheon_60" linkedscene_lookat="-22.67,-2.75,140.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_9" title="안내데스크 가는길3" onstart="" thumburl="panos/namsuheon_9.tiles/thumb.jpg" lat="37.28378611" lng="127.02235000" alt="92.60" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_9.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_9.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043963053" style="skin_hotspotstyle" ath="-88.367" atv="21.017" depth="1000.0" linkedscene="scene_namsuheon_8" linkedscene_lookat="-175.43,0.01,120.0" />
+		<hotspot name="spot2043963248" style="skin_hotspotstyle" ath="-0.861" atv="15.193" depth="1000.0" linkedscene="scene_namsuheon_11" linkedscene_lookat="-88.53,-0.9,120.0" />
+		<hotspot name="spot2043964586" style="skin_hotspotstyle" ath="161.263" atv="16.256" depth="1000.0" linkedscene="scene_namsuheon_12" linkedscene_lookat="0.0,0.0,120.0" />
+		
+
+	</scene>
+
+	<scene name="scene_namsuheon_10" title="" onstart="" thumburl="panos/namsuheon_10.tiles/thumb.jpg" lat="37.28381667" lng="127.02240000" alt="89.07" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_10.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_10.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+	</scene>
+
+	<scene name="scene_namsuheon_11" title="안내데스크" onstart="" thumburl="panos/namsuheon_11.tiles/thumb.jpg" lat="37.28383333" lng="127.02240833" alt="86.29" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_11.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_11.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043963863" style="skin_hotspotstyle" ath="-112.805" atv="23.919" depth="1000.0" linkedscene="scene_namsuheon_9" linkedscene_lookat="110.38,5.14,138.28" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_12" title="별당채101호 가는길" onstart="" thumburl="panos/namsuheon_12.tiles/thumb.jpg" lat="37.28385278" lng="127.02260556" alt="94.20" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_12.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_12.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043965278" style="skin_hotspotstyle" ath="-1.93" atv="13.562" depth="1000.0" linkedscene="scene_namsuheon_14" linkedscene_lookat="-2.34,4.81,120.0" />
+		<hotspot name="spot2043965582" style="skin_hotspotstyle" ath="-107.82" atv="20.261" depth="1000.0" linkedscene="scene_namsuheon_9" linkedscene_lookat="-75.41,-4.73,120.0" />
+		<hotspot name="spot2043967200" style="skin_hotspotstyle" ath="35.993" atv="27.742" depth="1000.0" linkedscene="scene_namsuheon_13" linkedscene_lookat="-11.17,-2.61,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_13" title="별당채 102호 가는길" onstart="" thumburl="panos/namsuheon_13.tiles/thumb.jpg" lat="37.28388333" lng="127.02256944" alt="94.40" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_13.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_13.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043966793" style="skin_hotspotstyle" ath="167.38" atv="19.709" depth="1000.0" linkedscene="scene_namsuheon_12" linkedscene_lookat="-130.24,-2.33,120.0" />
+		<hotspot name="spot2043967645" style="skin_hotspotstyle" ath="-1.561" atv="22.927" depth="1000.0" linkedscene="scene_namsuheon_15" linkedscene_lookat="-14.9,-0.23,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_14" title="별당채 101호"  menu_show="true" onstart="" thumburl="panos/namsuheon_14.tiles/thumb.jpg" lat="37.28391944" lng="127.02257500" alt="91.05" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_14.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_14.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043966586" style="skin_hotspotstyle" ath="-93.984" atv="22.143" depth="1000.0" linkedscene="scene_namsuheon_13" linkedscene_lookat="-20.44,0.23,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_15" title="별당채 102호"  menu_show="true" onstart="" thumburl="panos/namsuheon_15.tiles/thumb.jpg" lat="37.28391111" lng="127.02257500" alt="94.51" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="-38.0" vlookat="0.0" fovtype="MFOV" fov="130" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_15.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_15.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043968085" style="skin_hotspotstyle" ath="-26.428" atv="23.729" depth="1000.0" linkedscene="scene_namsuheon_16" linkedscene_lookat="0.0,0.0,120.0" />
+		<hotspot name="spot2043968417" style="skin_hotspotstyle" ath="-95.972" atv="29.818" depth="1000.0" linkedscene="scene_namsuheon_13" linkedscene_lookat="-175.74,5.05,120.0" />
+		<hotspot name="spot2043976475" style="skin_hotspotstyle" ath="63.458" atv="23.441" depth="1000.0" linkedscene="scene_namsuheon_24" linkedscene_lookat="-38.1,4.67,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_16" title="마당" onstart="" thumburl="panos/namsuheon_16.tiles/thumb.jpg" lat="37.28388333" lng="127.02264167" alt="93.70" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_16.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_16.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043968234" style="skin_hotspotstyle" ath="112.177" atv="27.298" depth="1000.0" linkedscene="scene_namsuheon_15" linkedscene_hoffset="0.0" use3dtransition="true" />
+		<hotspot name="spot2043969286" style="skin_hotspotstyle" ath="-16.007" atv="5.646" depth="1000.0" linkedscene="scene_namsuheon_17" linkedscene_lookat="36.7,12.23,138.28" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_17" title="거실" onstart="" thumburl="panos/namsuheon_17.tiles/thumb.jpg" lat="37.28397222" lng="127.02259722" alt="96.08" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="140" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_17.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_17.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043969771" style="skin_hotspotstyle" ath="113.172" atv="21.38" depth="1000.0" linkedscene="scene_namsuheon_18" linkedscene_lookat="88.73,6.36,120.0" />
+		<hotspot name="spot2043969925" style="skin_hotspotstyle" ath="-145.23" atv="47.738" depth="1000.0" linkedscene="scene_namsuheon_16" linkedscene_lookat="108.1,7.23,120.0" />
+		<hotspot name="spot2043971967" style="skin_hotspotstyle" ath="-29.019" atv="29.06" depth="1000.0" linkedscene="scene_namsuheon_20" linkedscene_lookat="-7.75,6.0,120.0" />
+		<hotspot name="spot2043972922" style="skin_hotspotstyle" ath="-105.007" atv="26.508" depth="1000.0" linkedscene="scene_namsuheon_21" linkedscene_lookat="33.02,5.43,120.0" />
+		<hotspot name="spot2043973473" style="skin_hotspotstyle" ath="-88.514" atv="25.029" depth="1000.0" linkedscene="scene_namsuheon_22" linkedscene_lookat="-10.59,2.09,127.83" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_18" title="방 1" onstart="" thumburl="panos/namsuheon_18.tiles/thumb.jpg" lat="37.28389444" lng="127.02264722" alt="95.44" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_18.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_18.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043970177" style="skin_hotspotstyle" ath="-172.421" atv="39.927" depth="1000.0" linkedscene="scene_namsuheon_17" linkedscene_lookat="19.51,9.01,120.0" />
+		<hotspot name="spot2043970472" style="skin_hotspotstyle" ath="-84.616" atv="40.809" depth="1000.0" linkedscene="scene_namsuheon_19" linkedscene_lookat="0.0,0.0,150.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_19" title="화장실 1" onstart="" thumburl="panos/namsuheon_19.tiles/thumb.jpg" lat="37.28389444" lng="127.02264722" alt="95.44" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="140" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_19.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_19.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043970654" style="skin_hotspotstyle" ath="-170.916" atv="63.641" depth="1000.0" linkedscene="scene_namsuheon_18" linkedscene_lookat="-170.78,1.07,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_20" title="방 2" onstart="" thumburl="panos/namsuheon_20.tiles/thumb.jpg" lat="37.28394444" lng="127.02262778" alt="86.81" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_20.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_20.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043972541" style="skin_hotspotstyle" ath="-173.487" atv="59.431" depth="1000.0" linkedscene="scene_namsuheon_17" linkedscene_lookat="30.2,11.01,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_21" title="방 3" onstart="" thumburl="panos/namsuheon_21.tiles/thumb.jpg" lat="37.28394444" lng="127.02262778" alt="86.81" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_21.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_21.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043973158" style="skin_hotspotstyle" ath="-171.549" atv="67.915" depth="1000.0" linkedscene="scene_namsuheon_17" linkedscene_lookat="32.86,6.85,124.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_22" title="화장실 2" onstart="" thumburl="panos/namsuheon_22.tiles/thumb.jpg" lat="37.28394444" lng="127.02262778" alt="86.81" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_22.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_22.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043973758" style="skin_hotspotstyle" ath="-8.259" atv="35.472" depth="1000.0" linkedscene="scene_namsuheon_23" linkedscene_lookat="27.6,2.54,120.0" />
+		<hotspot name="spot2043974022" style="skin_hotspotstyle" ath="171.614" atv="43.686" depth="1000.0" linkedscene="scene_namsuheon_17" linkedscene_lookat="46.95,15.15,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_23" title="자쿠지" onstart="" thumburl="panos/namsuheon_23.tiles/thumb.jpg" lat="37.28396111" lng="127.02255833" alt="88.86" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="140" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_23.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_23.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043973873" style="skin_hotspotstyle" ath="165.11" atv="53.328" depth="1000.0" linkedscene="scene_namsuheon_22" linkedscene_lookat="-189.14,8.79,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_24" title="별당채 103호"  menu_show="true" onstart="" thumburl="panos/namsuheon_24.tiles/thumb.jpg" lat="37.28398889" lng="127.02264722" alt="91.13" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="-35.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_24.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_24.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043976764" style="skin_hotspotstyle" ath="-31.86" atv="32.76" depth="1000.0" linkedscene="scene_namsuheon_25" linkedscene_lookat="0.0,0.0,120.0" />
+		<hotspot name="spot2043976868" style="skin_hotspotstyle" ath="-129.836" atv="32.399" depth="1000.0" linkedscene="scene_namsuheon_15" linkedscene_lookat="-108.48,4.4,130.0" />
+		<hotspot name="spot2043982447" style="skin_hotspotstyle" ath="48.776" atv="27.091" depth="1000.0" linkedscene="scene_namsuheon_33" linkedscene_lookat="-16.51,4.27,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_25" title="마당" onstart="" thumburl="panos/namsuheon_25.tiles/thumb.jpg" lat="37.28398889" lng="127.02264722" alt="91.13" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_25.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_25.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043977118" style="skin_hotspotstyle" ath="99.777" atv="15.656" depth="1000.0" linkedscene="scene_namsuheon_24" linkedscene_lookat="-121.2,4.88,120.0" />
+		<hotspot name="spot2043977364" style="skin_hotspotstyle" ath="-21.344" atv="11.104" depth="1000.0" linkedscene="scene_namsuheon_26" linkedscene_lookat="38.6,9.08,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_26" title="거실" onstart="" thumburl="panos/namsuheon_26.tiles/thumb.jpg" lat="37.28403889" lng="127.02260833" alt="92.40" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_26.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_26.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043977634" style="skin_hotspotstyle" ath="89.704" atv="20.218" depth="1000.0" linkedscene="scene_namsuheon_27" linkedscene_lookat="43.33,17.38,120.0" />
+		<hotspot name="spot2043979250" style="skin_hotspotstyle" ath="176.024" atv="46.445" depth="1000.0" linkedscene="scene_namsuheon_25" linkedscene_hoffset="0.0" use3dtransition="true" />
+		<hotspot name="spot2043979541" style="skin_hotspotstyle" ath="-30.78" atv="26.737" depth="1000.0" linkedscene="scene_namsuheon_29" linkedscene_lookat="2.08,0.46,120.0" />
+		<hotspot name="spot2043979948" style="skin_hotspotstyle" ath="-117.106" atv="32.902" depth="1000.0" linkedscene="scene_namsuheon_30" linkedscene_lookat="-145.8,6.69,120.0" />
+		<hotspot name="spot2043980360" style="skin_hotspotstyle" ath="-97.116" atv="29.713" depth="1000.0" linkedscene="scene_namsuheon_31" linkedscene_lookat="-111.6,24.83,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_27" title="방 1" onstart="" thumburl="panos/namsuheon_27.tiles/thumb.jpg" lat="37.28403889" lng="127.02267500" alt="97.34" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_27.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_27.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043977841" style="skin_hotspotstyle" ath="-60.332" atv="43.71" depth="1000.0" linkedscene="scene_namsuheon_28" linkedscene_lookat="-14.24,15.48,150.79" />
+		<hotspot name="spot2043978857" style="skin_hotspotstyle" ath="179.909" atv="50.006" depth="1000.0" linkedscene="scene_namsuheon_26" linkedscene_lookat="36.72,8.31,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_28" title="화장실 1" onstart="" thumburl="panos/namsuheon_28.tiles/thumb.jpg" lat="37.28403889" lng="127.02267500" alt="97.34" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_28.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_28.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043978676" style="skin_hotspotstyle" ath="150.094" atv="68.328" depth="1000.0" linkedscene="scene_namsuheon_27" linkedscene_lookat="-179.58,9.28,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_29" title="방 2" onstart="" thumburl="panos/namsuheon_29.tiles/thumb.jpg" lat="37.28406944" lng="127.02255833" alt="88.76" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_29.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_29.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043979736" style="skin_hotspotstyle" ath="173.004" atv="55.222" depth="1000.0" linkedscene="scene_namsuheon_26" linkedscene_lookat="30.83,2.19,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_30" title="방 3" onstart="" thumburl="panos/namsuheon_30.tiles/thumb.jpg" lat="37.28404444" lng="127.02260833" alt="88.11" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_30.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_30.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043980205" style="skin_hotspotstyle" ath="11.1" atv="59.994" depth="1000.0" linkedscene="scene_namsuheon_26" linkedscene_lookat="37.49,8.06,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_31" title="화장실 2" onstart="" thumburl="panos/namsuheon_31.tiles/thumb.jpg" lat="37.28404444" lng="127.02260833" alt="88.11" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_31.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_31.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043980600" style="skin_hotspotstyle" ath="-25.845" atv="42.883" depth="1000.0" linkedscene="scene_namsuheon_26" linkedscene_lookat="36.14,5.89,120.0" />
+		<hotspot name="spot2043980747" style="skin_hotspotstyle" ath="146.572" atv="46.423" depth="1000.0" linkedscene="scene_namsuheon_32" linkedscene_lookat="-81.2,0.88,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_32" title="자쿠지" onstart="" thumburl="panos/namsuheon_32.tiles/thumb.jpg" lat="37.28405556" lng="127.02254722" alt="87.79" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_32.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_32.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043980863" style="skin_hotspotstyle" ath="166.377" atv="57.187" depth="1000.0" linkedscene="scene_namsuheon_31" linkedscene_lookat="-35.33,10.85,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_33" title="별당채 104호"  menu_show="true" onstart="" thumburl="panos/namsuheon_33.tiles/thumb.jpg" lat="37.28405278" lng="127.02266944" alt="92.44" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="-30.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_33.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_33.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043982672" style="skin_hotspotstyle" ath="-117.672" atv="27.194" depth="1000.0" linkedscene="scene_namsuheon_24" linkedscene_lookat="-141.75,1.78,120.0" />
+		<hotspot name="spot2043982951" style="skin_hotspotstyle" ath="-13.697" atv="25.355" depth="1000.0" linkedscene="scene_namsuheon_34" linkedscene_lookat="0.0,0.0,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_34" title="마당" onstart="" thumburl="panos/namsuheon_34.tiles/thumb.jpg" lat="37.28405278" lng="127.02266944" alt="92.44" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_34.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_34.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043983106" style="skin_hotspotstyle" ath="101.233" atv="18.741" depth="1000.0" linkedscene="scene_namsuheon_33" linkedscene_lookat="-17.94,11.64,120.0" />
+		<hotspot name="spot2043983257" style="skin_hotspotstyle" ath="-19.271" atv="8.941" depth="1000.0" linkedscene="scene_namsuheon_35" linkedscene_lookat="17.16,1.87,123.99" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_35" title="거실" onstart="" thumburl="panos/namsuheon_35.tiles/thumb.jpg" lat="37.28410556" lng="127.02266944" alt="94.67" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_35.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_35.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043983436" style="skin_hotspotstyle" ath="179.202" atv="54.697" depth="1000.0" linkedscene="scene_namsuheon_34" linkedscene_lookat="103.5,8.35,120.0" />
+		<hotspot name="spot2043983925" style="skin_hotspotstyle" ath="72.286" atv="19.724" depth="1000.0" linkedscene="scene_namsuheon_36" linkedscene_lookat="-82.08,0.1,120.0" />
+		<hotspot name="spot2043985172" style="skin_hotspotstyle" ath="-73.81" atv="40.539" depth="1000.0" linkedscene="scene_namsuheon_39" linkedscene_lookat="-39.67,0.8,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_36" title="방 1" onstart="" thumburl="panos/namsuheon_36.tiles/thumb.jpg" lat="37.28410556" lng="127.02266944" alt="94.67" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_36.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_36.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043984202" style="skin_hotspotstyle" ath="23.161" atv="40.351" depth="1000.0" linkedscene="scene_namsuheon_35" linkedscene_lookat="26.21,4.96,120.0" />
+		<hotspot name="spot2043984320" style="skin_hotspotstyle" ath="113.139" atv="43.799" depth="1000.0" linkedscene="scene_namsuheon_37" linkedscene_lookat="-6.01,18.36,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_37" title="화장실" onstart="" thumburl="panos/namsuheon_37.tiles/thumb.jpg" lat="37.28410278" lng="127.02271944" alt="92.91" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_37.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_37.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043984493" style="skin_hotspotstyle" ath="-179.144" atv="45.903" depth="1000.0" linkedscene="scene_namsuheon_36" linkedscene_lookat="7.04,1.15,120.0" />
+		<hotspot name="spot2043984738" style="skin_hotspotstyle" ath="-53.104" atv="30.227" depth="1000.0" linkedscene="scene_namsuheon_38" linkedscene_lookat="-56.58,-0.58,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_38" title="자쿠지" onstart="" thumburl="panos/namsuheon_38.tiles/thumb.jpg" lat="37.28410278" lng="127.02271944" alt="92.91" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_38.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_38.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043984873" style="skin_hotspotstyle" ath="173.018" atv="39.272" depth="1000.0" linkedscene="scene_namsuheon_37" linkedscene_lookat="-1.7,18.41,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_39" title="방 2" onstart="" thumburl="panos/namsuheon_39.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_39.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_39.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043985383" style="skin_hotspotstyle" ath="-175.749" atv="38.674" depth="1000.0" linkedscene="scene_namsuheon_35" linkedscene_lookat="20.21,3.58,120.0" />
+		<hotspot name="spot2043985548" style="skin_hotspotstyle" ath="61.447" atv="46.551" depth="1000.0" linkedscene="scene_namsuheon_40" linkedscene_lookat="-190.4,16.66,119.9" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_40" title="namsuheon (40)" onstart="" thumburl="panos/namsuheon_40.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_40.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_40.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043985804" style="skin_hotspotstyle" ath="-9.758" atv="47.2" depth="1000.0" linkedscene="scene_namsuheon_39" linkedscene_lookat="-67.88,5.21,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_41" title="사랑채 101호" menu_show="true" onstart="" thumburl="panos/namsuheon_41.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="140.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_41.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_41.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043996347" style="skin_hotspotstyle" ath="152.149" atv="21.947" depth="1000.0" linkedscene="scene_namsuheon_42" linkedscene_lookat="167.68,-0.73,120.0" />
+		<hotspot name="spot2043996515" style="skin_hotspotstyle" ath="51.92" atv="20.782" depth="1000.0" linkedscene="scene_namsuheon_8" linkedscene_lookat="-141.82,3.62,120.0" />
+		<hotspot name="spot2044011016" style="skin_hotspotstyle" ath="-139.11" atv="8.624" depth="1000.0" linkedscene="scene_namsuheon_46" linkedscene_lookat="106.05,-5.51,120.0" />
+		<hotspot name="spot2044577038" style="skin_hotspotstyle" ath="-115.978" atv="18.866" depth="1000.0" linkedscene="scene_namsuheon_60" linkedscene_lookat="-30.0,0.0,140.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_42" title="마당" onstart="" thumburl="panos/namsuheon_42.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_42.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_42.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043997446" style="skin_hotspotstyle" ath="40.686" atv="31.877" depth="1000.0" linkedscene="scene_namsuheon_41" linkedscene_lookat="143.85,-1.24,120.0" />
+		<hotspot name="spot2043997591" style="skin_hotspotstyle" ath="165.473" atv="24.026" depth="1000.0" linkedscene="scene_namsuheon_43" linkedscene_lookat="-189.93,2.75,140.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_43" title="거실" onstart="" thumburl="panos/namsuheon_43.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_43.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_43.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2043998136" style="skin_hotspotstyle" ath="-4.888" atv="44.136" depth="1000.0" linkedscene="scene_namsuheon_42" linkedscene_lookat="21.71,2.77,120.0" />
+		<hotspot name="spot2044009862" style="skin_hotspotstyle" ath="85.051" atv="22.94" depth="1000.0" linkedscene="scene_namsuheon_44" linkedscene_lookat="-252.66,0.59,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_44" title="방" onstart="" thumburl="panos/namsuheon_44.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="-30.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_44.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_44.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044010021" style="skin_hotspotstyle" ath="-91.013" atv="54.486" depth="1000.0" linkedscene="scene_namsuheon_45" linkedscene_lookat="14.12,17.09,120.0" />
+		<hotspot name="spot2044010436" style="skin_hotspotstyle" ath="3.885" atv="46.86" depth="1000.0" linkedscene="scene_namsuheon_43" linkedscene_lookat="166.4,15.07,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_45" title="화장실" onstart="" thumburl="panos/namsuheon_45.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_45.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_45.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044010257" style="skin_hotspotstyle" ath="-172.992" atv="58.421" depth="1000.0" linkedscene="scene_namsuheon_44" linkedscene_lookat="105.36,14.55,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_46" title="사랑채 102호" menu_show="true" onstart="" thumburl="panos/namsuheon_46.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="100.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_46.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_46.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044561867" style="skin_hotspotstyle" ath="18.406" atv="20.702" depth="1000.0" linkedscene="scene_namsuheon_41" linkedscene_hoffset="0.0" use3dtransition="true" />
+		<hotspot name="spot2044562045" style="skin_hotspotstyle" ath="116.682" atv="21.104" depth="1000.0" linkedscene="scene_namsuheon_47" linkedscene_lookat="-158.05,-6.99,120.0" />
+		<hotspot name="spot2044564613" style="skin_hotspotstyle" ath="-168.978" atv="35.224" depth="1000.0" linkedscene="scene_namsuheon_51" linkedscene_lookat="197.03,0.22,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_47" title="마당" onstart="" thumburl="panos/namsuheon_47.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_47.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_47.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044562181" style="skin_hotspotstyle" ath="9.334" atv="35.544" depth="1000.0" linkedscene="scene_namsuheon_46" linkedscene_lookat="117.09,0.69,120.0" />
+		<hotspot name="spot2044562315" style="skin_hotspotstyle" ath="-151.257" atv="19.838" depth="1000.0" linkedscene="scene_namsuheon_48" linkedscene_lookat="-162.4,10.48,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_48" title="거실" onstart="" thumburl="panos/namsuheon_48.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_48.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_48.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044562496" style="skin_hotspotstyle" ath="100.287" atv="25.542" depth="1000.0" linkedscene="scene_namsuheon_49" linkedscene_hoffset="0.0" use3dtransition="true" />
+		<hotspot name="spot2044563433" style="skin_hotspotstyle" ath="10.678" atv="57.677" depth="1000.0" linkedscene="scene_namsuheon_47" linkedscene_lookat="-351.88,13.76,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_49" title="방" onstart="" thumburl="panos/namsuheon_49.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_49.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_49.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044562925" style="skin_hotspotstyle" ath="-50.192" atv="53.576" depth="1000.0" linkedscene="scene_namsuheon_50" linkedscene_lookat="-171.62,8.04,120.0" />
+		<hotspot name="spot2044563251" style="skin_hotspotstyle" ath="35.324" atv="42.696" depth="1000.0" linkedscene="scene_namsuheon_48" linkedscene_lookat="-174.58,8.19,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_50" title="화장실" onstart="" thumburl="panos/namsuheon_50.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_50.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_50.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044563040" style="skin_hotspotstyle" ath="4.473" atv="33.982" depth="1000.0" linkedscene="scene_namsuheon_49" linkedscene_lookat="55.59,11.51,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_51" title="사랑채 103호"  menu_show="true" onstart="" thumburl="panos/namsuheon_51.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="-170.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_51.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_51.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044565067" style="skin_hotspotstyle" ath="114.164" atv="6.956" depth="1000.0" linkedscene="scene_namsuheon_46" linkedscene_lookat="116.59,4.72,120.0" />
+		<hotspot name="spot2044567584" style="skin_hotspotstyle" ath="-88.073" atv="7.949" depth="1000.0" linkedscene="scene_namsuheon_56" linkedscene_lookat="-36.6,-1.73,120.0" />
+		<hotspot name="spot2044567717" style="skin_hotspotstyle" ath="-152.238" atv="34.046" depth="1000.0" linkedscene="scene_namsuheon_52" linkedscene_lookat="181.57,2.7,120.0" />
+		<hotspot name="spot2044592246" style="skin_hotspotstyle" ath="-63.126" atv="17.927" depth="1000.0" linkedscene="scene_namsuheon_70" linkedscene_lookat="20.0,0.0,130.0" />
+		<hotspot name="spot2044592410" style="skin_hotspotstyle" ath="89.279" atv="18.98" depth="1000.0" linkedscene="scene_namsuheon_65" linkedscene_lookat="40.31,13.37,140.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_52" title="마당" onstart="" thumburl="panos/namsuheon_52.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_52.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_52.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044567860" style="skin_hotspotstyle" ath="18.647" atv="37.865" depth="1000.0" linkedscene="scene_namsuheon_51" linkedscene_lookat="-164.56,0.82,120.0" />
+		<hotspot name="spot2044567974" style="skin_hotspotstyle" ath="-157.012" atv="20.569" depth="1000.0" linkedscene="scene_namsuheon_53" linkedscene_lookat="-176.7,4.38,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_53" title="거실" onstart="" thumburl="panos/namsuheon_53.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_53.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_53.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044568126" style="skin_hotspotstyle" ath="-1.284" atv="51.095" depth="1000.0" linkedscene="scene_namsuheon_52" linkedscene_lookat="-346.03,3.77,120.0" />
+		<hotspot name="spot2044568250" style="skin_hotspotstyle" ath="88.867" atv="23.21" depth="1000.0" linkedscene="scene_namsuheon_54" linkedscene_lookat="-103.0,2.15,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_54" title="방" onstart="" thumburl="panos/namsuheon_54.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_54.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_54.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044568388" style="skin_hotspotstyle" ath="74.118" atv="44.408" depth="1000.0" linkedscene="scene_namsuheon_55" linkedscene_lookat="-61.95,21.73,127.88" />
+		<hotspot name="spot2044568735" style="skin_hotspotstyle" ath="165.046" atv="45.689" depth="1000.0" linkedscene="scene_namsuheon_53" linkedscene_lookat="-182.02,8.52,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_55" title="화장실" onstart="" thumburl="panos/namsuheon_55.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_55.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_55.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044568615" style="skin_hotspotstyle" ath="112.96" atv="41.239" depth="1000.0" linkedscene="scene_namsuheon_54" linkedscene_lookat="192.75,23.66,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_56" title="사랑채 104호"  menu_show="true" onstart="" thumburl="panos/namsuheon_56.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="-40.0" vlookat="0.0" fovtype="MFOV" fov="130" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_56.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_56.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044573315" style="skin_hotspotstyle" ath="-27.803" atv="36.011" depth="1000.0" linkedscene="scene_namsuheon_57" linkedscene_lookat="0.0,0.0,120.0" />
+		<hotspot name="spot2044590171" style="skin_hotspotstyle" ath="79.035" atv="23.247" depth="1000.0" linkedscene="scene_namsuheon_75" linkedscene_lookat="3.02,0.58,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_57" title="마당" onstart="" thumburl="panos/namsuheon_57.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_57.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_57.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044573438" style="skin_hotspotstyle" ath="-92.064" atv="29.433" depth="1000.0" linkedscene="scene_namsuheon_56" linkedscene_lookat="-35.75,0.04,130.0" />
+		<hotspot name="spot2044573541" style="skin_hotspotstyle" ath="-18.136" atv="22.093" depth="1000.0" linkedscene="scene_namsuheon_58" linkedscene_lookat="26.44,17.04,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_58" title="거실" onstart="" thumburl="panos/namsuheon_58.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_58.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_58.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044573764" style="skin_hotspotstyle" ath="59.563" atv="23.527" depth="1000.0" linkedscene="scene_namsuheon_59" linkedscene_lookat="8.3,4.03,140.0" />
+		<hotspot name="spot2044575318" style="skin_hotspotstyle" ath="162.435" atv="45.298" depth="1000.0" linkedscene="scene_namsuheon_57" linkedscene_lookat="-91.49,-2.08,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_59" title="화장실" onstart="" thumburl="panos/namsuheon_59.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_59.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_59.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044574171" style="skin_hotspotstyle" ath="-178.732" atv="36.256" depth="1000.0" linkedscene="scene_namsuheon_58" linkedscene_lookat="17.87,3.76,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_60" title="안채 101호"  menu_show="true" onstart="" thumburl="panos/namsuheon_60.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="-30.0" vlookat="0.0" fovtype="MFOV" fov="140" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_60.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_60.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044576388" style="skin_hotspotstyle" ath="71.559" atv="13.052" depth="1000.0" linkedscene="scene_namsuheon_41" linkedscene_lookat="145.43,1.39,120.0" />
+		<hotspot name="spot2044576523" style="skin_hotspotstyle" ath="60.629" atv="3.87" depth="1000.0" linkedscene="scene_namsuheon_8" linkedscene_lookat="-169.37,-0.84,120.0" />
+		<hotspot name="spot2044579577" style="skin_hotspotstyle" ath="-134.369" atv="17.915" depth="1000.0" linkedscene="scene_namsuheon_46" linkedscene_lookat="108.43,0.46,120.0" />
+		<hotspot name="spot2044579711" style="skin_hotspotstyle" ath="-103.633" atv="11.049" depth="1000.0" linkedscene="scene_namsuheon_65" linkedscene_lookat="29.98,-1.87,140.0" />
+		<hotspot name="spot2044580021" style="skin_hotspotstyle" ath="7.22" atv="25.394" depth="1000.0" linkedscene="scene_namsuheon_61" linkedscene_lookat="2.19,-0.46,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_61" title="마당" onstart="" thumburl="panos/namsuheon_61.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_61.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_61.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044580148" style="skin_hotspotstyle" ath="-3.513" atv="18.284" depth="1000.0" linkedscene="scene_namsuheon_62" linkedscene_lookat="1.85,0.23,140.0" />
+		<hotspot name="spot2044580237" style="skin_hotspotstyle" ath="178.613" atv="33.671" depth="1000.0" linkedscene="scene_namsuheon_60" linkedscene_lookat="-19.74,-0.92,140.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_62" title="거실" onstart="" thumburl="panos/namsuheon_62.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_62.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_62.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044580380" style="skin_hotspotstyle" ath="95.626" atv="20.994" depth="1000.0" linkedscene="scene_namsuheon_63" linkedscene_lookat="77.61,5.69,120.0" />
+		<hotspot name="spot2044580495" style="skin_hotspotstyle" ath="-177.614" atv="45.944" depth="1000.0" linkedscene="scene_namsuheon_61" linkedscene_lookat="-183.12,-3.06,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_63" title="방" onstart="" thumburl="panos/namsuheon_63.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_63.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_63.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044580656" style="skin_hotspotstyle" ath="-95.307" atv="37.937" depth="1000.0" linkedscene="scene_namsuheon_64" linkedscene_lookat="-7.74,-1.04,140.0" />
+		<hotspot name="spot2044581597" style="skin_hotspotstyle" ath="166.389" atv="34.569" depth="1000.0" linkedscene="scene_namsuheon_62" linkedscene_lookat="0.0,0.0,140.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_64" title="화장실" onstart="" thumburl="panos/namsuheon_64.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_64.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_64.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044581422" style="skin_hotspotstyle" ath="177.504" atv="41.444" depth="1000.0" linkedscene="scene_namsuheon_63" linkedscene_lookat="-221.7,5.15,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_65" title="안채 102호"  menu_show="true" onstart="" thumburl="panos/namsuheon_65.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="40.0" vlookat="0.0" fovtype="MFOV" fov="140" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_65.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_65.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044584074" style="skin_hotspotstyle" ath="11.045" atv="36.296" depth="1000.0" linkedscene="scene_namsuheon_66" linkedscene_lookat="8.8,-1.59,120.0" />
+		<hotspot name="spot2044585598" style="skin_hotspotstyle" ath="156.481" atv="20.15" depth="1000.0" linkedscene="scene_namsuheon_46" linkedscene_lookat="105.43,0.92,120.0" />
+		<hotspot name="spot2044585708" style="skin_hotspotstyle" ath="117.6" atv="10.172" depth="1000.0" linkedscene="scene_namsuheon_60" linkedscene_lookat="-22.86,0.73,140.0" />
+		<hotspot name="spot2044585843" style="skin_hotspotstyle" ath="-43.642" atv="8.867" depth="1000.0" linkedscene="scene_namsuheon_70" linkedscene_lookat="-334.91,8.99,127.78" />
+		<hotspot name="spot2044586384" style="skin_hotspotstyle" ath="-65.712" atv="12.606" depth="1000.0" linkedscene="scene_namsuheon_51" linkedscene_lookat="-164.92,-0.0,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_66" title="마당" onstart="" thumburl="panos/namsuheon_66.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_66.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_66.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044584316" style="skin_hotspotstyle" ath="-175.808" atv="32.333" depth="1000.0" linkedscene="scene_namsuheon_65" linkedscene_lookat="35.88,-4.03,140.0" />
+		<hotspot name="spot2044584475" style="skin_hotspotstyle" ath="5.176" atv="18.504" depth="1000.0" linkedscene="scene_namsuheon_67" linkedscene_lookat="4.5,1.73,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_67" title="거실" onstart="" thumburl="panos/namsuheon_67.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_67.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_67.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044584588" style="skin_hotspotstyle" ath="93.961" atv="22.355" depth="1000.0" linkedscene="scene_namsuheon_68" linkedscene_lookat="72.8,-0.23,120.0" />
+		<hotspot name="spot2044584681" style="skin_hotspotstyle" ath="179.882" atv="48.344" depth="1000.0" linkedscene="scene_namsuheon_66" linkedscene_lookat="-175.91,-6.13,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_68" title="방" onstart="" thumburl="panos/namsuheon_68.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_68.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_68.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044584868" style="skin_hotspotstyle" ath="175.111" atv="30.567" depth="1000.0" linkedscene="scene_namsuheon_67" linkedscene_lookat="0.0,0.0,120.0" />
+		<hotspot name="spot2044584991" style="skin_hotspotstyle" ath="-101.164" atv="37.03" depth="1000.0" linkedscene="scene_namsuheon_69" linkedscene_lookat="4.39,31.87,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_69" title="화장실" onstart="" thumburl="panos/namsuheon_69.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_69.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_69.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044585120" style="skin_hotspotstyle" ath="-176.81" atv="49.001" depth="1000.0" linkedscene="scene_namsuheon_68" linkedscene_lookat="142.21,10.22,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_70" title="안채 103호"  menu_show="true" onstart="" thumburl="panos/namsuheon_70.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="20.0" vlookat="0.0" fovtype="MFOV" fov="130" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_70.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_70.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044588388" style="skin_hotspotstyle" ath="-53.571" atv="9.935" depth="1000.0" linkedscene="scene_namsuheon_75" linkedscene_lookat="0.35,-2.19,120.0" />
+		<hotspot name="spot2044588523" style="skin_hotspotstyle" ath="26.351" atv="44.102" depth="1000.0" linkedscene="scene_namsuheon_71" linkedscene_lookat="0.0,0.0,120.0" />
+		<hotspot name="spot2044589924" style="skin_hotspotstyle" ath="-77.484" atv="12.766" depth="1000.0" linkedscene="scene_namsuheon_56" linkedscene_lookat="-40.0,0.0,130.0" />
+		<hotspot name="spot2044591890" style="skin_hotspotstyle" ath="108.075" atv="6.964" depth="1000.0" linkedscene="scene_namsuheon_65" linkedscene_hoffset="0.0" use3dtransition="true" />
+		<hotspot name="spot2044591984" style="skin_hotspotstyle" ath="138.193" atv="19.897" depth="1000.0" linkedscene="scene_namsuheon_51" linkedscene_hoffset="0.0" use3dtransition="true" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_71" title="마당" onstart="" thumburl="panos/namsuheon_71.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_71.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_71.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044588661" style="skin_hotspotstyle" ath="-177.725" atv="34.399" depth="1000.0" linkedscene="scene_namsuheon_70" linkedscene_lookat="28.14,4.37,130.0" />
+		<hotspot name="spot2044588792" style="skin_hotspotstyle" ath="-1.437" atv="22.889" depth="1000.0" linkedscene="scene_namsuheon_72" linkedscene_lookat="4.5,19.17,124.01" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_72" title="거실" onstart="" thumburl="panos/namsuheon_72.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_72.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_72.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044588942" style="skin_hotspotstyle" ath="98.717" atv="24.375" depth="1000.0" linkedscene="scene_namsuheon_73" linkedscene_lookat="84.11,12.1,120.0" />
+		<hotspot name="spot2044589626" style="skin_hotspotstyle" ath="-166.19" atv="54.42" depth="1000.0" linkedscene="scene_namsuheon_71" linkedscene_lookat="-181.68,-5.04,138.27" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_73" title="방" onstart="" thumburl="panos/namsuheon_73.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_73.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_73.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044589061" style="skin_hotspotstyle" ath="-96.23" atv="46.628" depth="1000.0" linkedscene="scene_namsuheon_74" linkedscene_lookat="-3.0,0.49,138.28" />
+		<hotspot name="spot2044589454" style="skin_hotspotstyle" ath="177.439" atv="43.941" depth="1000.0" linkedscene="scene_namsuheon_72" linkedscene_lookat="0.39,11.55,141.28" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_74" title="화장실" onstart="" thumburl="panos/namsuheon_74.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_74.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_74.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044589233" style="skin_hotspotstyle" ath="178.134" atv="52.494" depth="1000.0" linkedscene="scene_namsuheon_73" linkedscene_lookat="-212.34,13.67,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_75" title="안채 104호"  menu_show="true" onstart="" thumburl="panos/namsuheon_75.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_75.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_75.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044590396" style="skin_hotspotstyle" ath="3.777" atv="42.601" depth="1000.0" linkedscene="scene_namsuheon_76" linkedscene_lookat="-8.89,-2.08,120.0" />
+		<hotspot name="spot2044591501" style="skin_hotspotstyle" ath="141.337" atv="24.269" depth="1000.0" linkedscene="scene_namsuheon_56" linkedscene_lookat="-40.0,0.0,130.0" />
+		<hotspot name="spot2044591685" style="skin_hotspotstyle" ath="89.694" atv="8.608" depth="1000.0" linkedscene="scene_namsuheon_70" linkedscene_lookat="23.43,0.71,130.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_76" title="마당" onstart="" thumburl="panos/namsuheon_76.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_76.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_76.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044590583" style="skin_hotspotstyle" ath="-13.353" atv="19.134" depth="1000.0" linkedscene="scene_namsuheon_77" linkedscene_lookat="21.06,6.67,138.32" />
+		<hotspot name="spot2044591264" style="skin_hotspotstyle" ath="79.603" atv="30.827" depth="1000.0" linkedscene="scene_namsuheon_75" linkedscene_lookat="7.04,2.89,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_77" title="거실" onstart="" thumburl="panos/namsuheon_77.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_77.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_77.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044590740" style="skin_hotspotstyle" ath="-76.965" atv="24.253" depth="1000.0" linkedscene="scene_namsuheon_78" linkedscene_lookat="-1.19,-3.98,144.23" />
+		<hotspot name="spot2044590848" style="skin_hotspotstyle" ath="178.829" atv="53.03" depth="1000.0" linkedscene="scene_namsuheon_76" linkedscene_lookat="-273.52,-0.67,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_78" title="화장실" onstart="" thumburl="panos/namsuheon_78.tiles/thumb.jpg" lat="37.28410833" lng="127.02266944" alt="93.22" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_78.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_78.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044590991" style="skin_hotspotstyle" ath="176.555" atv="47.01" depth="1000.0" linkedscene="scene_namsuheon_77" linkedscene_lookat="62.84,16.95,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_79" title="지하주차장" menu_show="true" onstart="" thumburl="panos/namsuheon_79.tiles/thumb.jpg" lat="37.28370833" lng="127.02190278" alt="84.79" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_79.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_79.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044594666" style="skin_hotspotstyle" ath="6.714" atv="3.921" depth="1000.0" linkedscene="scene_namsuheon_81" linkedscene_lookat="-40.65,-2.19,120.0" />
+		<hotspot name="spot2044607023" style="skin_hotspotstyle" ath="-117.17" atv="16.172" depth="1000.0" linkedscene="scene_namsuheon_1" linkedscene_hoffset="0.0" use3dtransition="true" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_80" title="namsuheon (80)" onstart="" thumburl="panos/namsuheon_80.tiles/thumb.jpg" lat="37.28399444" lng="127.02154444" alt="92.97" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_80.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_80.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+	</scene>
+
+	<scene name="scene_namsuheon_81" title="" onstart="" thumburl="panos/namsuheon_81.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_81.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_81.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044594868" style="skin_hotspotstyle" ath="-46.805" atv="21.887" depth="1000.0" linkedscene="scene_namsuheon_82" linkedscene_lookat="9.82,0.23,120.0" />
+		<hotspot name="spot2044606847" style="skin_hotspotstyle" ath="-160.841" atv="3.957" depth="1000.0" linkedscene="scene_namsuheon_79" linkedscene_lookat="-77.56,4.45,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_82" title="Ground Level" onstart="" thumburl="panos/namsuheon_82.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_82.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_82.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044595065" style="skin_hotspotstyle" ath="8.111" atv="27.248" depth="1000.0" linkedscene="scene_namsuheon_83" linkedscene_lookat="-55.61,-4.3,120.0" />
+		<hotspot name="spot2044606462" style="skin_hotspotstyle" ath="-170.782" atv="28.404" depth="1000.0" linkedscene="scene_namsuheon_81" linkedscene_lookat="-143.4,-0.25,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_83" title="EV_Level 1" onstart="" thumburl="panos/namsuheon_83.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_83.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_83.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044595325" style="skin_hotspotstyle" ath="86.624" atv="10.511" depth="1000.0" linkedscene="scene_namsuheon_84" linkedscene_lookat="-68.73,2.57,120.0" />
+		<hotspot name="spot2044595885" style="skin_hotspotstyle" ath="-57.512" atv="14.617" depth="1000.0" linkedscene="scene_namsuheon_86" linkedscene_lookat="-136.38,-2.35,120.0" />
+		<hotspot name="spot2044606247" style="skin_hotspotstyle" ath="-178.893" atv="20.634" depth="1000.0" linkedscene="scene_namsuheon_82" linkedscene_lookat="-162.67,8.61,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_84" title="라이브러리"  menu_show="true" onstart="" thumburl="panos/namsuheon_84.tiles/thumb.jpg" lat="37.28389167" lng="127.02227778" alt="89.94" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_84.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_84.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044595482" style="skin_hotspotstyle" ath="172.82" atv="11.713" depth="1000.0" linkedscene="scene_namsuheon_83" linkedscene_lookat="-58.87,0.72,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_85" title="" onstart="" thumburl="panos/namsuheon_85.tiles/thumb.jpg" lat="37.28389167" lng="127.02227778" alt="89.94" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_85.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_85.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044596060" style="skin_hotspotstyle" ath="21.631" atv="7.775" depth="1000.0" linkedscene="scene_namsuheon_86" linkedscene_lookat="85.85,6.93,120.0" />
+		<hotspot name="spot2044610731" style="skin_hotspotstyle" ath="168.11" atv="13.595" depth="1000.0" linkedscene="scene_namsuheon_83" linkedscene_lookat="-535.75,-4.2,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_86" title="갤러리 카페"  menu_show="true" onstart="" thumburl="panos/namsuheon_86.tiles/thumb.jpg" lat="37.28391389" lng="127.02228333" alt="81.69" heading="0.0">
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_86.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_86.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044598314" style="skin_hotspotstyle" ath="85.24" atv="21.26" depth="1000.0" linkedscene="scene_namsuheon_6" linkedscene_lookat="-357.77,-11.99,120.0" />
+		<hotspot name="spot2044610544" style="skin_hotspotstyle" ath="-173.395" atv="19.868" depth="1000.0" linkedscene="scene_namsuheon_83" linkedscene_lookat="-156.6,-4.25,120.0" />
+		<hotspot name="spot2044611848" style="skin_hotspotstyle" ath="-10.72" atv="27.036" depth="1000.0" linkedscene="scene_namsuheon_87" linkedscene_lookat="-6.58,1.04,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_87" title="카페" onstart="" thumburl="panos/namsuheon_87.tiles/thumb.jpg" lat="37.28372778" lng="127.02245000" alt="82.77" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_87.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_87.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044611936" style="skin_hotspotstyle" ath="-15.226" atv="10.895" depth="1000.0" linkedscene="scene_namsuheon_88" linkedscene_lookat="-2.91,-0.1,151.8" />
+		<hotspot name="spot2044613237" style="skin_hotspotstyle" ath="177.641" atv="12.405" depth="1000.0" linkedscene="scene_namsuheon_86" linkedscene_lookat="-131.0,-4.03,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_88" title="" onstart="" thumburl="panos/namsuheon_88.tiles/thumb.jpg" lat="37.28372778" lng="127.02245000" alt="82.77" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_88.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_88.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044612522" style="skin_hotspotstyle" ath="-74.707" atv="36.177" depth="1000.0" linkedscene="scene_namsuheon_89" linkedscene_lookat="0.0,0.0,120.0" />
+		<hotspot name="spot2044612900" style="skin_hotspotstyle" ath="-179.709" atv="26.065" depth="1000.0" linkedscene="scene_namsuheon_87" linkedscene_lookat="-200.53,1.71,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_89" title="갤러리" onstart="" thumburl="panos/namsuheon_89.tiles/thumb.jpg" lat="37.28372778" lng="127.02245000" alt="82.77" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_89.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_89.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2044612731" style="skin_hotspotstyle" ath="175.159" atv="31.302" depth="1000.0" linkedscene="scene_namsuheon_88" linkedscene_lookat="-177.4,-0.76,120.0" />
+
+	</scene>
+
+	<scene name="scene_namsuheon_90" title="namsuheon 90" onstart="" thumburl="panos/namsuheon_90.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/namsuheon_90.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/namsuheon_90.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+	</scene>
+
+
+</krpano>

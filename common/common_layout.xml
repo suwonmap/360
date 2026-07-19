@@ -1,0 +1,16 @@
+<krpano version="1.22">
+  <!-- 프로젝트 XML을 수정하지 않고 공통 진입 XML에서 포함합니다. -->
+  <include url="%$project_xml%" />
+
+  <!-- HTML/JS에서 읽는 공통 메타데이터 기본값입니다.
+       콘텐츠 XML에 같은 변수 이름을 지정하면 해당 값이 사용됩니다.
+       예: <set var="tour_title" val="영흥수목원" />
+           <set var="shooting_date" val="2026-06-22" /> -->
+  <set var="project_name" val="%$project_name%" />
+  <set var="tour_name" val="%$tour_name%" />
+
+  <!-- 프로젝트 XML에 이미 events가 있어도 충돌하지 않도록 고유 이름을 사용합니다. -->
+  <events name="suwon360_common_events"
+          keep="true"
+          onnewscene="js(window.dispatchEvent(new CustomEvent('suwon360-krpano-scene')));" />
+</krpano>
