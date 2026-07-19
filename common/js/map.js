@@ -13,6 +13,7 @@
    *  - 지도 컨테이너 id는 #map 입니다.
    *  - krpano 객체는 window.krpano 또는 document.getElementById('krpanoSWFObject')로 접근합니다.
    *  - XML scene 태그에 lat/lng 또는 latitude/longitude 속성이 있어야 합니다.
+   *  - 영흥수목원 씬명 형식: yharbor_1, yharbor_5 ... (괄호 없음)
    */
 
   const DEFAULT_CENTER = { lat: 37.2636, lng: 127.0286 };
@@ -20,32 +21,13 @@
 
   const ALLOWED_MAP_XML = ["namsuheon.xml", "yharbor.xml"];
 
-  const MAIN_SCENE_ORDER_BY_XML = {
+  // 콘텐츠별 주요 씬 번호만 관리합니다.
+  // 씬 이름은 "yharbor_1"처럼 괄호와 scene_ 접두사 없이 자동 생성됩니다.
+  // 새 공원을 추가할 때도 번호 배열 한 줄만 추가하면 됩니다.
+  const MAIN_SCENE_NUMBERS_BY_XML = {
     "yharbor.xml": [
-      "scene_yharbor_(1)",
-      "scene_yharbor_(5)",
-      "scene_yharbor_(13)",
-      "scene_yharbor_(17)",
-      "scene_yharbor_(21)",
-      "scene_yharbor_(25)",
-      "scene_yharbor_(37)",
-      "scene_yharbor_(39)",
-      "scene_yharbor_(48)",
-      "scene_yharbor_(53)",
-      "scene_yharbor_(60)",
-      "scene_yharbor_(66)",
-      "scene_yharbor_(70)",
-      "scene_yharbor_(72)",
-      "scene_yharbor_(74)",
-      "scene_yharbor_(78)",
-      "scene_yharbor_(84)",
-      "scene_yharbor_(86)",
-      "scene_yharbor_(92)",
-      "scene_yharbor_(107)",
-      "scene_yharbor_(109)",
-      "scene_yharbor_(113)",
-      "scene_yharbor_(119)",
-      "scene_yharbor_(123)"
+      1, 5, 13, 17, 21, 25, 37, 39, 48, 53, 60, 66,
+      70, 72, 74, 78, 84, 86, 92, 107, 109, 113, 119, 123
     ]
   };
 
@@ -114,19 +96,25 @@
     return currentXmlFilename;
   }
 
-  function resolveXmlUrl(filename) {
+  function resolveXmlUrls(filename) {
     const params = getQueryParams();
-    const contents = (params.get("contents") || "suwon_tour").trim();
+    const contents = (params.get("contents") || "suwon_tour").trim().replace(/^\/+|\/+$/g, "");
 
     if (window.Suwon360Config?.xmlUrl) {
-      return window.Suwon360Config.xmlUrl;
+      return [window.Suwon360Config.xmlUrl];
     }
 
     if (window.Suwon360Config?.resolveXmlUrl) {
-      return window.Suwon360Config.resolveXmlUrl(filename, contents);
+      const resolved = window.Suwon360Config.resolveXmlUrl(filename, contents);
+      return Array.isArray(resolved) ? resolved : [resolved];
     }
 
-    return `${contents}/xml/${filename}`;
+    // 현재 권장 구조: /suwon_tour/yharbor.xml
+    // 기존 구조도 자동 호환: /suwon_tour/xml/yharbor.xml
+    return [
+      `${contents}/${filename}`,
+      `${contents}/xml/${filename}`
+    ];
   }
 
   function escapeHtml(value) {
@@ -254,20 +242,32 @@
     log("map created");
   }
 
-  async function fetchXml(xmlUrl) {
-    const response = await fetch(xmlUrl, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`XML 요청 실패 (${response.status}): ${xmlUrl}`);
+  async function fetchXml(xmlUrls) {
+    const candidates = Array.isArray(xmlUrls) ? xmlUrls : [xmlUrls];
+    let lastError = null;
+
+    for (const xmlUrl of candidates) {
+      try {
+        const response = await fetch(xmlUrl, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`XML 요청 실패 (${response.status}): ${xmlUrl}`);
+        }
+
+        const text = await response.text();
+        const doc = new DOMParser().parseFromString(text, "application/xml");
+        const parserError = doc.querySelector("parsererror");
+        if (parserError) {
+          throw new Error(`XML 파싱 오류: ${xmlUrl}`);
+        }
+
+        return { doc, url: xmlUrl };
+      } catch (error) {
+        lastError = error;
+        log("XML 경로 재시도", xmlUrl, error.message);
+      }
     }
 
-    const text = await response.text();
-    const doc = new DOMParser().parseFromString(text, "application/xml");
-    const parserError = doc.querySelector("parsererror");
-    if (parserError) {
-      throw new Error("XML 파싱 오류");
-    }
-
-    return doc;
+    throw lastError || new Error("XML을 불러오지 못했습니다.");
   }
 
   function extractScenes(xmlDoc) {
@@ -312,7 +312,9 @@
   }
 
   function getMainSceneOrder(xmlFilename) {
-    return MAIN_SCENE_ORDER_BY_XML[xmlFilename] || [];
+    const numbers = MAIN_SCENE_NUMBERS_BY_XML[xmlFilename] || [];
+    const prefix = xmlFilename.replace(/\.xml$/i, "");
+    return numbers.map((number) => `${prefix}_${number}`);
   }
 
   function createNumberMarkerElement(number, sceneName, sceneTitle) {
@@ -696,10 +698,12 @@
     }
 
     currentXmlFilename = filename;
-    const xmlUrl = resolveXmlUrl(filename);
+    const xmlUrls = resolveXmlUrls(filename);
 
     try {
-      const xmlDoc = await fetchXml(xmlUrl);
+      const loaded = await fetchXml(xmlUrls);
+      const xmlDoc = loaded.doc;
+      const xmlUrl = loaded.url;
       sceneCoords = extractScenes(xmlDoc);
 
       if (!sceneCoords.length) {
@@ -834,7 +838,22 @@
     getLastView: () => ({ ...lastView })
   };
 
-  document.addEventListener("DOMContentLoaded", () => init());
+  function initWhenReady(retry = 0) {
+    if (getMapElement()) {
+      init();
+      return;
+    }
+
+    if (retry < 50) {
+      window.setTimeout(() => initWhenReady(retry + 1), 100);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => initWhenReady());
+  } else {
+    initWhenReady();
+  }
   window.addEventListener("resize", () => window.setTimeout(forceRelayout, 120));
   window.addEventListener("orientationchange", () => window.setTimeout(forceRelayout, 250));
 })();
