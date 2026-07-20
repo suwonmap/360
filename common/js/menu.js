@@ -2,23 +2,48 @@
   "use strict";
 
   const DESKTOP_VISIBLE_LIMIT = 12;
+  const MOBILE_LAYOUT = Object.freeze({
+    SPLIT: "split",
+    MENU: "menu",
+    MAP: "map",
+    HIDDEN: "hidden"
+  });
+
   let menuScenes = [];
   let activeMenuScene = "";
+  let lastVisibleLayout = MOBILE_LAYOUT.SPLIT;
 
   function makeButton(scene, index, className) {
     const button = document.createElement("button");
+    const numberText = String(index + 1).padStart(2, "0");
+
     button.type = "button";
     button.className = className;
     button.dataset.scene = scene.name;
     button.dataset.menuIndex = String(index + 1);
     button.title = scene.title;
-    button.textContent = `${String(index + 1).padStart(2, "0")} ${scene.title}`;
+
+    if (className === "mobile-menu-item") {
+      const number = document.createElement("span");
+      number.className = "mobile-menu-number";
+      number.textContent = numberText;
+
+      const title = document.createElement("span");
+      title.className = "mobile-menu-title";
+      title.textContent = scene.title;
+
+      button.append(number, title);
+    } else {
+      button.textContent = `${numberText} ${scene.title}`;
+    }
 
     button.addEventListener("click", () => {
       select(scene.name);
       closeOverflow();
       window.Suwon360Map?.selectMenuScene?.(scene.name);
       window.Suwon360Panorama?.loadScene?.(scene.name);
+      // 모바일 메뉴 선택 시 현재 레이아웃을 유지합니다.
+      requestMapRelayout(80);
     });
 
     return button;
@@ -52,11 +77,9 @@
     });
 
     menuScenes.slice(DESKTOP_VISIBLE_LIMIT).forEach((scene, offset) => {
-      overflow.appendChild(makeButton(
-        scene,
-        DESKTOP_VISIBLE_LIMIT + offset,
-        "menu-chip"
-      ));
+      overflow.appendChild(
+        makeButton(scene, DESKTOP_VISIBLE_LIMIT + offset, "menu-chip")
+      );
     });
 
     const hasOverflow = menuScenes.length > DESKTOP_VISIBLE_LIMIT;
@@ -82,14 +105,10 @@
   }
 
   function scrollToButton(button) {
-    if (!button) return;
+    if (!button || button.parentElement?.id !== "mobile-menu-list") return;
     const container = button.parentElement;
-    if (!container) return;
-
-    if (container.id === "mobile-menu-list") {
-      const top = button.offsetTop - (container.clientHeight - button.offsetHeight) / 2;
-      container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-    }
+    const top = button.offsetTop - (container.clientHeight - button.offsetHeight) / 2;
+    container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   }
 
   function select(sceneName, scroll = true) {
@@ -127,74 +146,46 @@
     more.setAttribute("aria-expanded", String(willOpen));
   }
 
+  function getLayout() {
+    const app = document.getElementById("app");
+    const value = app?.dataset.mobileLayout;
+    return Object.values(MOBILE_LAYOUT).includes(value) ? value : MOBILE_LAYOUT.SPLIT;
+  }
+
+  function requestMapRelayout(delay = 180) {
+    window.setTimeout(() => {
+      window.Suwon360Map?.forceRelayout?.();
+      window.js_force_minimap_relayout?.();
+    }, delay);
+  }
+
+  function applyLayout(nextLayout) {
+    const app = document.getElementById("app");
+    const panelToggle = document.getElementById("panel-toggle");
+    if (!app || !Object.values(MOBILE_LAYOUT).includes(nextLayout)) return;
+
+    if (nextLayout !== MOBILE_LAYOUT.HIDDEN) {
+      lastVisibleLayout = nextLayout;
+    }
+
+    app.dataset.mobileLayout = nextLayout;
+
+    const hidden = nextLayout === MOBILE_LAYOUT.HIDDEN;
+    panelToggle?.setAttribute("aria-expanded", String(!hidden));
+    panelToggle?.setAttribute(
+      "aria-label",
+      hidden ? "메뉴와 지도 전체 보기" : "메뉴와 지도 전체 숨김"
+    );
+
+    requestMapRelayout(hidden ? 240 : 80);
+  }
+
   function bindControls() {
     if (document.body.dataset.menuBound === "true") return;
     document.body.dataset.menuBound = "true";
 
-    const app = document.getElementById("app");
-    const panelToggle = document.getElementById("panel-toggle");
     const explorer = document.getElementById("desktop-explorer");
     const allToggle = document.getElementById("menu-all-toggle");
-    const menuToggle = document.getElementById("mobile-menu-close");
-    const mapClose = document.getElementById("map-close");
-    const mapRestore = document.getElementById("map-restore");
-
-    let savedPaneState = {
-      menuHidden: false,
-      mapHidden: false
-    };
-
-    const isLandscape = () =>
-      window.matchMedia("(max-width: 768px) and (orientation: landscape)").matches;
-
-    const updateMobileControls = () => {
-      if (!app) return;
-
-      const menuHidden = app.classList.contains("menu-pane-hidden");
-      const mapHidden = app.classList.contains("map-pane-hidden");
-      const panelsHidden = app.classList.contains("panels-hidden");
-      const landscape = isLandscape();
-
-      if (menuToggle) {
-        const text = landscape
-          ? (menuHidden ? "▼" : "▲")
-          : (menuHidden ? "›" : "‹");
-        const label = menuHidden ? "메뉴 펼치기" : "메뉴 접기";
-        menuToggle.textContent = text;
-        menuToggle.setAttribute("aria-label", label);
-        menuToggle.title = label;
-      }
-
-      if (mapClose) {
-        const text = landscape
-          ? (mapHidden ? "▲" : "▼")
-          : (mapHidden ? "‹" : "›");
-        const label = mapHidden ? "지도 펼치기" : "지도 접기";
-        mapClose.textContent = text;
-        mapClose.setAttribute("aria-label", label);
-        mapClose.title = label;
-      }
-
-      if (mapRestore) {
-        mapRestore.hidden = !(menuHidden || mapHidden);
-        mapRestore.textContent = landscape ? "↕" : "‹";
-        mapRestore.setAttribute("aria-label", "메뉴와 지도 같이 보기");
-        mapRestore.title = "메뉴와 지도 같이 보기";
-      }
-
-      if (panelToggle) {
-        const label = panelsHidden
-          ? "메뉴와 미니맵 보기"
-          : "메뉴와 미니맵 숨기기";
-        panelToggle.setAttribute("aria-expanded", String(!panelsHidden));
-        panelToggle.setAttribute("aria-label", label);
-        panelToggle.title = label;
-      }
-    };
-
-    const relayoutMap = (delay = 220) => {
-      window.setTimeout(() => window.Suwon360Map?.forceRelayout?.(), delay);
-    };
 
     document.getElementById("menu-more-toggle")?.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -215,57 +206,40 @@
       if (!event.target.closest("#desktop-explorer")) closeOverflow();
     });
 
-    panelToggle?.addEventListener("click", () => {
-      if (!app) return;
-
-      const willHide = !app.classList.contains("panels-hidden");
-      if (willHide) {
-        savedPaneState = {
-          menuHidden: app.classList.contains("menu-pane-hidden"),
-          mapHidden: app.classList.contains("map-pane-hidden")
-        };
-        app.classList.add("panels-hidden");
-      } else {
-        app.classList.remove("panels-hidden");
-        app.classList.toggle("menu-pane-hidden", savedPaneState.menuHidden);
-        app.classList.toggle("map-pane-hidden", savedPaneState.mapHidden);
-      }
-
-      updateMobileControls();
-      relayoutMap();
+    document.getElementById("panel-toggle")?.addEventListener("click", () => {
+      applyLayout(
+        getLayout() === MOBILE_LAYOUT.HIDDEN
+          ? lastVisibleLayout
+          : MOBILE_LAYOUT.HIDDEN
+      );
     });
 
-    menuToggle?.addEventListener("click", () => {
-      if (!app) return;
-      const hidden = app.classList.toggle("menu-pane-hidden");
-      if (hidden) app.classList.remove("map-pane-hidden");
-      updateMobileControls();
-      relayoutMap(180);
+    document.getElementById("mobile-menu-close")?.addEventListener("click", () => {
+      const current = getLayout();
+      applyLayout(current === MOBILE_LAYOUT.MENU ? MOBILE_LAYOUT.SPLIT : MOBILE_LAYOUT.MAP);
     });
 
-    mapClose?.addEventListener("click", () => {
-      if (!app) return;
-      const hidden = app.classList.toggle("map-pane-hidden");
-      if (hidden) app.classList.remove("menu-pane-hidden");
-      updateMobileControls();
-      relayoutMap(180);
+    document.getElementById("map-close")?.addEventListener("click", () => {
+      const current = getLayout();
+      applyLayout(current === MOBILE_LAYOUT.MAP ? MOBILE_LAYOUT.SPLIT : MOBILE_LAYOUT.MENU);
     });
 
-    mapRestore?.addEventListener("click", () => {
-      app?.classList.remove("menu-pane-hidden", "map-pane-hidden");
-      updateMobileControls();
-      relayoutMap(180);
+    document.getElementById("map-restore")?.addEventListener("click", () => {
+      applyLayout(MOBILE_LAYOUT.SPLIT);
     });
 
-    const syncOnViewportChange = () => {
-      updateMobileControls();
-      relayoutMap(260);
-    };
-
-    window.addEventListener("resize", syncOnViewportChange);
-    window.addEventListener("orientationchange", syncOnViewportChange);
-    updateMobileControls();
+    window.addEventListener("orientationchange", () => requestMapRelayout(280), { passive: true });
+    window.addEventListener("resize", () => requestMapRelayout(120), { passive: true });
   }
+
+  window.Suwon360MobileLayout = {
+    apply: applyLayout,
+    get: getLayout,
+    split: () => applyLayout(MOBILE_LAYOUT.SPLIT),
+    menu: () => applyLayout(MOBILE_LAYOUT.MENU),
+    map: () => applyLayout(MOBILE_LAYOUT.MAP),
+    hide: () => applyLayout(MOBILE_LAYOUT.HIDDEN)
+  };
 
   window.Suwon360Menu = {
     render,
