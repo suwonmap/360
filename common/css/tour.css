@@ -80,23 +80,43 @@ button{font:inherit}
   }
   .mobile-pane{position:relative;min-width:0;height:100%;overflow:hidden;background:#fff}
   .mobile-menu-pane{border-right:1px solid #d1d5db;background:#f3f4f6}
-  .mobile-pane-label{
-    position:absolute;left:9px;top:7px;z-index:20;padding:3px 7px;
-    color:#fff;background:rgba(15,23,42,.48);border-radius:6px;
-    font-size:11px;font-weight:700;line-height:1.25;pointer-events:none;
+
+  /* 둘러보기 고정 헤더: 최대한 얇게 */
+  .mobile-pane-header{
+    position:absolute;left:0;right:0;top:0;z-index:40;
+    display:flex;align-items:center;height:27px;min-height:27px;
+    padding:0 31px 0 8px;border-bottom:1px solid #d7dde5;
+    background:rgba(255,255,255,.96);color:#334155;
   }
-  .pane-toggle{
-    position:absolute;z-index:30;top:6px;display:grid;place-items:center;
-    width:30px;height:30px;padding:0;border-radius:50%;
-    color:#fff;background:rgba(15,23,42,.42);font-size:23px;line-height:1;
-    box-shadow:0 2px 7px rgba(0,0,0,.16);
+  .mobile-pane-header strong{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    font-size:11px;font-weight:700;line-height:1;
   }
-  .menu-pane-toggle{right:6px}
-  .map-restore{left:6px;display:none}
-  .map-pane-toggle{right:6px}
+
+  .pane-arrow{
+    position:absolute;z-index:50;top:2px;display:grid;place-items:center;
+    width:25px;height:23px;padding:0;border:0;border-radius:5px;
+    color:#334155;background:rgba(226,232,240,.90);
+    font-size:18px;font-weight:700;line-height:1;cursor:pointer;
+  }
+  .pane-arrow:hover,.pane-arrow:focus-visible{background:#dbe4ef;outline:none}
+
+  /* 세로모드 위치 */
+  .menu-hide-arrow{right:3px}
+  .map-show-arrow{right:3px;display:none}
+  .menu-show-arrow{left:3px;display:none}
+  .map-hide-arrow{left:3px}
+
+  /* 세로모드 화살표 */
+  .menu-hide-arrow::before{content:"▲"}
+  .menu-show-arrow::before{content:"▼"}
+  .map-hide-arrow::before{content:"▼"}
+  .map-show-arrow::before{content:"▲"}
+
   .mobile-menu-list{
-    position:absolute;inset:0;height:100%;overflow-x:hidden;overflow-y:auto;
-    padding:42px 8px calc(10px + env(safe-area-inset-bottom));
+    position:absolute;left:0;right:0;top:27px;bottom:0;
+    overflow-x:hidden;overflow-y:auto;
+    padding:5px 8px calc(8px + env(safe-area-inset-bottom));
     scrollbar-width:thin;scrollbar-color:#aeb8c5 transparent;
     -webkit-overflow-scrolling:touch;
   }
@@ -126,28 +146,32 @@ button{font:inherit}
     box-shadow:0 2px 6px rgba(0,0,0,.12);
   }
 
-  /* 단일 상태값으로 토글 제어 */
   .app[data-mobile-layout="split"] .mobile-panel{grid-template-columns:var(--mobile-menu-size) var(--mobile-map-size)}
   .app[data-mobile-layout="split"] .mobile-menu-pane,
   .app[data-mobile-layout="split"] .map-pane{display:block}
+  .app[data-mobile-layout="split"] .menu-hide-arrow,
+  .app[data-mobile-layout="split"] .map-hide-arrow{display:grid}
+  .app[data-mobile-layout="split"] .menu-show-arrow,
+  .app[data-mobile-layout="split"] .map-show-arrow{display:none}
 
   .app[data-mobile-layout="map"] .mobile-panel{grid-template-columns:1fr}
   .app[data-mobile-layout="map"] .mobile-menu-pane{display:none}
   .app[data-mobile-layout="map"] .map-pane{display:block}
-  .app[data-mobile-layout="map"] .map-restore{display:grid}
-  .app[data-mobile-layout="map"] .map-pane-toggle{display:none}
+  .app[data-mobile-layout="map"] .menu-show-arrow{display:grid}
+  .app[data-mobile-layout="map"] .map-hide-arrow{display:none}
 
   .app[data-mobile-layout="menu"] .mobile-panel{grid-template-columns:1fr}
   .app[data-mobile-layout="menu"] .mobile-menu-pane{display:block;border-right:0}
   .app[data-mobile-layout="menu"] .map-pane{display:none}
-  .app[data-mobile-layout="menu"] .menu-pane-toggle{left:auto;right:6px}
+  .app[data-mobile-layout="menu"] .menu-hide-arrow{display:none}
+  .app[data-mobile-layout="menu"] .map-show-arrow{display:grid}
 
   .app[data-mobile-layout="hidden"] .pano-wrap{height:100%}
   .app[data-mobile-layout="hidden"] .mobile-panel{transform:translateY(100%);pointer-events:none}
   .app[data-mobile-layout="hidden"] .panel-toggle{bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%) rotate(180deg)}
 }
 
-/* 가로 모바일: 파노라마 65% / 우측 메뉴·지도 35% */
+/* 모바일 가로: 파노라마 왼쪽 65%, 메뉴/지도 오른쪽 35% */
 @media(orientation:landscape) and (max-height:600px) and (pointer:coarse){
   .pano-wrap{width:65%;height:100%}
   .mobile-panel{
@@ -160,11 +184,19 @@ button{font:inherit}
   .app[data-mobile-layout="split"] .map-pane{grid-row:2}
   .app[data-mobile-layout="menu"] .mobile-panel,
   .app[data-mobile-layout="map"] .mobile-panel{grid-template-rows:1fr}
+
+  /* 가로모드: 사용자가 지정한 좌우 화살표 */
+  .menu-hide-arrow{right:3px;left:auto}
+  .menu-hide-arrow::before{content:"←"}
+  .menu-show-arrow{left:3px;right:auto}
+  .menu-show-arrow::before{content:"→"}
+  .map-hide-arrow{left:3px;right:auto}
+  .map-hide-arrow::before{content:"→"}
+  .map-show-arrow{right:3px;left:auto}
+  .map-show-arrow::before{content:"←"}
+
   .app[data-mobile-layout="hidden"] .pano-wrap{width:100%;height:100%}
   .app[data-mobile-layout="hidden"] .mobile-panel{transform:translateX(100%)}
   .panel-toggle{left:auto;right:calc(17.5% - 19px);bottom:10px;transform:none}
   .app[data-mobile-layout="hidden"] .panel-toggle{right:10px;bottom:10px;transform:rotate(180deg)}
-  .menu-pane-toggle{right:6px;top:6px}
-  .map-pane-toggle{right:6px;top:6px}
-  .map-restore{left:6px;top:6px}
 }

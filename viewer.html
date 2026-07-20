@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <title>수원360°투어</title>
-  <link rel="stylesheet" href="common/css/tour.css?v=20260720-v98">
+  <link rel="stylesheet" href="common/css/tour.css?v=20260720-v98-1">
 </head>
 <body>
   <main id="app" class="app" aria-busy="true" data-mobile-layout="split">
@@ -78,17 +78,29 @@
 
     <section id="mobile-panel" class="mobile-panel" aria-label="모바일 메뉴와 지도">
       <div id="mobile-menu-pane" class="mobile-pane mobile-menu-pane">
-        <span class="mobile-pane-label">둘러보기</span>
-        <button id="mobile-menu-close" class="pane-toggle menu-pane-toggle"
-                type="button" aria-label="메뉴 접기">‹</button>
+        <header class="mobile-pane-header menu-pane-header">
+          <strong>둘러보기</strong>
+          <button id="mobile-menu-hide"
+                  class="pane-arrow menu-hide-arrow"
+                  type="button"
+                  aria-label="메뉴 감추기"></button>
+          <button id="mobile-map-show"
+                  class="pane-arrow map-show-arrow"
+                  type="button"
+                  aria-label="지도 나타내기"></button>
+        </header>
         <div id="mobile-menu-list" class="mobile-menu-list"></div>
       </div>
 
       <div id="map-pane" class="mobile-pane map-pane">
-        <button id="map-restore" class="pane-toggle map-restore"
-                type="button" aria-label="메뉴와 지도 같이 보기">‹</button>
-        <button id="map-close" class="pane-toggle map-pane-toggle"
-                type="button" aria-label="지도 접기">›</button>
+        <button id="mobile-menu-show"
+                class="pane-arrow menu-show-arrow"
+                type="button"
+                aria-label="메뉴 나타내기"></button>
+        <button id="mobile-map-hide"
+                class="pane-arrow map-hide-arrow"
+                type="button"
+                aria-label="지도 감추기"></button>
         <div id="map" class="map" aria-label="카카오 미니맵"></div>
       </div>
     </section>
@@ -101,7 +113,7 @@
   <script src="common/krpano/tour.js"></script>
   <script src="common/js/app.js?v=20260720-v96"></script>
   <script src="common/js/panorama.js"></script>
-  <script src="common/js/menu.js?v=20260720-v98"></script>
+  <script src="common/js/menu.js?v=20260720-v98-1"></script>
   <script src="common/js/map.js?v=20260720-menu-map-v94"></script>
 </body>
 </html>

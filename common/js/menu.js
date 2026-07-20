@@ -214,17 +214,19 @@
       );
     });
 
-    document.getElementById("mobile-menu-close")?.addEventListener("click", () => {
-      const current = getLayout();
-      applyLayout(current === MOBILE_LAYOUT.MENU ? MOBILE_LAYOUT.SPLIT : MOBILE_LAYOUT.MAP);
+    document.getElementById("mobile-menu-hide")?.addEventListener("click", () => {
+      applyLayout(MOBILE_LAYOUT.MAP);
     });
 
-    document.getElementById("map-close")?.addEventListener("click", () => {
-      const current = getLayout();
-      applyLayout(current === MOBILE_LAYOUT.MAP ? MOBILE_LAYOUT.SPLIT : MOBILE_LAYOUT.MENU);
+    document.getElementById("mobile-menu-show")?.addEventListener("click", () => {
+      applyLayout(MOBILE_LAYOUT.SPLIT);
     });
 
-    document.getElementById("map-restore")?.addEventListener("click", () => {
+    document.getElementById("mobile-map-hide")?.addEventListener("click", () => {
+      applyLayout(MOBILE_LAYOUT.MENU);
+    });
+
+    document.getElementById("mobile-map-show")?.addEventListener("click", () => {
       applyLayout(MOBILE_LAYOUT.SPLIT);
     });
 
