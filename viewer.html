@@ -5,46 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <title>수원360°투어</title>
-  <link rel="stylesheet" href="common/css/tour.css?v=20260720-v95">
+  <link rel="stylesheet" href="common/css/tour.css?v=20260720-v96">
 </head>
 <body>
   <main id="app" class="app" aria-busy="true">
     <section id="pano-wrap" class="pano-wrap" aria-label="360도 파노라마">
       <div id="pano" class="pano"></div>
 
+      <!-- v96 PC 상단 UI -->
       <header id="topbar" class="topbar">
-        <section class="brand-panel" aria-label="수원360투어">
-          <img class="brand-logo" src="common/images/수원이.png" alt="">
-          <div class="brand-copy">
-            <strong class="brand-name">수원360°투어</strong>
+        <button id="home-logo" class="title-card home-logo" type="button" title="메인화면" aria-label="메인화면">
+          <img class="brand-logo" src="common/images/수원이.png" alt="" aria-hidden="true">
+          <span class="brand-copy">
+            <strong class="brand-title">수원360°투어</strong>
             <span id="shooting-date" class="shooting-date"></span>
-          </div>
-        </section>
+          </span>
+        </button>
 
-        <section id="desktop-explorer" class="desktop-explorer" aria-label="콘텐츠 둘러보기">
-          <div class="explorer-heading">
-            <div class="explorer-title-wrap">
-              <strong class="explorer-title">콘텐츠 둘러보기</strong>
-              <span id="content-title" class="xml-title">콘텐츠 불러오는 중</span>
-            </div>
-            <div class="explorer-tools">
-              <button id="menu-all-toggle" class="menu-tool-btn" type="button"
-                      aria-pressed="false" aria-label="전체 메뉴 숨기기">전체</button>
-              <button id="menu-more-toggle" class="menu-tool-btn menu-more-toggle" type="button"
-                      aria-expanded="false" aria-controls="menu-overflow" hidden>⋯</button>
-            </div>
+        <section id="desktop-menu-panel" class="desktop-menu-panel" aria-label="장소 둘러보기">
+          <div class="desktop-menu-heading">
+            <strong id="content-title">콘텐츠 둘러보기</strong>
           </div>
-
-          <nav id="desktop-menu" class="desktop-menu" aria-label="장소 메뉴">
+          <div class="desktop-menu-body">
+            <button id="menu-toggle" class="menu-toggle" type="button" title="메뉴 접기" aria-label="메뉴 접기" aria-expanded="true">
+              <span aria-hidden="true">◫</span>
+            </button>
             <div id="menu-track" class="menu-track"></div>
-          </nav>
-
-          <div id="menu-overflow" class="menu-overflow" hidden></div>
+            <div id="menu-more-wrap" class="menu-more-wrap" hidden>
+              <button id="menu-more" class="menu-more" type="button" title="나머지 메뉴" aria-label="나머지 메뉴" aria-expanded="false">⋯</button>
+              <div id="menu-more-list" class="menu-more-list" role="menu" hidden></div>
+            </div>
+          </div>
         </section>
 
-        <div class="top-actions">
-          <button id="close-btn" class="top-action-btn close-btn" type="button" aria-label="투어 종료">×</button>
-          <button id="share-btn" class="top-action-btn share-btn" type="button">공유하기</button>
+        <div class="top-actions" aria-label="상단 기능">
+          <button id="close-btn" class="circle-action" type="button" title="종료" aria-label="종료">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>
+          <button id="share-btn" class="circle-action" type="button" title="링크 공유" aria-label="링크 공유">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.8l7.5-4.4M8.2 13.2l7.5 4.4"></path></svg>
+          </button>
         </div>
       </header>
 
@@ -54,12 +54,11 @@
     <section id="mobile-panel" class="mobile-panel" aria-label="모바일 메뉴와 지도">
       <div id="mobile-menu-pane" class="mobile-pane mobile-menu-pane">
         <div class="pane-header">
-          <strong>둘러보기</strong>
+          <strong id="mobile-content-title">둘러보기</strong>
           <button id="mobile-menu-close" class="pane-toggle" type="button" aria-label="메뉴 접기">‹</button>
         </div>
         <div id="mobile-menu-list" class="mobile-menu-list"></div>
       </div>
-
       <div id="map-pane" class="mobile-pane map-pane">
         <div class="pane-header map-header">
           <button id="map-restore" class="pane-toggle" type="button" aria-label="메뉴와 지도 같이 보기">‹</button>
@@ -75,9 +74,9 @@
 
   <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1a15c2b3de97ed23c1f54005bd1b96a8&autoload=false"></script>
   <script src="common/krpano/tour.js"></script>
-  <script src="common/js/app.js?v=20260720-v95"></script>
+  <script src="common/js/app.js?v=20260720-v96"></script>
   <script src="common/js/panorama.js"></script>
-  <script src="common/js/menu.js?v=20260720-v95"></script>
-  <script src="common/js/map.js?v=20260720-menu-map-v94"></script>
+  <script src="common/js/menu.js?v=20260720-v96"></script>
+  <script src="common/js/map.js?v=20260720-menu-map-v93"></script>
 </body>
 </html>
