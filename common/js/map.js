@@ -535,8 +535,8 @@
     element.classList.toggle("is-active", Boolean(selected));
 
     Object.assign(circle.style, {
-      width: selected ? "34px" : "28px",
-      height: selected ? "34px" : "28px",
+      width: selected ? "28px" : "22px",
+      height: selected ? "28px" : "22px",
       borderRadius: "50%",
       display: "flex",
       alignItems: "center",
@@ -546,7 +546,7 @@
       color: "#ffffff",
       border: "2px solid #ffffff",
       boxShadow: "0 2px 7px rgba(0,0,0,.42)",
-      fontSize: selected ? "14px" : "12px",
+      fontSize: selected ? "11px" : "10px",
       fontWeight: "800",
       lineHeight: "1",
       cursor: "pointer",
@@ -556,11 +556,10 @@
   }
 
   function makeInfoContent(item) {
-    const number = String(item.number).padStart(2, "0");
     return `
-      <div class="suwon360-map-info" style="padding:7px 10px;white-space:nowrap;font-size:13px;line-height:1.35;color:#111;background:#fff;">
-        <strong style="margin-right:5px;color:#2f8cff;">${number}</strong>
-        <span>${escapeHtml(item.title)}</span>
+      <div class="suwon360-map-info"
+           style="padding:6px 9px;white-space:nowrap;font-size:12px;line-height:1.25;color:#fff;background:rgba(17,24,39,.88);border-radius:7px;box-shadow:0 4px 12px rgba(0,0,0,.24);">
+        ${escapeHtml(item.title)}
       </div>
     `;
   }

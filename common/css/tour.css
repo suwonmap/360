@@ -416,6 +416,7 @@ button {
 
   .pano-wrap {
     height: 65%;
+    transition: width .22s ease, height .22s ease;
   }
 
   .mobile-panel {
@@ -425,13 +426,15 @@ button {
     bottom: 0;
     z-index: 1000;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 40% 60%;
     height: 35%;
     background: #fff;
+    transition: width .22s ease, height .22s ease, transform .22s ease;
   }
 
   .mobile-pane {
     min-width: 0;
+    min-height: 0;
     overflow: hidden;
     background: #fff;
   }
@@ -452,8 +455,12 @@ button {
   .pane-toggle {
     width: 34px;
     height: 34px;
+    padding: 0;
+    display: grid;
+    place-items: center;
     background: transparent;
     font-size: 24px;
+    line-height: 1;
   }
 
   .mobile-menu-list {
@@ -489,14 +496,49 @@ button {
   .panel-toggle {
     position: fixed;
     left: 50%;
-    bottom: calc(35% - 18px);
+    bottom: max(10px, env(safe-area-inset-bottom));
     z-index: 1200;
-    display: block;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
     transform: translateX(-50%);
-    padding: 7px 12px;
-    border-radius: 999px;
-    background: rgba(17, 24, 39, 0.88);
+    border: 1px solid rgba(255, 255, 255, .34);
+    border-radius: 50%;
+    background: rgba(17, 24, 39, .9);
     color: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+    backdrop-filter: blur(8px);
+  }
+
+  .panel-toggle:hover,
+  .panel-toggle:focus-visible {
+    background: rgba(37, 99, 235, .94);
+    outline: none;
+  }
+
+  .panel-toggle-icon {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+
+  .panel-toggle-icon-show {
+    display: none;
+  }
+
+  .app.panels-hidden .panel-toggle-icon-hide {
+    display: none;
+  }
+
+  .app.panels-hidden .panel-toggle-icon-show {
+    display: block;
   }
 
   .app.panels-hidden .pano-wrap {
@@ -507,20 +549,67 @@ button {
     display: none;
   }
 
-  .app.panels-hidden .panel-toggle {
-    bottom: 12px;
-  }
-
   .app.menu-pane-hidden .mobile-panel {
-    grid-template-columns: 0 1fr;
+    grid-template-columns: 0 100%;
   }
 
   .app.map-pane-hidden .mobile-panel {
-    grid-template-columns: 1fr 0;
+    grid-template-columns: 100% 0;
   }
 
   .app.menu-pane-hidden .mobile-menu-pane,
   .app.map-pane-hidden .map-pane {
     visibility: hidden;
+  }
+}
+
+/* 모바일 가로: 좌측 파노라마 65%, 우측 패널 35% */
+@media (max-width: 768px) and (orientation: landscape) {
+  .pano-wrap {
+    width: 65%;
+    height: 100%;
+  }
+
+  .mobile-panel {
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: auto;
+    width: 35%;
+    height: 100%;
+    grid-template-columns: 1fr;
+    grid-template-rows: 40% 60%;
+  }
+
+  .mobile-menu-pane {
+    border-right: 0;
+    border-bottom: 1px solid #d1d5db;
+  }
+
+  .app.menu-pane-hidden .mobile-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: 0 100%;
+  }
+
+  .app.map-pane-hidden .mobile-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: 100% 0;
+  }
+
+  .panel-toggle {
+    left: calc(65% - 12px - env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    transform: translateX(-100%);
+  }
+
+  .app.panels-hidden .pano-wrap {
+    width: 100%;
+    height: 100%;
+  }
+
+  .app.panels-hidden .panel-toggle {
+    left: auto;
+    right: max(12px, env(safe-area-inset-right));
+    transform: none;
   }
 }

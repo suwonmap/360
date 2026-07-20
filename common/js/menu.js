@@ -135,6 +135,66 @@
     const panelToggle = document.getElementById("panel-toggle");
     const explorer = document.getElementById("desktop-explorer");
     const allToggle = document.getElementById("menu-all-toggle");
+    const menuToggle = document.getElementById("mobile-menu-close");
+    const mapClose = document.getElementById("map-close");
+    const mapRestore = document.getElementById("map-restore");
+
+    let savedPaneState = {
+      menuHidden: false,
+      mapHidden: false
+    };
+
+    const isLandscape = () =>
+      window.matchMedia("(max-width: 768px) and (orientation: landscape)").matches;
+
+    const updateMobileControls = () => {
+      if (!app) return;
+
+      const menuHidden = app.classList.contains("menu-pane-hidden");
+      const mapHidden = app.classList.contains("map-pane-hidden");
+      const panelsHidden = app.classList.contains("panels-hidden");
+      const landscape = isLandscape();
+
+      if (menuToggle) {
+        const text = landscape
+          ? (menuHidden ? "▼" : "▲")
+          : (menuHidden ? "›" : "‹");
+        const label = menuHidden ? "메뉴 펼치기" : "메뉴 접기";
+        menuToggle.textContent = text;
+        menuToggle.setAttribute("aria-label", label);
+        menuToggle.title = label;
+      }
+
+      if (mapClose) {
+        const text = landscape
+          ? (mapHidden ? "▲" : "▼")
+          : (mapHidden ? "‹" : "›");
+        const label = mapHidden ? "지도 펼치기" : "지도 접기";
+        mapClose.textContent = text;
+        mapClose.setAttribute("aria-label", label);
+        mapClose.title = label;
+      }
+
+      if (mapRestore) {
+        mapRestore.hidden = !(menuHidden || mapHidden);
+        mapRestore.textContent = landscape ? "↕" : "‹";
+        mapRestore.setAttribute("aria-label", "메뉴와 지도 같이 보기");
+        mapRestore.title = "메뉴와 지도 같이 보기";
+      }
+
+      if (panelToggle) {
+        const label = panelsHidden
+          ? "메뉴와 미니맵 보기"
+          : "메뉴와 미니맵 숨기기";
+        panelToggle.setAttribute("aria-expanded", String(!panelsHidden));
+        panelToggle.setAttribute("aria-label", label);
+        panelToggle.title = label;
+      }
+    };
+
+    const relayoutMap = (delay = 220) => {
+      window.setTimeout(() => window.Suwon360Map?.forceRelayout?.(), delay);
+    };
 
     document.getElementById("menu-more-toggle")?.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -143,14 +203,11 @@
 
     allToggle?.addEventListener("click", () => {
       const collapsed = explorer?.classList.toggle("menu-collapsed") || false;
-
-      // v96: 햄버거 아이콘은 유지하고 안내 문구만 상태에 맞게 변경
       const label = collapsed ? "메뉴 펼치기" : "메뉴 접기";
       allToggle.textContent = "☰";
       allToggle.title = label;
       allToggle.setAttribute("aria-pressed", String(collapsed));
       allToggle.setAttribute("aria-label", label);
-
       closeOverflow();
     });
 
@@ -159,27 +216,55 @@
     });
 
     panelToggle?.addEventListener("click", () => {
-      const hidden = app?.classList.toggle("panels-hidden") || false;
-      panelToggle.textContent = hidden ? "전체 보기" : "전체 숨김";
-      panelToggle.setAttribute("aria-expanded", String(!hidden));
-      setTimeout(() => window.Suwon360Map?.forceRelayout?.(), 220);
+      if (!app) return;
+
+      const willHide = !app.classList.contains("panels-hidden");
+      if (willHide) {
+        savedPaneState = {
+          menuHidden: app.classList.contains("menu-pane-hidden"),
+          mapHidden: app.classList.contains("map-pane-hidden")
+        };
+        app.classList.add("panels-hidden");
+      } else {
+        app.classList.remove("panels-hidden");
+        app.classList.toggle("menu-pane-hidden", savedPaneState.menuHidden);
+        app.classList.toggle("map-pane-hidden", savedPaneState.mapHidden);
+      }
+
+      updateMobileControls();
+      relayoutMap();
     });
 
-    document.getElementById("mobile-menu-close")?.addEventListener("click", () => {
-      app?.classList.add("menu-pane-hidden");
-      app?.classList.remove("map-pane-hidden");
-      setTimeout(() => window.Suwon360Map?.forceRelayout?.(), 180);
+    menuToggle?.addEventListener("click", () => {
+      if (!app) return;
+      const hidden = app.classList.toggle("menu-pane-hidden");
+      if (hidden) app.classList.remove("map-pane-hidden");
+      updateMobileControls();
+      relayoutMap(180);
     });
 
-    document.getElementById("map-close")?.addEventListener("click", () => {
-      app?.classList.add("map-pane-hidden");
-      app?.classList.remove("menu-pane-hidden");
+    mapClose?.addEventListener("click", () => {
+      if (!app) return;
+      const hidden = app.classList.toggle("map-pane-hidden");
+      if (hidden) app.classList.remove("menu-pane-hidden");
+      updateMobileControls();
+      relayoutMap(180);
     });
 
-    document.getElementById("map-restore")?.addEventListener("click", () => {
+    mapRestore?.addEventListener("click", () => {
       app?.classList.remove("menu-pane-hidden", "map-pane-hidden");
-      setTimeout(() => window.Suwon360Map?.forceRelayout?.(), 180);
+      updateMobileControls();
+      relayoutMap(180);
     });
+
+    const syncOnViewportChange = () => {
+      updateMobileControls();
+      relayoutMap(260);
+    };
+
+    window.addEventListener("resize", syncOnViewportChange);
+    window.addEventListener("orientationchange", syncOnViewportChange);
+    updateMobileControls();
   }
 
   window.Suwon360Menu = {
