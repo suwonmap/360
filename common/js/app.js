@@ -41,18 +41,21 @@
     const dateEl = document.getElementById("shooting-date");
     const finalTitle = title || window.Suwon360.config.tour;
 
-    if (titleEl) titleEl.textContent = finalTitle;
+    if (titleEl) {
+      titleEl.textContent = finalTitle;
+      titleEl.title = finalTitle;
+    }
+
     if (dateEl) {
       dateEl.textContent = shootingDate ? `촬영일 : ${shootingDate}` : "";
       dateEl.hidden = !shootingDate;
     }
 
-    document.title = `수원360° │ ${finalTitle}`;
+    document.title = `수원360°투어 │ ${finalTitle}`;
   }
 
   async function shareCurrentLink() {
     const url = window.location.href;
-
     try {
       if (navigator.share) {
         await navigator.share({ title: document.title, url });
@@ -60,16 +63,34 @@
         await navigator.clipboard.writeText(url);
         setStatus("링크를 복사했습니다.");
         window.setTimeout(() => setStatus(""), 1500);
+      } else {
+        window.prompt("아래 링크를 복사하세요.", url);
       }
     } catch (error) {
-      if (error?.name !== "AbortError") {
-        setStatus("링크 공유에 실패했습니다.", true);
-      }
+      if (error?.name !== "AbortError") setStatus("링크 공유에 실패했습니다.", true);
     }
+  }
+
+  function closeTour() {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    try {
+      window.close();
+    } catch (_) {
+      window.location.href = "./";
+    }
+
+    window.setTimeout(() => {
+      if (!document.hidden) window.location.href = "./";
+    }, 250);
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("share-btn")?.addEventListener("click", shareCurrentLink);
+    document.getElementById("close-btn")?.addEventListener("click", closeTour);
 
     setTitle(window.Suwon360.config.tour);
     setStatus("파노라마를 불러오는 중…");
@@ -82,9 +103,5 @@
     }
   });
 
-  window.Suwon360App = {
-    setStatus,
-    setBusy,
-    setTitle
-  };
+  window.Suwon360App = { setStatus, setBusy, setTitle };
 })();
