@@ -54,14 +54,18 @@
       }
       #suwon360-desktop-map-wrapper .suwon360-desktop-map-title {
         position: absolute;
-        top: 7px;
-        right: 8px;
+        left: 0;
+        right: 0;
+        top: 0;
         z-index: 120;
-        padding: 4px 8px;
-        color: #fff;
-        background: rgba(15,23,42,.72);
-        border-radius: 6px;
-        font: 700 11px/1.2 "Malgun Gothic", sans-serif;
+        height: 29px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px 0 34px;
+        color: #334155;
+        background: linear-gradient(180deg,rgba(255,255,255,.98),rgba(241,245,249,.96));
+        border-bottom: 1px solid rgba(148,163,184,.42);
+        font: 800 11px/1 "Malgun Gothic", sans-serif;
         pointer-events: none;
       }
       #suwon360-desktop-map-wrapper .suwon360-map-resize-handle {
@@ -87,7 +91,10 @@
       }
       #suwon360-desktop-map-wrapper > #map {
         position: absolute !important;
-        inset: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: 29px !important;
+        bottom: 0 !important;
         display: block !important;
         width: 100% !important;
         height: 100% !important;
@@ -132,7 +139,7 @@
     desktopMapWrapper.id = "suwon360-desktop-map-wrapper";
     desktopMapWrapper.setAttribute("aria-label", "PC 카카오 미니맵");
     desktopMapWrapper.innerHTML = `
-      <div class="suwon360-desktop-map-title">미니맵</div>
+      <div class="suwon360-desktop-map-title">⌖&nbsp; 미니맵</div>
       <div class="suwon360-map-resize-handle" title="드래그하여 지도 크기 조절"></div>
     `;
     document.body.appendChild(desktopMapWrapper);

@@ -159,9 +159,21 @@
     }, delay);
   }
 
+  function updatePanelToggle(hidden) {
+    const panelToggle = document.getElementById("panel-toggle");
+    if (!panelToggle) return;
+
+    panelToggle.classList.toggle("is-restore", hidden);
+    panelToggle.setAttribute("aria-expanded", String(!hidden));
+    panelToggle.setAttribute(
+      "aria-label",
+      hidden ? "메뉴와 지도 전체 보기" : "메뉴와 지도 전체 숨김"
+    );
+    panelToggle.title = hidden ? "메뉴·지도 전체보기" : "메뉴·지도 숨기기";
+  }
+
   function applyLayout(nextLayout) {
     const app = document.getElementById("app");
-    const panelToggle = document.getElementById("panel-toggle");
     if (!app || !Object.values(MOBILE_LAYOUT).includes(nextLayout)) return;
 
     if (nextLayout !== MOBILE_LAYOUT.HIDDEN) {
@@ -169,14 +181,8 @@
     }
 
     app.dataset.mobileLayout = nextLayout;
-
     const hidden = nextLayout === MOBILE_LAYOUT.HIDDEN;
-    panelToggle?.setAttribute("aria-expanded", String(!hidden));
-    panelToggle?.setAttribute(
-      "aria-label",
-      hidden ? "메뉴와 지도 전체 보기" : "메뉴와 지도 전체 숨김"
-    );
-
+    updatePanelToggle(hidden);
     requestMapRelayout(hidden ? 240 : 80);
   }
 
@@ -230,8 +236,16 @@
       applyLayout(MOBILE_LAYOUT.SPLIT);
     });
 
-    window.addEventListener("orientationchange", () => requestMapRelayout(280), { passive: true });
-    window.addEventListener("resize", () => requestMapRelayout(120), { passive: true });
+    window.addEventListener("orientationchange", () => {
+      updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
+      requestMapRelayout(280);
+    }, { passive: true });
+    window.addEventListener("resize", () => {
+      updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
+      requestMapRelayout(120);
+    }, { passive: true });
+
+    updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
   }
 
   window.Suwon360MobileLayout = {

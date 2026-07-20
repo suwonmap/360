@@ -21,7 +21,6 @@
       consolelog: false,
       debugmode: false,
       showerrors: false,
-      passQueryParameters: true,
       onready: onReady,
       onerror: () => app.setStatus(`파노라마를 불러오지 못했습니다: ${state.config.xmlPath}`, true)
     });
