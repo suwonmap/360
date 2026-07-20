@@ -79,6 +79,20 @@ button {
   min-height: 72px;
   padding: 9px 13px;
   border-radius: 13px;
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+/* v96: 메인화면 로고 hover/focus 효과 */
+.brand-panel:hover,
+.brand-panel:focus-visible {
+  background: rgba(31, 41, 55, 0.9);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.brand-panel:active {
+  transform: scale(0.98);
 }
 
 .brand-logo {
@@ -142,10 +156,11 @@ button {
 
 .xml-title {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 12px;
+  overflow: visible;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
   white-space: nowrap;
 }
 
@@ -179,6 +194,15 @@ button {
 .menu-tool-btn:hover,
 .menu-tool-btn:focus-visible {
   background: rgba(255, 255, 255, 0.24);
+}
+
+/* v96: 햄버거/더보기 버튼 정렬 */
+.hamburger-btn,
+.menu-more-toggle {
+  display: inline-grid;
+  place-items: center;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .desktop-menu {
@@ -262,24 +286,46 @@ button {
   right: 0;
   top: 0;
   display: grid;
-  gap: 7px;
-  width: 92px;
+  justify-items: end;
+  gap: 8px;
+  width: 42px;
 }
 
+/* v96: 종료/공유 원형 SVG 버튼 */
 .top-action-btn {
-  width: 100%;
-  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
 }
 
-.close-btn {
-  height: 38px;
-  font-size: 25px;
-  line-height: 1;
+.circle-action-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
 }
 
+.top-action-btn:hover,
+.top-action-btn:focus-visible {
+  background: rgba(37, 99, 235, 0.92);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.top-action-btn:active {
+  transform: scale(0.96);
+}
+
+.close-btn,
 .share-btn {
-  height: 34px;
-  font-size: 13px;
+  font-size: 0;
 }
 
 .status {
@@ -354,18 +400,18 @@ button {
   }
 
   .top-actions {
-    width: 86px;
-    gap: 5px;
+    width: 34px;
+    gap: 6px;
   }
 
-  .close-btn {
-    height: 28px;
-    font-size: 20px;
+  .top-action-btn {
+    width: 32px;
+    height: 32px;
   }
 
-  .share-btn {
-    height: 27px;
-    font-size: 11px;
+  .circle-action-btn svg {
+    width: 17px;
+    height: 17px;
   }
 
   .pano-wrap {

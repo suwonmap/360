@@ -41,9 +41,13 @@
     const dateEl = document.getElementById("shooting-date");
     const finalTitle = title || window.Suwon360.config.tour;
 
+    // v96: 콘텐츠명은 최대 10자로 표시하고 뒤에 "둘러보기"를 붙임
+    const shortTitle = Array.from(finalTitle).slice(0, 10).join("");
+    const explorerTitle = `${shortTitle} 둘러보기`;
+
     if (titleEl) {
-      titleEl.textContent = finalTitle;
-      titleEl.title = finalTitle;
+      titleEl.textContent = explorerTitle;
+      titleEl.title = `${finalTitle} 둘러보기`;
     }
 
     if (dateEl) {
@@ -88,9 +92,23 @@
     }, 250);
   }
 
+  // v96: 현재 viewer.html의 쿼리스트링을 제거하여 메인화면으로 이동
+  function goHome() {
+    window.location.href = window.location.pathname;
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("share-btn")?.addEventListener("click", shareCurrentLink);
     document.getElementById("close-btn")?.addEventListener("click", closeTour);
+
+    const homeLogo = document.getElementById("home-logo");
+    homeLogo?.addEventListener("click", goHome);
+    homeLogo?.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        goHome();
+      }
+    });
 
     setTitle(window.Suwon360.config.tour);
     setStatus("파노라마를 불러오는 중…");

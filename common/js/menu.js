@@ -143,8 +143,14 @@
 
     allToggle?.addEventListener("click", () => {
       const collapsed = explorer?.classList.toggle("menu-collapsed") || false;
+
+      // v96: 햄버거 아이콘은 유지하고 안내 문구만 상태에 맞게 변경
+      const label = collapsed ? "메뉴 펼치기" : "메뉴 접기";
+      allToggle.textContent = "☰";
+      allToggle.title = label;
       allToggle.setAttribute("aria-pressed", String(collapsed));
-      allToggle.setAttribute("aria-label", collapsed ? "전체 메뉴 보기" : "전체 메뉴 숨기기");
+      allToggle.setAttribute("aria-label", label);
+
       closeOverflow();
     });
 
