@@ -418,7 +418,11 @@
       level: preservedLevel ?? DEFAULT_LEVEL
     });
 
-    infoWindow = new window.kakao.maps.InfoWindow({ zIndex: 20, removable: false });
+    infoWindow = new window.kakao.maps.CustomOverlay({
+      zIndex: 20,
+      xAnchor: 0.5,
+      yAnchor: 1.35
+    });
 
     window.kakao.maps.event.addListener(map, "center_changed", () => {
       if (map) preservedCenter = map.getCenter();
@@ -493,7 +497,7 @@
     });
     sceneMarkers = [];
 
-    if (infoWindow) infoWindow.close();
+    if (infoWindow) infoWindow.setMap?.(null);
   }
 
   function clearIndoorOverlay() {
@@ -557,23 +561,29 @@
 
   function makeInfoContent(item) {
     return `
-      <div class="suwon360-map-info"
-           style="padding:6px 9px;white-space:nowrap;font-size:12px;line-height:1.25;color:#fff;background:rgba(17,24,39,.88);border-radius:7px;box-shadow:0 4px 12px rgba(0,0,0,.24);">
-        ${escapeHtml(item.title)}
+      <div class="suwon360-map-tooltip">
+        <div class="suwon360-map-info"
+             style="padding:6px 9px;white-space:nowrap;font-size:12px;line-height:1.25;color:#fff;background:rgba(0,0,0,.45);border:0;border-radius:7px;box-shadow:0 4px 12px rgba(0,0,0,.20);">
+          ${escapeHtml(item.title)}
+        </div>
       </div>
     `;
   }
 
+  function canShowInfoWindow() {
+    return window.matchMedia("(min-width: 769px)").matches;
+  }
+
   function openInfoWindow(item) {
-    if (!map || !infoWindow || !item?.overlay) return;
+    if (!map || !infoWindow || !item?.overlay || !canShowInfoWindow()) return;
 
     infoWindow.setContent(makeInfoContent(item));
     infoWindow.setPosition(new window.kakao.maps.LatLng(item.lat, item.lng));
-    infoWindow.open(map);
+    infoWindow.setMap(map);
   }
 
   function closeInfoWindow() {
-    infoWindow?.close();
+    infoWindow?.setMap?.(null);
   }
 
   function loadScene(sceneName) {
