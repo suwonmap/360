@@ -1047,3 +1047,29 @@ button{font:inherit}
     white-space:nowrap;
   }
 }
+
+
+/* =========================================================
+   v112 - 모바일 로고 표기 및 복원 버튼 여백 조정
+   모바일 로고: 수원360투어 | XML title
+   열린 상태: 숨기기 버튼 타이트
+   숨김 상태: 메뉴·지도 보기 버튼 여유 있게
+   ========================================================= */
+@media (max-width:768px){
+  .panel-toggle{
+    padding-left:6px !important;
+    padding-right:6px !important;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle,
+  .panel-toggle.is-restore{
+    padding-left:14px !important;
+    padding-right:14px !important;
+    gap:4px !important;
+  }
+
+  .brand-mobile-separator{
+    margin-left:5px !important;
+    margin-right:5px !important;
+  }
+}
