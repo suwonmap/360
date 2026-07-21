@@ -268,3 +268,93 @@ button{font:inherit}
     content:"←";
   }
 }
+
+/* =========================================================
+   v102 - 모바일 토글 화살표 방향/위치 최종 정리
+   ========================================================= */
+
+/* 모바일 세로
+   메뉴 열림 ← / 메뉴 닫힘 →
+   지도 열림 → / 지도 닫힘 ←
+*/
+@media (max-width:768px) and (orientation:portrait){
+  .menu-hide-arrow{
+    left:auto;
+    right:3px;
+  }
+  .menu-hide-arrow::before{
+    content:"←";
+  }
+
+  .menu-show-arrow{
+    left:3px;
+    right:auto;
+  }
+  .menu-show-arrow::before{
+    content:"→";
+  }
+
+  .map-hide-arrow{
+    left:3px;
+    right:auto;
+  }
+  .map-hide-arrow::before{
+    content:"→";
+  }
+
+  .map-show-arrow{
+    left:auto;
+    right:3px;
+  }
+  .map-show-arrow::before{
+    content:"←";
+  }
+}
+
+/* 모바일 가로
+   메뉴 열림: 우측 상단 ↑
+   메뉴 닫힘: 우측 상단 ↓
+   지도 열림: 우측 상단 ↓
+   지도 닫힘: 우측 상단 ↑
+   미니맵 제목: 좌측 끝
+*/
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  .menu-pane-header,
+  .map-pane-header{
+    padding-left:8px;
+    padding-right:31px;
+    justify-content:flex-start;
+  }
+
+  .map-pane-header strong{
+    margin-left:0;
+    margin-right:auto;
+    text-align:left;
+  }
+
+  .menu-hide-arrow,
+  .menu-show-arrow,
+  .map-hide-arrow,
+  .map-show-arrow{
+    top:2px;
+    right:3px;
+    bottom:auto;
+    left:auto;
+  }
+
+  .menu-hide-arrow::before{
+    content:"↑";
+  }
+
+  .menu-show-arrow::before{
+    content:"↓";
+  }
+
+  .map-hide-arrow::before{
+    content:"↓";
+  }
+
+  .map-show-arrow::before{
+    content:"↑";
+  }
+}
