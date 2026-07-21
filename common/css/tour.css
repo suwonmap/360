@@ -929,3 +929,48 @@ button{font:inherit}
     transform:scale(.98);
   }
 }
+
+/* =========================================================
+   v110 - 모바일 토글 기능 복구 + 전체 버튼 검정 Glass
+   ========================================================= */
+@media (max-width:768px) {
+  .panel-toggle {
+    background:rgba(15,15,18,.76) !important;
+    color:#fff !important;
+    border-color:rgba(255,255,255,.18) !important;
+    box-shadow:
+      0 2px 9px rgba(0,0,0,.30),
+      inset 0 1px 0 rgba(255,255,255,.07) !important;
+    -webkit-backdrop-filter:blur(10px) saturate(120%);
+    backdrop-filter:blur(10px) saturate(120%);
+  }
+
+  .panel-toggle:hover,
+  .panel-toggle:focus-visible {
+    background:rgba(10,10,12,.88) !important;
+    box-shadow:
+      0 3px 11px rgba(0,0,0,.34),
+      inset 0 1px 0 rgba(255,255,255,.09) !important;
+  }
+
+  .panel-toggle:disabled {
+    opacity:.45;
+    cursor:default;
+  }
+
+  /* 둘러보기/미니맵 토글 상태를 화살표 방향으로 표시 */
+  .mobile-panel-pill[aria-pressed="true"] .pill-arrow {
+    transform:rotate(180deg) !important;
+  }
+}
+
+/* 모바일 세로: 메뉴·지도 패널 경계선에 바로 닿게 배치 */
+@media (orientation:portrait) and (max-width:768px) {
+  .panel-toggle {
+    bottom:var(--mobile-panel-size) !important;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle {
+    bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+  }
+}
