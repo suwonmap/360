@@ -18,7 +18,7 @@ button{font:inherit}
 .topbar{position:absolute;top:max(var(--top-gap),env(safe-area-inset-top));left:16px;right:16px;z-index:1000;min-height:clamp(84px,10vh,108px);pointer-events:none}
 .topbar>*{pointer-events:auto}
 .brand-panel,.desktop-explorer,.top-action-btn{border:1px solid var(--glass-border);background:var(--glass);color:#fff;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
-.brand-panel{position:absolute;left:0;top:0;display:flex;align-items:center;gap:10px;min-width:196px;min-height:72px;padding:9px 13px;border-radius:13px;cursor:pointer;transition:.18s}
+.brand-panel{position:absolute;left:0;top:0;display:flex;align-items:center;gap:10px;min-width:245px;min-height:72px;padding:9px 13px;border-radius:13px;cursor:pointer;transition:.18s}
 .brand-panel:hover,.brand-panel:focus-visible{background:rgba(31,41,55,.9);transform:translateY(-1px);outline:none}
 .brand-panel:active{transform:scale(.98)}
 .brand-logo{width:46px;height:46px;object-fit:contain;flex:0 0 auto}
@@ -135,6 +135,16 @@ button{font:inherit}
   }
   .mobile-menu-title{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:600}
   .mobile-menu-item.is-active .mobile-menu-number{opacity:.8}
+
+  /* 모바일 카카오맵 제목 */
+  .mobile-map-title{
+    position:absolute;top:0;right:0;z-index:45;
+    display:flex;align-items:center;justify-content:flex-end;
+    height:27px;min-height:27px;padding:0 8px 0 31px;
+    color:#334155;background:rgba(255,255,255,.86);
+    font-size:11px;font-weight:700;line-height:1;
+    pointer-events:none;
+  }
   .map{position:absolute;inset:0;width:100%;height:100%;background:#e5e7eb}
 
   .panel-toggle{

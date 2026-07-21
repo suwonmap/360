@@ -38,6 +38,7 @@
 
   function setTitle(title, shootingDate = "") {
     const titleEl = document.getElementById("content-title");
+    const brandNameEl = document.getElementById("brand-name");
     const dateEl = document.getElementById("shooting-date");
     const finalTitle = title || window.Suwon360.config.tour;
 
@@ -48,6 +49,11 @@
     if (titleEl) {
       titleEl.textContent = explorerTitle;
       titleEl.title = `${finalTitle} 둘러보기`;
+    }
+
+    if (brandNameEl) {
+      brandNameEl.textContent = `수원360°투어 │ ${finalTitle}`;
+      brandNameEl.title = `수원360°투어 │ ${finalTitle}`;
     }
 
     if (dateEl) {
