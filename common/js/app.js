@@ -61,20 +61,45 @@
     document.title = `수원360투어 | ${finalTitle}`;
   }
 
-  async function shareCurrentLink() {
+  async function shareCurrentLink(event) {
+    const shareButton = event?.currentTarget || document.getElementById("share-btn");
     const url = window.location.href;
+
+    const rawContentTitle =
+      window.Suwon360?.contentTitle ||
+      document.getElementById("content-title")?.dataset.contentTitle ||
+      document.getElementById("brand-content-title")?.textContent?.trim() ||
+      document.getElementById("content-title")?.textContent
+        ?.replace(/\s*둘러보기\s*$/, "")
+        .trim() ||
+      window.Suwon360?.config?.tour ||
+      "수원360투어";
+
+    const shareTitle = `수원360투어 | ${rawContentTitle}`;
+    const shareText = `수원360투어에서 ${rawContentTitle}을(를) 둘러보세요.`;
+    const copyText = `${shareTitle}\n\n${shareText}\n\n${url}`;
+
     try {
       if (navigator.share) {
-        await navigator.share({ title: document.title, url });
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url
+        });
       } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(url);
-        setStatus("링크를 복사했습니다.");
+        await navigator.clipboard.writeText(copyText);
+        setStatus("제목과 링크를 복사했습니다.");
         window.setTimeout(() => setStatus(""), 1500);
       } else {
-        window.prompt("아래 링크를 복사하세요.", url);
+        window.prompt("아래 내용을 복사하세요.", copyText);
       }
     } catch (error) {
-      if (error?.name !== "AbortError") setStatus("링크 공유에 실패했습니다.", true);
+      if (error?.name !== "AbortError") {
+        setStatus("링크 공유에 실패했습니다.", true);
+      }
+    } finally {
+      // v119: 모바일에서 공유 후 파란 포커스 상태가 남지 않도록 즉시 해제
+      window.setTimeout(() => shareButton?.blur(), 0);
     }
   }
 

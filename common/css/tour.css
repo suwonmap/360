@@ -1258,3 +1258,35 @@ button{font:inherit}
     display:none !important;
   }
 }
+
+
+/* =========================================================
+   v119 - 모바일 공유 버튼 클릭 후 파란색 잔상 제거
+   ========================================================= */
+#share-btn,
+#share-btn:hover,
+#share-btn:focus,
+#share-btn:active,
+#share-btn:focus-visible{
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#share-btn{
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+@media (hover:none) and (pointer:coarse){
+  #share-btn:hover,
+  #share-btn:focus,
+  #share-btn:active,
+  #share-btn:focus-visible{
+    background: var(--top-action-bg, rgba(0,0,0,.46)) !important;
+    color: inherit !important;
+    border-color: inherit !important;
+    transform: none !important;
+  }
+}
