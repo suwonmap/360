@@ -146,7 +146,8 @@
     });
 
     setTitle(window.Suwon360.config.tour);
-    setStatus("파노라마를 불러오는 중…");
+    // v121: 정상 로딩 중에는 문구를 표시하지 않고 검은 배경 뒤에서 파노라마를 준비합니다.
+    setStatus("");
     setBusy(true);
 
     if (typeof window.Suwon360Panorama?.init === "function") {
