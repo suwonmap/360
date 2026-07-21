@@ -564,3 +564,97 @@ button{font:inherit}
   }
 }
 
+
+/* =========================================================
+   v106 - 모바일 세로 토글/콘텐츠 겹침 개선
+   ※ 모바일 가로 토글 위치와 동작은 v105 그대로 유지
+   ========================================================= */
+@media (max-width:768px) and (orientation:portrait) {
+  /* 둘러보기·미니맵 토글을 글자 높이에 맞춘 타이트한 라벨형으로 조정 */
+  .mobile-panel-pill {
+    height:26px;
+    min-height:26px;
+    min-width:0;
+    padding:0 9px;
+    gap:4px;
+    font-size:12px;
+    line-height:1;
+    box-sizing:border-box;
+    box-shadow:0 3px 10px rgba(15,23,42,.13),0 1px 2px rgba(15,23,42,.08);
+  }
+
+  .mobile-panel-pill .pill-icon {
+    width:14px;
+    height:14px;
+    flex-basis:14px;
+  }
+
+  .mobile-panel-pill .pill-arrow {
+    width:7px;
+    height:7px;
+    flex-basis:7px;
+  }
+
+  .mobile-panel-pill .pill-arrow::before {
+    inset:1px;
+    border-right-width:1.5px;
+    border-bottom-width:1.5px;
+  }
+
+  .mobile-menu-pill,
+  .mobile-map-pill {
+    top:5px;
+  }
+
+  /* 기존 헤더/흰색 바가 다시 나타나지 않도록 완전히 제거 */
+  .mobile-pane-header,
+  .menu-pane-header,
+  .map-pane-header {
+    display:none !important;
+    height:0 !important;
+    min-height:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+
+  /* 토글 아래까지만 메뉴가 스크롤되도록 스크롤 영역 자체를 분리 */
+  .mobile-menu-list {
+    top:36px !important;
+    bottom:0 !important;
+    height:auto !important;
+    padding-top:4px !important;
+    overflow-y:auto !important;
+    overscroll-behavior:contain;
+    scroll-padding-top:4px;
+  }
+
+  /* 미니맵 역시 토글 아래에서 시작하여 버튼 영역을 침범하지 않음 */
+  .map-pane {
+    background:transparent !important;
+  }
+
+  .map-pane > .map,
+  #map {
+    top:36px !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+    width:auto !important;
+    height:auto !important;
+  }
+
+  /* 토글은 콘텐츠보다 항상 위에 유지 */
+  .mobile-panel-pill {
+    z-index:120 !important;
+  }
+
+  .mobile-menu-pane,
+  .map-pane,
+  .mobile-menu-list,
+  .map {
+    z-index:auto;
+  }
+}
