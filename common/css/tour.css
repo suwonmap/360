@@ -101,33 +101,11 @@ button{font:inherit}
   }
   .pane-arrow:hover,.pane-arrow:focus-visible{background:#dbe4ef;outline:none}
 
-  /* 모바일 세로: 제목은 왼쪽, 토글 화살표는 헤더 바깥쪽 */
-  .menu-pane-header,
-  .map-pane-header{
-    justify-content:flex-start;
-    padding:0 31px 0 8px;
-  }
-  .menu-pane-header strong,
-  .map-pane-header strong{
-    margin:0;
-    text-align:left;
-  }
-
-  .menu-hide-arrow,
-  .map-show-arrow{
-    right:3px;
-    left:auto;
-  }
-  .menu-show-arrow,
-  .map-hide-arrow{
-    left:3px;
-    right:auto;
-  }
-
-  .menu-show-arrow,
-  .map-show-arrow{
-    display:none;
-  }
+  /* 모바일 세로 위치와 좌우 화살표 */
+  .menu-hide-arrow{right:3px;left:auto}
+  .menu-show-arrow{left:3px;right:auto;display:none}
+  .map-hide-arrow{left:3px;right:auto}
+  .map-show-arrow{right:3px;left:auto;display:none}
 
   .menu-hide-arrow::before{content:"←"}
   .menu-show-arrow::before{content:"→"}
@@ -167,7 +145,7 @@ button{font:inherit}
     font-size:11px;font-weight:700;line-height:1;
     pointer-events:none;
   }
-  .map-pane > .map{position:absolute;left:0;right:0;top:27px;bottom:0;width:100%;height:auto;background:#e5e7eb}
+  .map{position:absolute;inset:0;width:100%;height:100%;background:#e5e7eb}
 
   .panel-toggle{
     position:fixed;left:50%;bottom:calc(35% - 15px);z-index:1200;
@@ -193,7 +171,32 @@ button{font:inherit}
 
   .app[data-mobile-layout="menu"] .mobile-panel{grid-template-columns:1fr}
   .app[data-mobile-layout="menu"] .mobile-menu-pane{display:block;border-right:0}
-  .app[data-mobile-layout="menu"] .map-pane{display:none}
+  .app[data-mobile-layout="menu"] .map-pane{
+    display:block;
+    width:28px;
+    min-width:28px;
+    overflow:visible;
+    background:transparent;
+  }
+
+  .app[data-mobile-layout="menu"] .map{
+    display:none;
+  }
+
+  .app[data-mobile-layout="menu"] .map-pane-header{
+    position:absolute;
+    inset:0;
+    border:none;
+    background:transparent;
+    padding:0;
+  }
+
+  .app[data-mobile-layout="menu"] .map-show-arrow{
+    display:grid;
+    position:absolute;
+    top:2px;
+    right:3px;
+  }
   .app[data-mobile-layout="menu"] .menu-hide-arrow{display:none}
   .app[data-mobile-layout="menu"] .map-show-arrow{display:grid}
 
@@ -216,32 +219,18 @@ button{font:inherit}
   .app[data-mobile-layout="menu"] .mobile-panel,
   .app[data-mobile-layout="map"] .mobile-panel{grid-template-rows:1fr}
 
-  /* 모바일 가로: 제목은 왼쪽, 모든 토글 화살표는 우측 상단 */
-  .menu-pane-header,
-  .map-pane-header{
-    justify-content:flex-start;
-    padding:0 31px 0 8px;
-  }
-  .menu-pane-header strong,
-  .map-pane-header strong{
-    margin:0;
-    text-align:left;
-  }
+  /* 모바일 가로: 상하 화살표와 지정 위치 */
+  .menu-hide-arrow{top:2px;right:3px;bottom:auto;left:auto}
+  .menu-hide-arrow::before{content:"▲"}
 
-  .menu-hide-arrow,
-  .menu-show-arrow,
-  .map-hide-arrow,
-  .map-show-arrow{
-    top:2px;
-    right:3px;
-    bottom:auto;
-    left:auto;
-  }
+  .menu-show-arrow{top:2px;right:3px;bottom:auto;left:auto}
+  .menu-show-arrow::before{content:"▼"}
 
-  .menu-hide-arrow::before{content:"↑"}
-  .menu-show-arrow::before{content:"↓"}
-  .map-hide-arrow::before{content:"↓"}
-  .map-show-arrow::before{content:"↑"}
+  .map-hide-arrow{top:2px;right:3px;bottom:auto;left:auto}
+  .map-hide-arrow::before{content:"▼"}
+
+  .map-show-arrow{top:auto;right:auto;bottom:3px;left:3px}
+  .map-show-arrow::before{content:"▲"}
 
   .app[data-mobile-layout="hidden"] .pano-wrap{width:100%;height:100%}
   .app[data-mobile-layout="hidden"] .mobile-panel{transform:translateX(100%)}
@@ -256,4 +245,141 @@ button{font:inherit}
 .suwon360-map-info{display:block!important;border:0!important;outline:0!important;}
 @media(max-width:768px){.suwon360-map-tooltip,.suwon360-map-info{display:none!important;}}
 
-/* v103: 모바일 헤더 및 화살표 중복 규칙 정리 */
+/* =========================================================
+   v101 - 모바일 미니맵 헤더
+   둘러보기와 동일한 프레임, 왼쪽 화살표 / 오른쪽 '미니맵'
+   ========================================================= */
+@media(max-width:768px){
+  .map-pane-header{
+    padding:0 8px 0 31px;
+    justify-content:flex-end;
+  }
+
+  .map-pane-header strong{
+    margin-left:auto;
+    text-align:right;
+  }
+
+  .map-pane-header .menu-show-arrow,
+  .map-pane-header .map-hide-arrow{
+    left:3px;
+    right:auto;
+    top:2px;
+  }
+
+  .map-pane-header .menu-show-arrow::before,
+  .map-pane-header .map-hide-arrow::before{
+    content:"←";
+  }
+
+  .map-pane > .map{
+    top:27px;
+    bottom:0;
+    height:auto;
+  }
+}
+
+@media(orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  .map-pane-header .menu-show-arrow,
+  .map-pane-header .map-hide-arrow{
+    top:2px;
+    bottom:auto;
+    left:3px;
+    right:auto;
+  }
+
+  .map-pane-header .menu-show-arrow::before,
+  .map-pane-header .map-hide-arrow::before{
+    content:"←";
+  }
+}
+
+/* =========================================================
+   v102 - 모바일 토글 화살표 방향/위치 최종 정리
+   ========================================================= */
+
+/* 모바일 세로
+   메뉴 열림 ← / 메뉴 닫힘 →
+   지도 열림 → / 지도 닫힘 ←
+*/
+@media (max-width:768px) and (orientation:portrait){
+  .menu-hide-arrow{
+    left:auto;
+    right:3px;
+  }
+  .menu-hide-arrow::before{
+    content:"←";
+  }
+
+  .menu-show-arrow{
+    left:3px;
+    right:auto;
+  }
+  .menu-show-arrow::before{
+    content:"→";
+  }
+
+  .map-hide-arrow{
+    left:3px;
+    right:auto;
+  }
+  .map-hide-arrow::before{
+    content:"→";
+  }
+
+  .map-show-arrow{
+    left:auto;
+    right:3px;
+  }
+  .map-show-arrow::before{
+    content:"←";
+  }
+}
+
+/* 모바일 가로
+   메뉴 열림: 우측 상단 ↑
+   메뉴 닫힘: 우측 상단 ↓
+   지도 열림: 우측 상단 ↓
+   지도 닫힘: 우측 상단 ↑
+   미니맵 제목: 좌측 끝
+*/
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  .menu-pane-header,
+  .map-pane-header{
+    padding-left:8px;
+    padding-right:31px;
+    justify-content:flex-start;
+  }
+
+  .map-pane-header strong{
+    margin-left:0;
+    margin-right:auto;
+    text-align:left;
+  }
+
+  .menu-hide-arrow,
+  .menu-show-arrow,
+  .map-hide-arrow,
+  .map-show-arrow{
+    top:2px;
+    right:3px;
+    bottom:auto;
+    left:auto;
+  }
+
+  .menu-hide-arrow::before{
+    content:"↑";
+  }
+
+  .menu-show-arrow::before{
+    content:"↓";
+  }
+
+  .map-hide-arrow::before{
+    content:"↓";
+  }
+
+  .map-show-arrow::before{
+    content:"↑";
+  }
+}
