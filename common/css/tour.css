@@ -1237,3 +1237,24 @@ button{font:inherit}
     display:none !important;
   }
 }
+
+
+/* =========================================================
+   v118 - PC 미니맵 이중 프레임 제거
+   PC에서는 map.js가 생성하는 #suwon360-desktop-map-wrapper만 사용
+   ========================================================= */
+@media (min-width:769px){
+  .mobile-panel{
+    display:none !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+
+  #suwon360-desktop-map-wrapper{
+    display:block;
+  }
+
+  #suwon360-desktop-map-wrapper[hidden]{
+    display:none !important;
+  }
+}
