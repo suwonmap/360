@@ -264,3 +264,58 @@ button{font:inherit}
     white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.22)
   }
 }
+
+
+/* =========================================================
+   v104 : 모바일 제목 / 토글 통일 / Kakao 외부연결 UI 제거
+   ========================================================= */
+@media(max-width:768px){
+  .brand-panel{max-width:calc(100% - 82px)}
+  .brand-copy{max-width:100%}
+  .brand-name{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+  .shooting-date{display:block;font-size:10px}
+
+  .pane-arrow{
+    width:25px;height:23px;border:0;border-radius:5px;
+    background:rgba(226,232,240,.90);color:#334155;
+    font-size:20px;font-weight:700;line-height:1;
+  }
+  .menu-hide-arrow::before{content:"⌃"}
+  .menu-show-arrow::before{content:"⌄"}
+  .map-hide-arrow::before{content:"⌄"}
+  .map-show-arrow::before{content:"⌃"}
+
+  .panel-toggle{
+    width:auto;min-width:104px;height:34px;padding:0 12px;gap:6px;
+    border-radius:999px;font-size:12px;font-weight:800;
+  }
+  .panel-toggle-icon{display:inline-grid;width:18px;height:18px;place-items:center;font-size:19px;line-height:1}
+  .panel-toggle-icon svg{display:none!important}
+  .panel-toggle-label{display:inline!important;font-size:12px;font-weight:800;white-space:nowrap}
+  .app[data-mobile-layout="hidden"] .panel-toggle{min-width:112px;height:36px;padding:0 13px}
+}
+
+@media(orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  .menu-hide-arrow{top:2px;right:3px;bottom:auto;left:auto}
+  .menu-hide-arrow::before{content:"⌃"}
+
+  .menu-show-arrow{top:2px;right:3px;bottom:auto;left:auto}
+  .menu-show-arrow::before{content:"⌄"}
+
+  .map-hide-arrow{top:2px;right:3px;bottom:auto;left:auto}
+  .map-hide-arrow::before{content:"⌄"}
+
+  .map-show-arrow{top:2px;right:auto;bottom:auto;left:3px}
+  .map-show-arrow::before{content:"⌃"}
+
+  .panel-toggle{min-width:104px}
+  .app[data-mobile-layout="hidden"] .panel-toggle{min-width:112px}
+}
+
+/* Kakao 지도 내부의 하단 외부연결 로고와 자동 생성 컨트롤을 숨김 */
+#map a[href*="map.kakao.com"],
+#map a[href*="kakao.com"],
+#map button,
+#suwon360-desktop-map-wrapper #map a[href*="map.kakao.com"],
+#suwon360-desktop-map-wrapper #map a[href*="kakao.com"],
+#suwon360-desktop-map-wrapper #map button{display:none!important;visibility:hidden!important;pointer-events:none!important}

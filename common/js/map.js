@@ -413,6 +413,25 @@
     if (placeholder) placeholder.remove();
   }
 
+
+  function removeKakaoOutboundUi() {
+    const element = getMapElement();
+    if (!element) return;
+
+    // v104: 미니맵 하단 Kakao 외부연결 표기와 우측 하단 자동 생성 버튼 제거
+    element.querySelectorAll(
+      'a[href*="map.kakao.com"], a[href*="kakao.com"], button'
+    ).forEach((node) => {
+      if (!node.closest('.suwon360-map-marker')) node.remove();
+    });
+  }
+
+  function scheduleKakaoUiCleanup() {
+    [0, 80, 250, 700].forEach((delay) => {
+      window.setTimeout(removeKakaoOutboundUi, delay);
+    });
+  }
+
   function createMap(center = DEFAULT_CENTER) {
     const element = getMapElement();
     if (!element || map) return;
@@ -439,6 +458,7 @@
       if (map) preservedLevel = map.getLevel();
     });
 
+    scheduleKakaoUiCleanup();
     log("map created");
   }
 
@@ -900,6 +920,7 @@
 
     preserveViewState();
     window.kakao.maps.event.trigger(map, "resize");
+    scheduleKakaoUiCleanup();
 
     window.setTimeout(() => {
       if (!map) return;
