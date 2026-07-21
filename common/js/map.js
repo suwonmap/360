@@ -2,7 +2,7 @@
   "use strict";
 
   /**
-   * Suwon360 Kakao minimap module
+   * Suwon360 Kakao minimap module v129
    * ------------------------------------------------------------
    * 지원 대상
    *  - namsuheon.xml : 현재 위치 1개 + 방향(FOV) 표시
@@ -27,6 +27,8 @@
   let mobileMapAnchor = null;
   let desktopMapWrapper = null;
   let desktopResizeState = null;
+  let lockedMapHostMode = "";
+  let resizeAnimationFrame = 0;
 
   function injectResponsiveMapCss() {
     if (document.getElementById("suwon360-responsive-map-css")) return;
@@ -183,19 +185,21 @@
     if (!mapElement) return;
 
     const wrapper = ensureDesktopMapWrapper();
-    const desktop = isDesktopMapMode();
+    const requestedMode = isDesktopMapMode() ? "desktop" : "mobile";
 
-    if (desktop) {
+    // v129: Kakao Map 객체가 만들어진 뒤에는 #map의 부모 DOM을 절대 바꾸지 않습니다.
+    // 생성 후 reparent하면 타일 좌표계와 Marker 좌표계가 서로 달라져
+    // 지도 이동 시 포인트가 밀리거나 일부 타일이 비는 현상이 발생할 수 있습니다.
+    if (!lockedMapHostMode) lockedMapHostMode = requestedMode;
+    const activeMode = map ? lockedMapHostMode : requestedMode;
+
+    if (activeMode === "desktop") {
       wrapper.hidden = false;
-      if (mapElement.parentNode !== wrapper) wrapper.appendChild(mapElement);
+      if (!map && mapElement.parentNode !== wrapper) wrapper.appendChild(mapElement);
     } else {
       wrapper.hidden = true;
-      restoreMapToMobilePane(mapElement);
+      if (!map) restoreMapToMobilePane(mapElement);
     }
-
-    window.setTimeout(() => {
-      if (typeof forceRelayout === "function") forceRelayout();
-    }, 40);
   }
 
   function initializeDesktopMapResize(wrapper) {
@@ -207,7 +211,11 @@
       if (!desktopResizeState) return;
       desktopResizeState = null;
       document.body.style.userSelect = "";
-      forceRelayout();
+      if (resizeAnimationFrame) {
+        window.cancelAnimationFrame(resizeAnimationFrame);
+        resizeAnimationFrame = 0;
+      }
+      forceRelayout({ force: true });
     };
 
     handle.addEventListener("pointerdown", (event) => {
@@ -236,7 +244,17 @@
 
       wrapper.style.width = `${Math.round(width)}px`;
       wrapper.style.height = `${Math.round(height)}px`;
-      forceRelayout();
+
+      // v129: 크기 조절 중 debounce relayout을 누적하지 않고
+      // 프레임당 한 번만 Kakao resize를 수행합니다.
+      if (resizeAnimationFrame) window.cancelAnimationFrame(resizeAnimationFrame);
+      resizeAnimationFrame = window.requestAnimationFrame(() => {
+        resizeAnimationFrame = 0;
+        if (!map || isMapDragging) return;
+        preserveViewState();
+        window.kakao.maps.event.trigger(map, "resize");
+        if (preservedCenter) map.setCenter(preservedCenter);
+      });
     });
 
     handle.addEventListener("pointerup", stopResize);
@@ -479,6 +497,15 @@
     // CustomOverlay의 CSS 전환도 잠시 끄므로 번호 원형이 밀리는 느낌을 줄입니다.
     window.kakao.maps.event.addListener(map, "dragstart", () => {
       isMapDragging = true;
+      if (relayoutTimer) {
+        window.clearTimeout(relayoutTimer);
+        relayoutTimer = null;
+      }
+      if (resizeAnimationFrame) {
+        window.cancelAnimationFrame(resizeAnimationFrame);
+        resizeAnimationFrame = 0;
+      }
+      pendingRelayout = false;
       getMapElement()?.classList.add("suwon360-map-dragging");
       closeInfoWindow();
     });
@@ -731,15 +758,13 @@
     if (shouldFitAllMarkers) {
       initialOutdoorBoundsApplied = true;
 
-      // 즉시 1회 + PC 고정 프레임 이동 및 CSS 반영 후 재계산합니다.
-      // preserveView:false로 기존 중심/축척 복원이 setBounds를 덮어쓰지 않게 합니다.
-      fitOutdoorMarkers(bounds);
-
-      [80, 220, 420].forEach((delay) => {
-        window.setTimeout(() => {
+      // v129: setBounds는 컨테이너 크기가 확정된 뒤 최초 1회만 실행합니다.
+      // 반복 setBounds가 지도 투영 좌표와 Marker 위치를 연속 재계산하던 문제를 제거합니다.
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
           if (!map || currentXmlFilename !== "yharbor.xml") return;
           fitOutdoorMarkers(bounds);
-        }, delay);
+        });
       });
     } else {
       // 최초 전체 맞춤 이후에는 사용자가 조정한 중심과 확대 수준을 유지합니다.
@@ -1011,20 +1036,17 @@
   }
 
   function fitOutdoorMarkers(bounds) {
-    if (!map || !bounds || currentXmlFilename !== "yharbor.xml") return;
+    if (!map || !bounds || currentXmlFilename !== "yharbor.xml" || isMapDragging) return;
 
-    // v124: PC 미니맵이 모바일 영역에서 우측 하단 고정 프레임으로
-    // 이동한 뒤 실제 크기를 기준으로 전체 포인트 축척을 계산합니다.
-    syncResponsiveMapHost();
-    if (isMapDragging) return;
+    const element = getMapElement();
+    const rect = element?.getBoundingClientRect();
+    if (!rect || rect.width < 2 || rect.height < 2) return;
 
-    // setBounds 직전에 현재 컨테이너 크기로 한 번만 resize합니다.
-    const rect = getMapElement()?.getBoundingClientRect();
-    if (rect && rect.width > 1 && rect.height > 1) {
-      lastMapWidth = Math.round(rect.width);
-      lastMapHeight = Math.round(rect.height);
-      window.kakao.maps.event.trigger(map, "resize");
-    }
+    // v129: 현재 실제 크기를 Kakao 내부 좌표계에 먼저 반영한 뒤
+    // setBounds를 정확히 한 번만 실행합니다. 이후 별도 resize/center 복원을 하지 않습니다.
+    lastMapWidth = Math.round(rect.width);
+    lastMapHeight = Math.round(rect.height);
+    window.kakao.maps.event.trigger(map, "resize");
     map.setBounds(bounds, 18, 18, 18, 18);
 
     preservedCenter = map.getCenter();
