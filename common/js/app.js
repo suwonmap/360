@@ -50,6 +50,13 @@
       titleEl.title = `${finalTitle} 둘러보기`;
     }
 
+    // v102: 모바일 로고에 "수원360°투어 │ 콘텐츠명"을 표시합니다.
+    const brandContentEl = document.getElementById("brand-content-title");
+    if (brandContentEl) {
+      brandContentEl.textContent = ` │ ${finalTitle}`;
+      brandContentEl.title = finalTitle;
+    }
+
     if (dateEl) {
       dateEl.textContent = shootingDate ? `촬영일 : ${shootingDate}` : "";
       dateEl.hidden = !shootingDate;
