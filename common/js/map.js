@@ -270,7 +270,7 @@
   // setBounds()를 한 번만 적용합니다.
   let initialOutdoorBoundsApplied = false;
 
-  // v127: 지도 드래그 중 resize/relayout이 겹치지 않도록 상태를 분리합니다.
+  // v128: 지도 드래그 중 resize/relayout이 겹치지 않도록 상태를 분리합니다.
   let isMapDragging = false;
   let pendingRelayout = false;
   let relayoutTimer = null;
@@ -559,7 +559,7 @@
 
   function clearSceneMarkers() {
     sceneMarkers.forEach((item) => {
-      item.overlay?.setMap(null);
+      item.marker?.setMap(null);
     });
     sceneMarkers = [];
 
@@ -581,50 +581,49 @@
     return menuSceneCoords.map((scene) => scene.name);
   }
 
-  function createNumberMarkerElement(number, sceneName, sceneTitle) {
-    const root = document.createElement("div");
-    root.className = "suwon360-map-marker";
-    root.dataset.scene = sceneName;
-    root.title = sceneTitle;
-    root.setAttribute("role", "button");
-    root.setAttribute("tabindex", "0");
-    root.setAttribute("aria-label", `${number}. ${sceneTitle}`);
+  // v128: 영흥수목원 번호 포인트는 HTML CustomOverlay 대신
+  // 카카오 기본 Marker + 고정 크기 SVG MarkerImage를 사용합니다.
+  // 지도 드래그 중 카카오 내부 overlay DOM 재배치로 포인트가
+  // 사라지거나 밀리는 현상을 구조적으로 방지합니다.
+  const markerImageCache = new Map();
 
-    const circle = document.createElement("div");
-    circle.className = "suwon360-map-marker-circle";
-    circle.textContent = String(number).padStart(2, "0");
-    root.appendChild(circle);
+  function createMarkerImage(number, selected = false) {
+    const cacheKey = `${number}:${selected ? 1 : 0}`;
+    if (markerImageCache.has(cacheKey)) return markerImageCache.get(cacheKey);
 
-    return root;
+    // 이전 모바일 원형 느낌을 유지하되, 선택 여부와 관계없이
+    // 40×40 고정 캔버스를 사용하여 중심점이 절대 바뀌지 않게 합니다.
+    const diameter = selected ? 34 : 28;
+    const radius = diameter / 2;
+    const fill = selected ? "#ff3d00" : "#2f8cff";
+    const fontSize = selected ? 13 : 11;
+    const label = String(number).padStart(2, "0");
+
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="${radius - 1}"
+                fill="${fill}" stroke="rgba(255,255,255,.72)" stroke-width="1"/>
+        <text x="20" y="20.5" text-anchor="middle" dominant-baseline="middle"
+              fill="#ffffff" font-family="Arial, Malgun Gothic, sans-serif"
+              font-size="${fontSize}" font-weight="800">${label}</text>
+      </svg>`;
+
+    const imageUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+    const image = new window.kakao.maps.MarkerImage(
+      imageUrl,
+      new window.kakao.maps.Size(40, 40),
+      { offset: new window.kakao.maps.Point(20, 20) }
+    );
+
+    markerImageCache.set(cacheKey, image);
+    return image;
   }
 
-  function applyMarkerStyle(element, selected) {
-    const circle = element?.querySelector(".suwon360-map-marker-circle");
-    if (!circle) return;
-
-    element.classList.toggle("is-active", Boolean(selected));
-
-    Object.assign(circle.style, {
-      width: selected ? "30px" : "24px",
-      height: selected ? "30px" : "24px",
-      borderRadius: "50%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      boxSizing: "border-box",
-      background: selected ? "#ff3d00" : "#2f8cff",
-      color: "#ffffff",
-      border: "1px solid rgba(255,255,255,.82)",
-      boxShadow: "0 1px 4px rgba(0,0,0,.34)",
-      fontFamily: '"Malgun Gothic", "Noto Sans KR", sans-serif',
-      fontSize: selected ? "13px" : "12px",
-      fontWeight: "800",
-      letterSpacing: "-0.2px",
-      lineHeight: "1",
-      cursor: "pointer",
-      userSelect: "none",
-      transition: "none"
-    });
+  function applyMarkerStyle(item, selected) {
+    if (!item?.marker) return;
+    item.selected = Boolean(selected);
+    item.marker.setImage(createMarkerImage(item.number, item.selected));
+    item.marker.setZIndex(item.selected ? 15 : 10);
   }
 
   function makeInfoContent(item) {
@@ -643,7 +642,7 @@
   }
 
   function openInfoWindow(item) {
-    if (!map || !infoWindow || !item?.overlay || !canShowInfoWindow()) return;
+    if (!map || !infoWindow || !item?.marker || !canShowInfoWindow()) return;
 
     infoWindow.setContent(makeInfoContent(item));
     infoWindow.setPosition(new window.kakao.maps.LatLng(item.lat, item.lng));
@@ -671,31 +670,16 @@
   }
 
   function bindMarkerEvents(item) {
-    const { element } = item;
+    if (!item?.marker || !window.kakao?.maps?.event) return;
 
-    const activate = () => {
+    window.kakao.maps.event.addListener(item.marker, "click", () => {
       loadScene(item.name);
       if (state.showInfoWindowOnClick) openInfoWindow(item);
-    };
-
-    element.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      activate();
-    });
-
-    element.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        activate();
-      }
     });
 
     if (state.showInfoWindowOnHover) {
-      element.addEventListener("mouseenter", () => openInfoWindow(item));
-      element.addEventListener("mouseleave", closeInfoWindow);
-      element.addEventListener("focus", () => openInfoWindow(item));
-      element.addEventListener("blur", closeInfoWindow);
+      window.kakao.maps.event.addListener(item.marker, "mouseover", () => openInfoWindow(item));
+      window.kakao.maps.event.addListener(item.marker, "mouseout", closeInfoWindow);
     }
   }
 
@@ -717,23 +701,22 @@
 
       const number = index + 1;
       const position = new window.kakao.maps.LatLng(scene.lat, scene.lng);
-      const element = createNumberMarkerElement(number, scene.name, scene.title);
-      applyMarkerStyle(element, scene.name === resolveMenuSceneName(currentSceneName));
+      const selected = scene.name === resolveMenuSceneName(currentSceneName);
 
-      const overlay = new window.kakao.maps.CustomOverlay({
+      const marker = new window.kakao.maps.Marker({
         map,
         position,
-        content: element,
-        xAnchor: 0.5,
-        yAnchor: 0.5,
-        zIndex: scene.name === currentSceneName ? 15 : 10
+        image: createMarkerImage(number, selected),
+        clickable: true,
+        zIndex: selected ? 15 : 10,
+        title: scene.title
       });
 
       const item = {
         ...scene,
         number,
-        element,
-        overlay
+        marker,
+        selected
       };
 
       bindMarkerEvents(item);
@@ -884,8 +867,7 @@
 
     sceneMarkers.forEach((item) => {
       const selected = item.name === activeMenuScene;
-      applyMarkerStyle(item.element, selected);
-      item.overlay.setZIndex(selected ? 15 : 10);
+      if (item.selected !== selected) applyMarkerStyle(item, selected);
     });
   }
 
