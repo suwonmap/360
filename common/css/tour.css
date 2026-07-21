@@ -974,3 +974,24 @@ button{font:inherit}
     bottom:calc(10px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+
+/* v110.1 - 전체 숨기기 버튼 타이트하게 */
+@media (max-width:768px){
+  .panel-toggle{
+    min-width:auto !important;
+    width:auto !important;
+    height:24px !important;
+    min-height:24px !important;
+    padding:0 6px !important;
+    gap:2px !important;
+    font-size:12px !important;
+    line-height:1 !important;
+  }
+  .panel-toggle-arrow{
+    width:12px !important;
+    height:12px !important;
+    flex:0 0 12px !important;
+    font-size:14px !important;
+  }
+}
