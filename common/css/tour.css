@@ -804,3 +804,128 @@ button{font:inherit}
     box-shadow:none !important;
   }
 }
+
+/* =========================================================
+   v109 - 메뉴·지도 전체 감추기 버튼 알약형 디자인
+   패널을 가리지 않도록 파노라마 영역 안쪽에 배치
+   ========================================================= */
+@media (max-width:768px) {
+  .panel-toggle {
+    position:fixed;
+    left:50%;
+    bottom:calc(var(--mobile-panel-size) + 7px);
+    z-index:1250;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    width:auto;
+    min-width:142px;
+    height:28px;
+    min-height:28px;
+    padding:0 13px;
+    transform:translateX(-50%);
+    border:1px solid rgba(255,255,255,.58);
+    border-radius:999px;
+    background:rgba(255,255,255,.93);
+    color:#273444;
+    box-shadow:
+      0 4px 14px rgba(15,23,42,.15),
+      0 1px 3px rgba(15,23,42,.09);
+    -webkit-backdrop-filter:blur(8px) saturate(125%);
+    backdrop-filter:blur(8px) saturate(125%);
+    font:700 12px/1 system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:
+      bottom .22s ease,
+      transform .18s ease,
+      background-color .18s ease,
+      box-shadow .18s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .panel-toggle:hover,
+  .panel-toggle:focus-visible {
+    outline:none;
+    background:rgba(255,255,255,.98);
+    box-shadow:
+      0 6px 18px rgba(15,23,42,.18),
+      0 2px 5px rgba(15,23,42,.10);
+    transform:translateX(-50%) translateY(-1px);
+  }
+
+  .panel-toggle:active {
+    transform:translateX(-50%) scale(.98);
+  }
+
+  .panel-toggle-arrow {
+    display:inline-grid;
+    place-items:center;
+    width:14px;
+    height:14px;
+    flex:0 0 14px;
+    font-size:16px;
+    font-weight:700;
+    line-height:1;
+    transform:translateY(-1px);
+  }
+
+  .panel-toggle-label {
+    display:inline-block;
+    line-height:1;
+  }
+
+  /* 패널을 감춘 뒤에는 화면 하단 중앙에 보기 버튼 표시 */
+  .app[data-mobile-layout="hidden"] .panel-toggle {
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    transform:translateX(-50%);
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle:hover,
+  .app[data-mobile-layout="hidden"] .panel-toggle:focus-visible {
+    transform:translateX(-50%) translateY(-1px);
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle:active {
+    transform:translateX(-50%) scale(.98);
+  }
+}
+
+/* 모바일 가로: 파노라마 우측 하단, 지도 패널 바깥에 배치 */
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .panel-toggle {
+    left:auto;
+    right:calc(35% + 10px);
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    min-width:136px;
+    height:26px;
+    min-height:26px;
+    padding:0 11px;
+    transform:none;
+  }
+
+  .panel-toggle:hover,
+  .panel-toggle:focus-visible {
+    transform:translateY(-1px);
+  }
+
+  .panel-toggle:active {
+    transform:scale(.98);
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle {
+    right:10px;
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    transform:none;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle:hover,
+  .app[data-mobile-layout="hidden"] .panel-toggle:focus-visible {
+    transform:translateY(-1px);
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle:active {
+    transform:scale(.98);
+  }
+}
