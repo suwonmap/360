@@ -11,27 +11,7 @@
 
   let menuScenes = [];
   let activeMenuScene = "";
-  const LAYOUT_STORAGE_KEY = "suwon360-mobile-layout-v104";
-  const LAST_VISIBLE_STORAGE_KEY = "suwon360-mobile-last-visible-v104";
-
   let lastVisibleLayout = MOBILE_LAYOUT.SPLIT;
-
-  function readStoredLayout(key, fallback) {
-    try {
-      const value = sessionStorage.getItem(key);
-      return Object.values(MOBILE_LAYOUT).includes(value) ? value : fallback;
-    } catch (_) {
-      return fallback;
-    }
-  }
-
-  function storeLayout(key, value) {
-    try { sessionStorage.setItem(key, value); } catch (_) { /* 저장 불가 환경 무시 */ }
-  }
-
-  function isMobileLandscape() {
-    return window.matchMedia("(orientation: landscape) and (max-height: 600px) and (pointer: coarse)").matches;
-  }
 
   function makeButton(scene, index, className) {
     const button = document.createElement("button");
@@ -179,14 +159,9 @@
     }, delay);
   }
 
-<<<<<<< HEAD
   function updatePanelToggle(hidden) {
     const panelToggle = document.getElementById("panel-toggle");
     if (!panelToggle) return;
-
-    const landscape = isMobileLandscape();
-    const icon = panelToggle.querySelector(".panel-toggle-icon");
-    const label = panelToggle.querySelector(".panel-toggle-label");
 
     panelToggle.classList.toggle("is-restore", hidden);
     panelToggle.setAttribute("aria-expanded", String(!hidden));
@@ -194,43 +169,20 @@
       "aria-label",
       hidden ? "메뉴와 지도 전체 보기" : "메뉴와 지도 전체 숨김"
     );
-    panelToggle.title = hidden ? "메뉴·지도 전체보기" : "메뉴·지도 전체접기";
-
-    if (icon) icon.textContent = landscape ? (hidden ? "〈" : "〉") : (hidden ? "⌃" : "⌄");
-    if (label) label.textContent = hidden ? "전체보기" : "전체접기";
+    panelToggle.title = hidden ? "메뉴·지도 전체보기" : "메뉴·지도 숨기기";
   }
 
-=======
->>>>>>> 832a622bab80ebb042afe02bdfa775e901cd0729
   function applyLayout(nextLayout) {
     const app = document.getElementById("app");
-    const panelToggle = document.getElementById("panel-toggle");
     if (!app || !Object.values(MOBILE_LAYOUT).includes(nextLayout)) return;
 
     if (nextLayout !== MOBILE_LAYOUT.HIDDEN) {
       lastVisibleLayout = nextLayout;
-      storeLayout(LAST_VISIBLE_STORAGE_KEY, lastVisibleLayout);
     }
 
     app.dataset.mobileLayout = nextLayout;
-<<<<<<< HEAD
-    storeLayout(LAYOUT_STORAGE_KEY, nextLayout);
-=======
-
->>>>>>> 832a622bab80ebb042afe02bdfa775e901cd0729
     const hidden = nextLayout === MOBILE_LAYOUT.HIDDEN;
-    panelToggle?.setAttribute("aria-expanded", String(!hidden));
-    panelToggle?.setAttribute(
-      "aria-label",
-      hidden ? "메뉴와 지도 전체 보기" : "메뉴와 지도 전체 숨김"
-    );
-
-    // v102: 모바일 세로 전체 토글 문구와 꺾쇠를 상태에 맞게 변경합니다.
-    const toggleIcon = panelToggle?.querySelector(".panel-toggle-icon");
-    const toggleText = panelToggle?.querySelector(".panel-toggle-text");
-    if (toggleIcon) toggleIcon.textContent = hidden ? "⌃" : "⌄";
-    if (toggleText) toggleText.textContent = hidden ? "전체보기" : "전체접기";
-
+    updatePanelToggle(hidden);
     requestMapRelayout(hidden ? 240 : 80);
   }
 
@@ -285,25 +237,15 @@
     });
 
     window.addEventListener("orientationchange", () => {
-      // v103: 회전 후에도 현재 레이아웃과 전체보기 버튼 상태를 다시 적용합니다.
-      window.setTimeout(() => applyLayout(getLayout()), 60);
+      updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
       requestMapRelayout(280);
     }, { passive: true });
     window.addEventListener("resize", () => {
-      applyLayout(getLayout());
+      updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
       requestMapRelayout(120);
     }, { passive: true });
-<<<<<<< HEAD
 
-    lastVisibleLayout = readStoredLayout(LAST_VISIBLE_STORAGE_KEY, lastVisibleLayout);
-    const storedLayout = readStoredLayout(LAYOUT_STORAGE_KEY, getLayout());
-    if (storedLayout !== getLayout()) {
-      applyLayout(storedLayout);
-    } else {
-      updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
-    }
-=======
->>>>>>> 832a622bab80ebb042afe02bdfa775e901cd0729
+    updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
   }
 
   window.Suwon360MobileLayout = {

@@ -38,7 +38,6 @@
 
   function setTitle(title, shootingDate = "") {
     const titleEl = document.getElementById("content-title");
-    const mobileBrandEl = document.getElementById("mobile-brand-name");
     const dateEl = document.getElementById("shooting-date");
     const finalTitle = title || window.Suwon360.config.tour;
 
@@ -49,19 +48,6 @@
     if (titleEl) {
       titleEl.textContent = explorerTitle;
       titleEl.title = `${finalTitle} 둘러보기`;
-    }
-
-<<<<<<< HEAD
-    if (mobileBrandEl) {
-      mobileBrandEl.textContent = `수원360°투어 │ ${finalTitle}`;
-      mobileBrandEl.title = finalTitle;
-=======
-    // v102: 모바일 로고에 "수원360°투어 │ 콘텐츠명"을 표시합니다.
-    const brandContentEl = document.getElementById("brand-content-title");
-    if (brandContentEl) {
-      brandContentEl.textContent = ` │ ${finalTitle}`;
-      brandContentEl.title = finalTitle;
->>>>>>> 832a622bab80ebb042afe02bdfa775e901cd0729
     }
 
     if (dateEl) {
