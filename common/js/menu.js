@@ -236,8 +236,15 @@
       applyLayout(MOBILE_LAYOUT.SPLIT);
     });
 
-    window.addEventListener("orientationchange", () => requestMapRelayout(280), { passive: true });
-    window.addEventListener("resize", () => requestMapRelayout(120), { passive: true });
+    window.addEventListener("orientationchange", () => {
+      // v103: 회전 후에도 현재 레이아웃과 전체보기 버튼 상태를 다시 적용합니다.
+      window.setTimeout(() => applyLayout(getLayout()), 60);
+      requestMapRelayout(280);
+    }, { passive: true });
+    window.addEventListener("resize", () => {
+      applyLayout(getLayout());
+      requestMapRelayout(120);
+    }, { passive: true });
   }
 
   window.Suwon360MobileLayout = {
