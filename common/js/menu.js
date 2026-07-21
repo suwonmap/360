@@ -227,9 +227,15 @@
     const target = document.getElementById("brand-content-title");
     if (!source || !target) return;
 
-    const title = (source.textContent || "").trim();
+    // v117: PC 제목의 "둘러보기"는 유지하고,
+    // 모바일 로고에는 XML title만 표시합니다.
+    const rawTitle =
+      source.dataset.contentTitle ||
+      window.Suwon360?.contentTitle ||
+      (source.textContent || "").replace(/\s*둘러보기\s*$/, "").trim();
+
     target.textContent =
-      title && title !== "불러오는 중…" ? title : "";
+      rawTitle && rawTitle !== "불러오는 중…" ? rawTitle : "";
   }
 
   function bindBrandTitleSync() {

@@ -38,22 +38,19 @@
 
   function setTitle(title, shootingDate = "") {
     const titleEl = document.getElementById("content-title");
-    const brandNameEl = document.getElementById("brand-name");
     const dateEl = document.getElementById("shooting-date");
     const finalTitle = title || window.Suwon360.config.tour;
+    const explorerTitle = `${finalTitle} 둘러보기`;
 
-    // v96: 콘텐츠명은 최대 10자로 표시하고 뒤에 ""를 붙임
-    const shortTitle = Array.from(finalTitle).slice(0, 10).join("");
-    const explorerTitle = `${shortTitle}`;
+    // v117
+    // PC 중앙 메뉴 제목: "남수헌 둘러보기"
+    // 모바일 로고 제목: "남수헌"만 표시되도록 menu.js에서 분리 처리
+    window.Suwon360.contentTitle = finalTitle;
 
     if (titleEl) {
-      titleEl.textContent = finalTitle;
-      titleEl.title = finalTitle;
-    }
-
-    if (brandNameEl) {
-      brandNameEl.textContent = `수원360투어 | ${finalTitle}`;
-      brandNameEl.title = `수원360투어 | ${finalTitle}`;
+      titleEl.textContent = explorerTitle;
+      titleEl.title = explorerTitle;
+      titleEl.dataset.contentTitle = finalTitle;
     }
 
     if (dateEl) {
