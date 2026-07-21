@@ -995,3 +995,55 @@ button{font:inherit}
     font-size:14px !important;
   }
 }
+
+
+/* =========================================================
+   v111 - 모바일 로고에 XML title 표시
+   PC: 수원360°투어
+   모바일: 수원360°투어 │ 콘텐츠명
+   ========================================================= */
+.brand-name{
+  display:flex;
+  align-items:center;
+  gap:0;
+}
+
+.brand-mobile-separator,
+.brand-content-title{
+  display:none;
+}
+
+@media (max-width:768px){
+  .brand-panel{
+    max-width:calc(100% - 82px);
+  }
+
+  .brand-name{
+    max-width:100%;
+    min-width:0;
+    flex-direction:row;
+    align-items:center;
+    font-size:14px;
+    line-height:1.2;
+    white-space:nowrap;
+  }
+
+  .brand-service-name{
+    flex:0 0 auto;
+  }
+
+  .brand-mobile-separator{
+    display:inline;
+    flex:0 0 auto;
+    margin:0 5px;
+    opacity:.75;
+  }
+
+  .brand-content-title{
+    display:inline-block;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+}

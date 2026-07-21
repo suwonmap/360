@@ -169,13 +169,13 @@
       "aria-label",
       hidden ? "메뉴와 지도 전체 보기" : "메뉴와 지도 전체 숨김"
     );
-    panelToggle.title = hidden ? "메뉴·지도 보기" : "메뉴·지도 숨기기";
+    panelToggle.title = hidden ? "메뉴·지도 보기" : "숨기기";
 
     const arrow = panelToggle.querySelector(".panel-toggle-arrow");
     const label = panelToggle.querySelector(".panel-toggle-label");
 
     if (arrow) arrow.textContent = hidden ? "⌃" : "⌄";
-    if (label) label.textContent = hidden ? "메뉴·지도 보기" : "메뉴·지도 숨기기";
+    if (label) label.textContent = hidden ? "메뉴·지도 보기" : "숨기기";
   }
 
   function updateMobilePills(layout) {
@@ -222,7 +222,37 @@
     requestMapRelayout(hidden ? 240 : 80);
   }
 
+  function syncBrandContentTitle() {
+    const source = document.getElementById("content-title");
+    const target = document.getElementById("brand-content-title");
+    if (!source || !target) return;
+
+    const title = (source.textContent || "").trim();
+    target.textContent =
+      title && title !== "불러오는 중…" ? title : "";
+  }
+
+  function bindBrandTitleSync() {
+    const source = document.getElementById("content-title");
+    if (!source || source.dataset.brandTitleBound === "true") {
+      syncBrandContentTitle();
+      return;
+    }
+
+    source.dataset.brandTitleBound = "true";
+    syncBrandContentTitle();
+
+    const observer = new MutationObserver(syncBrandContentTitle);
+    observer.observe(source, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+  }
+
   function bindControls() {
+    bindBrandTitleSync();
+
     if (document.body.dataset.menuBound === "true") return;
     document.body.dataset.menuBound = "true";
 
