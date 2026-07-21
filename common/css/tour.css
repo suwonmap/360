@@ -1073,3 +1073,26 @@ button{font:inherit}
     margin-right:5px !important;
   }
 }
+
+
+/* v113 restore button spacing */
+@media (max-width:768px){
+  .app[data-mobile-layout="hidden"] .panel-toggle,
+  .panel-toggle.is-restore{
+    min-height:32px !important;
+    height:32px !important;
+    padding:4px 16px !important;
+    gap:6px !important;
+    border-radius:18px !important;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle .panel-toggle-label{
+    line-height:1.2 !important;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle .panel-toggle-arrow{
+    width:14px !important;
+    height:14px !important;
+    font-size:15px !important;
+  }
+}
