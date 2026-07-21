@@ -1382,35 +1382,38 @@ button{font:inherit}
 }
 .s360-indoor-marker{
   --s360-heading:0deg;
-  position:relative;
-  width:70px;
-  height:70px;
-  transform:rotate(var(--s360-heading));
-  transform-origin:50% 50%;
-  pointer-events:none;
+  position:relative!important;
+  width:48px!important;
+  height:48px!important;
+  overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  pointer-events:none!important;
+  transform:rotate(var(--s360-heading))!important;
+  transform-origin:24px 31px!important;
 }
-.s360-indoor-fov{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:0;
-  height:0;
-  transform:translate(-50%,-92%);
-  border-left:18px solid transparent;
-  border-right:18px solid transparent;
-  border-bottom:46px solid rgba(37,99,235,.28);
+.s360-indoor-marker-svg{
+  display:block!important;
+  width:48px!important;
+  height:48px!important;
+  overflow:visible!important;
+  background:transparent!important;
 }
-.s360-indoor-dot{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:16px;
-  height:16px;
-  transform:translate(-50%,-50%);
-  border:2px solid #fff;
-  border-radius:50%;
-  background:#2563eb;
-  box-shadow:0 1px 5px rgba(0,0,0,.35);
+.s360-indoor-arrow{
+  fill:#2563eb;
+  stroke:#ffffff;
+  stroke-width:1.6;
+  stroke-linejoin:round;
+}
+.s360-indoor-ring{
+  fill:#ffffff;
+  stroke:rgba(15,23,42,.28);
+  stroke-width:1;
+}
+.s360-indoor-core{
+  fill:#2563eb;
 }
 
 
@@ -1446,4 +1449,17 @@ button{font:inherit}
     min-width:120px!important;
     min-height:120px!important;
   }
+}
+
+
+/* =========================================================
+   v202 - 남수헌 방향마커 파란 면 확장 방지
+   ========================================================= */
+.s360-indoor-marker,
+.s360-indoor-marker *{
+  box-sizing:border-box!important;
+}
+.s360-indoor-marker::before,
+.s360-indoor-marker::after{
+  content:none!important;
 }

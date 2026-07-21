@@ -2,7 +2,7 @@
   "use strict";
 
   /**
-   * Suwon360 Map Engine v200
+   * Suwon360 Map Engine v202
    * ------------------------------------------------------------
    * 안정성 원칙
    *  1. 카카오 Map 객체는 컨테이너 크기가 확정된 뒤 한 번만 생성합니다.
@@ -210,9 +210,13 @@
 
     const root = document.createElement("div");
     root.className = "s360-indoor-marker";
+    root.setAttribute("aria-hidden", "true");
     root.innerHTML = `
-      <div class="s360-indoor-fov"></div>
-      <div class="s360-indoor-dot"></div>`;
+      <svg class="s360-indoor-marker-svg" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+        <path class="s360-indoor-arrow" d="M24 3 L33 22 L27 19 L27 31 L21 31 L21 19 L15 22 Z" />
+        <circle class="s360-indoor-ring" cx="24" cy="31" r="8" />
+        <circle class="s360-indoor-core" cx="24" cy="31" r="5" />
+      </svg>`;
 
     const overlay = new kakao.maps.CustomOverlay({
       map: context.map,
@@ -285,7 +289,7 @@
       clearContext(context);
       configureMapForContent(context);
     } catch (error) {
-      if (!/취소/.test(error.message)) console.warn("[Suwon360Map v200]", error);
+      if (!/취소/.test(error.message)) console.warn("[Suwon360Map v202]", error);
     } finally {
       context.creating = false;
     }
