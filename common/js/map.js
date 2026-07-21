@@ -2,7 +2,7 @@
   "use strict";
 
   /**
-   * Suwon360 Kakao minimap module v129
+   * Suwon360 Kakao minimap module v130
    * ------------------------------------------------------------
    * 지원 대상
    *  - namsuheon.xml : 현재 위치 1개 + 방향(FOV) 표시
@@ -17,18 +17,17 @@
    */
 
   /* ==========================================================
-   * PC / 모바일 미니맵 컨테이너 호환 레이어
+   * v130 - PC / 모바일 지도 완전 분리
    * ----------------------------------------------------------
-   * 모바일 : viewer.html의 #map-pane 내부 #map 사용
-   * PC     : 예전 정상 구조처럼 우측 하단 고정 프레임을 생성하고
-   *          동일한 #map 요소를 그 안으로 이동하여 사용
+   * 카카오 Map이 생성된 뒤 컨테이너를 이동시키지 않습니다.
+   * PC는 #desktop-map, 모바일은 #mobile-map을 처음부터 사용합니다.
    * ========================================================== */
   const DESKTOP_BREAKPOINT = 769;
-  let mobileMapAnchor = null;
-  let desktopMapWrapper = null;
   let desktopResizeState = null;
-  let lockedMapHostMode = "";
   let resizeAnimationFrame = 0;
+  const activeMapElementId = window.matchMedia(`(min-width: ${DESKTOP_BREAKPOINT}px)`).matches
+    ? "desktop-map"
+    : "mobile-map";
 
   function injectResponsiveMapCss() {
     if (document.getElementById("suwon360-responsive-map-css")) return;
@@ -46,175 +45,63 @@
         min-width: 235px;
         min-height: 160px;
         overflow: hidden;
-        background: transparent;
+        contain: layout paint size;
+        isolation: isolate;
+        transform: none !important;
+        background: #e5e7eb;
         border: 1px solid rgba(255,255,255,.30);
         border-radius: 15px;
         box-shadow: 0 5px 18px rgba(0,0,0,.42);
       }
-      #suwon360-desktop-map-wrapper[hidden] {
-        display: none !important;
-      }
       #suwon360-desktop-map-wrapper .suwon360-desktop-map-title {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        left: auto;
-        z-index: 120;
-        height: 28px;
-        width: max-content;
-        min-width: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 7px;
-        color: #fff;
-        background: rgba(0,0,0,.62);
-        border: 1px solid rgba(255,255,255,.24);
-        border-radius: 999px;
-        box-shadow: 0 3px 10px rgba(0,0,0,.25);
-        -webkit-backdrop-filter: blur(7px);
-        backdrop-filter: blur(7px);
-        font: 800 11px/1 "Malgun Gothic", sans-serif;
-        pointer-events: none;
+        position: absolute; top: 10px; right: 10px; z-index: 120;
+        height: 28px; display: flex; align-items: center; justify-content: center;
+        padding: 0 7px; color: #fff; background: rgba(0,0,0,.62);
+        border: 1px solid rgba(255,255,255,.24); border-radius: 999px;
+        font: 800 11px/1 "Malgun Gothic", sans-serif; pointer-events: none;
       }
       #suwon360-desktop-map-wrapper .suwon360-map-resize-handle {
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 130;
-        width: 26px;
-        height: 26px;
-        cursor: nwse-resize;
-        touch-action: none;
+        position: absolute; left: 0; top: 0; z-index: 130; width: 26px; height: 26px;
+        cursor: nwse-resize; touch-action: none;
         background: linear-gradient(315deg, transparent 0, transparent 45%, rgba(15,23,42,.88) 46%, rgba(15,23,42,.88) 100%);
       }
       #suwon360-desktop-map-wrapper .suwon360-map-resize-handle::after {
-        content: "";
-        position: absolute;
-        left: 4px;
-        top: 4px;
-        width: 9px;
-        height: 9px;
-        border-left: 2px solid #fff;
-        border-top: 2px solid #fff;
+        content: ""; position: absolute; left: 4px; top: 4px; width: 9px; height: 9px;
+        border-left: 2px solid #fff; border-top: 2px solid #fff;
       }
-      #suwon360-desktop-map-wrapper > #map {
-        position: absolute !important;
-        left: 0 !important;
-        right: 0 !important;
-        top: 0 !important;
-        bottom: 0 !important;
-        display: block !important;
-        width: 100% !important;
-        height: 100% !important;
-        min-width: 1px !important;
-        min-height: 1px !important;
+      #desktop-map {
+        position: absolute !important; inset: 0 !important;
+        display: block !important; width: 100% !important; height: 100% !important;
+        min-width: 1px !important; min-height: 1px !important;
+        transform: none !important; zoom: 1 !important;
       }
-      #map-pane > #map {
-        width: 100%;
-        height: 100%;
-        min-width: 1px;
-        min-height: 1px;
-      }
-      #map .suwon360-map-marker {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      #mobile-map { width: 100%; height: 100%; min-width: 1px; min-height: 1px; }
+      #desktop-map .suwon360-map-marker, #mobile-map .suwon360-map-marker {
+        width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
         pointer-events: auto;
       }
-      #map .suwon360-map-marker-circle {
-        flex: 0 0 auto;
-        transition: none !important;
-        transform: none !important;
-        backface-visibility: visible !important;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-rendering: geometricPrecision;
-        font-variant-numeric: tabular-nums;
-      }
-      @media (max-width: 768px) {
-        #suwon360-desktop-map-wrapper {
-          display: none !important;
-        }
-      }
+      @media (max-width: 768px) { #suwon360-desktop-map-wrapper { display: none !important; } }
+      @media (min-width: 769px) { #mobile-map { display: none !important; } }
     `;
     document.head.appendChild(style);
   }
 
   function isDesktopMapMode() {
-    return window.innerWidth >= DESKTOP_BREAKPOINT &&
-      !document.documentElement.classList.contains("s360-mobile");
+    return activeMapElementId === "desktop-map";
   }
 
-  function ensureMobileMapAnchor() {
-    const mapElement = document.getElementById("map");
-    if (!mapElement) return null;
-
-    if (!mobileMapAnchor) {
-      mobileMapAnchor = document.createComment("suwon360-map-mobile-anchor");
-      mapElement.parentNode?.insertBefore(mobileMapAnchor, mapElement);
-    }
-    return mapElement;
-  }
-
-  function ensureDesktopMapWrapper() {
-    if (desktopMapWrapper?.isConnected) return desktopMapWrapper;
-
-    desktopMapWrapper = document.createElement("section");
-    desktopMapWrapper.id = "suwon360-desktop-map-wrapper";
-    desktopMapWrapper.setAttribute("aria-label", "PC 카카오 미니맵");
-    desktopMapWrapper.innerHTML = `
-      <div class="suwon360-desktop-map-title">⌖&nbsp; 미니맵</div>
-      <div class="suwon360-map-resize-handle" title="드래그하여 지도 크기 조절"></div>
-    `;
-    document.body.appendChild(desktopMapWrapper);
-    initializeDesktopMapResize(desktopMapWrapper);
-    return desktopMapWrapper;
-  }
-
-  function restoreMapToMobilePane(mapElement) {
-    if (!mapElement || !mobileMapAnchor?.parentNode) return;
-    mobileMapAnchor.parentNode.insertBefore(mapElement, mobileMapAnchor.nextSibling);
-  }
-
-  function syncResponsiveMapHost() {
-    injectResponsiveMapCss();
-    const mapElement = ensureMobileMapAnchor();
-    if (!mapElement) return;
-
-    const wrapper = ensureDesktopMapWrapper();
-    const requestedMode = isDesktopMapMode() ? "desktop" : "mobile";
-
-    // v129: Kakao Map 객체가 만들어진 뒤에는 #map의 부모 DOM을 절대 바꾸지 않습니다.
-    // 생성 후 reparent하면 타일 좌표계와 Marker 좌표계가 서로 달라져
-    // 지도 이동 시 포인트가 밀리거나 일부 타일이 비는 현상이 발생할 수 있습니다.
-    if (!lockedMapHostMode) lockedMapHostMode = requestedMode;
-    const activeMode = map ? lockedMapHostMode : requestedMode;
-
-    if (activeMode === "desktop") {
-      wrapper.hidden = false;
-      if (!map && mapElement.parentNode !== wrapper) wrapper.appendChild(mapElement);
-    } else {
-      wrapper.hidden = true;
-      if (!map) restoreMapToMobilePane(mapElement);
-    }
-  }
-
-  function initializeDesktopMapResize(wrapper) {
-    const handle = wrapper.querySelector(".suwon360-map-resize-handle");
-    if (!handle || handle.dataset.bound === "true") return;
+  function initializeDesktopMapResize() {
+    const wrapper = document.getElementById("suwon360-desktop-map-wrapper");
+    const handle = wrapper?.querySelector(".suwon360-map-resize-handle");
+    if (!wrapper || !handle || handle.dataset.bound === "true") return;
     handle.dataset.bound = "true";
 
     const stopResize = () => {
       if (!desktopResizeState) return;
       desktopResizeState = null;
       document.body.style.userSelect = "";
-      if (resizeAnimationFrame) {
-        window.cancelAnimationFrame(resizeAnimationFrame);
-        resizeAnimationFrame = 0;
-      }
+      if (resizeAnimationFrame) cancelAnimationFrame(resizeAnimationFrame);
+      resizeAnimationFrame = 0;
       forceRelayout({ force: true });
     };
 
@@ -224,11 +111,8 @@
       handle.setPointerCapture?.(event.pointerId);
       const rect = wrapper.getBoundingClientRect();
       desktopResizeState = {
-        pointerId: event.pointerId,
-        startX: event.clientX,
-        startY: event.clientY,
-        startWidth: rect.width,
-        startHeight: rect.height
+        pointerId: event.pointerId, startX: event.clientX, startY: event.clientY,
+        startWidth: rect.width, startHeight: rect.height
       };
       document.body.style.userSelect = "none";
     });
@@ -236,29 +120,25 @@
     handle.addEventListener("pointermove", (event) => {
       if (!desktopResizeState || desktopResizeState.pointerId !== event.pointerId) return;
       event.preventDefault();
-
-      const width = Math.max(235, Math.min(window.innerWidth * 0.72,
-        desktopResizeState.startWidth + (desktopResizeState.startX - event.clientX)));
-      const height = Math.max(160, Math.min(window.innerHeight * 0.72,
-        desktopResizeState.startHeight + (desktopResizeState.startY - event.clientY)));
-
+      const width = Math.max(235, Math.min(window.innerWidth * .72,
+        desktopResizeState.startWidth + desktopResizeState.startX - event.clientX));
+      const height = Math.max(160, Math.min(window.innerHeight * .72,
+        desktopResizeState.startHeight + desktopResizeState.startY - event.clientY));
       wrapper.style.width = `${Math.round(width)}px`;
       wrapper.style.height = `${Math.round(height)}px`;
-
-      // v129: 크기 조절 중 debounce relayout을 누적하지 않고
-      // 프레임당 한 번만 Kakao resize를 수행합니다.
-      if (resizeAnimationFrame) window.cancelAnimationFrame(resizeAnimationFrame);
-      resizeAnimationFrame = window.requestAnimationFrame(() => {
+      if (resizeAnimationFrame) cancelAnimationFrame(resizeAnimationFrame);
+      resizeAnimationFrame = requestAnimationFrame(() => {
         resizeAnimationFrame = 0;
-        if (!map || isMapDragging) return;
-        preserveViewState();
-        window.kakao.maps.event.trigger(map, "resize");
-        if (preservedCenter) map.setCenter(preservedCenter);
+        forceRelayout({ force: true });
       });
     });
-
     handle.addEventListener("pointerup", stopResize);
     handle.addEventListener("pointercancel", stopResize);
+  }
+
+  function prepareMapHost() {
+    injectResponsiveMapCss();
+    initializeDesktopMapResize();
   }
 
   const DEFAULT_CENTER = { lat: 37.2636, lng: 127.0286 };
@@ -313,7 +193,7 @@
   }
 
   function getMapElement() {
-    return document.getElementById("map");
+    return document.getElementById(activeMapElementId);
   }
 
   function getKrpano() {
@@ -993,62 +873,41 @@
   }
 
   function forceRelayout(options = {}) {
-    if (!map || !window.kakao?.maps?.event) return;
-
-    // v127: relayout은 지도 컨테이너의 실제 크기가 바뀐 경우에만 실행합니다.
-    // 일반 마우스 드래그/지도 이동 중에는 호출하지 않습니다.
-    if (isMapDragging) return;
-
-    const element = getMapElement();
-    if (!element) return;
-
-    const rect = element.getBoundingClientRect();
-    const width = Math.round(rect.width);
-    const height = Math.round(rect.height);
-    if (width < 2 || height < 2) return;
-
-    const force = options.force === true;
-    const sizeChanged = width !== lastMapWidth || height !== lastMapHeight;
-    if (!force && !sizeChanged) return;
-
-    const preserveView = options.preserveView !== false;
-    if (preserveView) preserveViewState();
-
-    if (relayoutTimer) window.clearTimeout(relayoutTimer);
-    relayoutTimer = window.setTimeout(() => {
-      relayoutTimer = null;
-      if (!map || isMapDragging) return;
-
-      const latest = getMapElement()?.getBoundingClientRect();
-      if (!latest || latest.width < 2 || latest.height < 2) return;
-      lastMapWidth = Math.round(latest.width);
-      lastMapHeight = Math.round(latest.height);
-
-      window.kakao.maps.event.trigger(map, "resize");
-
-      if (!preserveView) return;
-      window.requestAnimationFrame(() => {
-        if (!map || isMapDragging) return;
-        if (preservedCenter) map.setCenter(preservedCenter);
-        if (preservedLevel !== null) map.setLevel(preservedLevel, { animate: false });
-      });
-    }, 40);
-  }
-
-  function fitOutdoorMarkers(bounds) {
-    if (!map || !bounds || currentXmlFilename !== "yharbor.xml" || isMapDragging) return;
-
+    if (!map || !window.kakao?.maps?.event || isMapDragging) return;
     const element = getMapElement();
     const rect = element?.getBoundingClientRect();
     if (!rect || rect.width < 2 || rect.height < 2) return;
 
-    // v129: 현재 실제 크기를 Kakao 내부 좌표계에 먼저 반영한 뒤
-    // setBounds를 정확히 한 번만 실행합니다. 이후 별도 resize/center 복원을 하지 않습니다.
-    lastMapWidth = Math.round(rect.width);
-    lastMapHeight = Math.round(rect.height);
-    window.kakao.maps.event.trigger(map, "resize");
-    map.setBounds(bounds, 18, 18, 18, 18);
+    const width = Math.round(rect.width);
+    const height = Math.round(rect.height);
+    const force = options.force === true;
+    if (!force && width === lastMapWidth && height === lastMapHeight) return;
 
+    const center = map.getCenter();
+    lastMapWidth = width;
+    lastMapHeight = height;
+    window.kakao.maps.event.trigger(map, "resize");
+    if (center) map.setCenter(center);
+  }
+
+  function fitOutdoorMarkers(bounds) {
+    if (!map || currentXmlFilename !== "yharbor.xml" || isMapDragging) return;
+
+    // v130: setBounds를 사용하지 않습니다.
+    // 좌표 평균점과 고정 레벨로 최초 화면만 구성하여 지도 투영 좌표가
+    // 확대/축소·이동 중 다시 계산되는 문제를 차단합니다.
+    const targets = menuSceneCoords.length ? menuSceneCoords : sceneCoords;
+    if (!targets.length) return;
+
+    const center = targets.reduce((sum, scene) => ({
+      lat: sum.lat + scene.lat,
+      lng: sum.lng + scene.lng
+    }), { lat: 0, lng: 0 });
+
+    center.lat /= targets.length;
+    center.lng /= targets.length;
+    map.setCenter(new window.kakao.maps.LatLng(center.lat, center.lng));
+    map.setLevel(4, { animate: false });
     preservedCenter = map.getCenter();
     preservedLevel = map.getLevel();
   }
@@ -1145,7 +1004,7 @@
   }
 
   function init(xmlFilename = "") {
-    syncResponsiveMapHost();
+    prepareMapHost();
 
     if (mapInitStarted && map) {
       forceRelayout();
@@ -1317,10 +1176,7 @@
     initWhenReady();
   }
   window.addEventListener("resize", () => {
-    window.setTimeout(() => {
-      syncResponsiveMapHost();
-      forceRelayout();
-    }, 120);
+    window.setTimeout(() => forceRelayout(), 120);
   });
 
   window.addEventListener("orientationchange", () => {
