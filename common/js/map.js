@@ -247,6 +247,10 @@
   let preservedCenter = null;
   let preservedLevel = null;
 
+  // v123: 영흥수목원 최초 진입 시 전체 메뉴 포인트가 보이도록
+  // setBounds()를 한 번만 적용합니다.
+  let initialOutdoorBoundsApplied = false;
+
   const state = {
     keepCenter: true,
     keepLevel: true,
@@ -561,7 +565,7 @@
       boxSizing: "border-box",
       background: selected ? "#ff3d00" : "#2f8cff",
       color: "#ffffff",
-      border: "2px solid #ffffff",
+      border: "0.5px solid rgba(255,255,255,.38)",
       boxShadow: "0 2px 7px rgba(0,0,0,.42)",
       fontSize: selected ? "11px" : "10px",
       fontWeight: "800",
@@ -686,12 +690,31 @@
       bounds.extend(position);
     });
 
-    if (!preservedCenter && sceneMarkers.length > 1) {
-      map.setBounds(bounds, 35, 35, 35, 35);
-    }
+    const shouldFitAllMarkers =
+      !initialOutdoorBoundsApplied &&
+      sceneMarkers.length > 1;
 
-    if (preservedCenter && state.keepCenter) map.setCenter(preservedCenter);
-    if (preservedLevel !== null && state.keepLevel) map.setLevel(preservedLevel);
+    if (shouldFitAllMarkers) {
+      initialOutdoorBoundsApplied = true;
+
+      // 지도 컨테이너가 PC/모바일 레이아웃에 맞게 자리 잡은 뒤
+      // 모든 포인트가 화면 안에 들어오도록 최초 축척을 자동 조정합니다.
+      forceRelayout();
+      map.setBounds(bounds, 24, 24, 24, 24);
+
+      // 모바일 패널 및 PC 미니맵 이동 직후 크기 계산이 늦는 경우를 보정합니다.
+      window.setTimeout(() => {
+        if (!map || currentXmlFilename !== "yharbor.xml") return;
+        forceRelayout();
+        map.setBounds(bounds, 24, 24, 24, 24);
+        preservedCenter = map.getCenter();
+        preservedLevel = map.getLevel();
+      }, 140);
+    } else {
+      // 최초 전체 맞춤 이후에는 사용자가 조정한 중심과 확대 수준을 유지합니다.
+      if (preservedCenter && state.keepCenter) map.setCenter(preservedCenter);
+      if (preservedLevel !== null && state.keepLevel) map.setLevel(preservedLevel);
+    }
   }
 
   function createIndoorMarkerElement() {
@@ -926,6 +949,12 @@
       return;
     }
 
+    if (currentXmlFilename !== filename) {
+      initialOutdoorBoundsApplied = false;
+      preservedCenter = null;
+      preservedLevel = null;
+    }
+
     currentXmlFilename = filename;
     const xmlUrls = resolveXmlUrls(filename);
 
@@ -1012,6 +1041,13 @@
 
     ensureKakaoMaps(() => {
       const filename = resolveXmlFilename(xmlFilename);
+
+      if (currentXmlFilename !== filename) {
+        initialOutdoorBoundsApplied = false;
+        preservedCenter = null;
+        preservedLevel = null;
+      }
+
       currentXmlFilename = filename;
 
       if (sceneCoords.length) {
