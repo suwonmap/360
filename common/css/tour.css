@@ -658,3 +658,48 @@ button{font:inherit}
     z-index:auto;
   }
 }
+
+/* =========================================================
+   v107 - 모바일 세로 미니맵 상단 흰색 띠 제거
+   지도는 패널 상단부터 꽉 채우고, 알약 버튼만 지도 위에 표시
+   ※ 모바일 가로 레이아웃/토글 위치는 기존 방식 유지
+   ========================================================= */
+@media (max-width:768px) and (orientation:portrait) {
+  /* 패널 바탕이 흰색 띠로 드러나지 않도록 투명 처리 */
+  .mobile-panel {
+    background:transparent !important;
+  }
+
+  /* 각 패널 고유 배경 유지 */
+  .mobile-menu-pane {
+    background:#f3f4f6 !important;
+  }
+
+  .map-pane {
+    background:transparent !important;
+  }
+
+  /* 미니맵은 패널 상단부터 끝까지 채움 */
+  .map-pane > .map,
+  #map {
+    top:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+    width:100% !important;
+    height:100% !important;
+  }
+
+  /* 미니맵 알약 버튼만 지도 위에 떠 있도록 유지 */
+  .mobile-map-pill {
+    z-index:130 !important;
+  }
+
+  /* 둘러보기 목록은 버튼 아래부터 시작 */
+  .mobile-menu-list {
+    top:36px !important;
+    bottom:0 !important;
+    height:auto !important;
+    padding-top:4px !important;
+  }
+}
