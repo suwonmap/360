@@ -190,9 +190,11 @@
       menuPill.setAttribute("aria-pressed", String(menuHidden));
       menuPill.setAttribute(
         "aria-label",
-        menuHidden ? "메뉴 나타내기" : "메뉴 감추기"
+        menuHidden ? "둘러보기 나타내기" : "둘러보기 감추기"
       );
-      menuPill.title = menuHidden ? "메뉴 나타내기" : "메뉴 감추기";
+      menuPill.title = menuHidden ? "둘러보기 나타내기" : "둘러보기 감추기";
+      const menuLabel = menuPill.querySelector(".pill-label");
+      if (menuLabel) menuLabel.textContent = "둘러보기";
       menuPill.disabled = allHidden;
     }
 

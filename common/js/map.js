@@ -58,12 +58,13 @@
         right: 10px;
         left: auto;
         z-index: 120;
-        height: 30px;
-        min-width: 76px;
+        height: 28px;
+        width: max-content;
+        min-width: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0 12px;
+        padding: 0 7px;
         color: #fff;
         background: rgba(0,0,0,.62);
         border: 1px solid rgba(255,255,255,.24);
@@ -697,19 +698,16 @@
     if (shouldFitAllMarkers) {
       initialOutdoorBoundsApplied = true;
 
-      // 지도 컨테이너가 PC/모바일 레이아웃에 맞게 자리 잡은 뒤
-      // 모든 포인트가 화면 안에 들어오도록 최초 축척을 자동 조정합니다.
-      forceRelayout();
-      map.setBounds(bounds, 24, 24, 24, 24);
+      // 즉시 1회 + PC 고정 프레임 이동 및 CSS 반영 후 재계산합니다.
+      // preserveView:false로 기존 중심/축척 복원이 setBounds를 덮어쓰지 않게 합니다.
+      fitOutdoorMarkers(bounds);
 
-      // 모바일 패널 및 PC 미니맵 이동 직후 크기 계산이 늦는 경우를 보정합니다.
-      window.setTimeout(() => {
-        if (!map || currentXmlFilename !== "yharbor.xml") return;
-        forceRelayout();
-        map.setBounds(bounds, 24, 24, 24, 24);
-        preservedCenter = map.getCenter();
-        preservedLevel = map.getLevel();
-      }, 140);
+      [80, 220, 420].forEach((delay) => {
+        window.setTimeout(() => {
+          if (!map || currentXmlFilename !== "yharbor.xml") return;
+          fitOutdoorMarkers(bounds);
+        }, delay);
+      });
     } else {
       // 최초 전체 맞춤 이후에는 사용자가 조정한 중심과 확대 수준을 유지합니다.
       if (preservedCenter && state.keepCenter) map.setCenter(preservedCenter);
@@ -924,17 +922,37 @@
     preservedLevel = map.getLevel();
   }
 
-  function forceRelayout() {
+  function forceRelayout(options = {}) {
     if (!map || !window.kakao?.maps?.event) return;
 
-    preserveViewState();
+    const preserveView = options.preserveView !== false;
+
+    if (preserveView) {
+      preserveViewState();
+    }
+
     window.kakao.maps.event.trigger(map, "resize");
+
+    if (!preserveView) return;
 
     window.setTimeout(() => {
       if (!map) return;
       if (preservedCenter) map.setCenter(preservedCenter);
       if (preservedLevel !== null) map.setLevel(preservedLevel);
     }, 30);
+  }
+
+  function fitOutdoorMarkers(bounds) {
+    if (!map || !bounds || currentXmlFilename !== "yharbor.xml") return;
+
+    // v124: PC 미니맵이 모바일 영역에서 우측 하단 고정 프레임으로
+    // 이동한 뒤 실제 크기를 기준으로 전체 포인트 축척을 계산합니다.
+    syncResponsiveMapHost();
+    forceRelayout({ preserveView: false });
+    map.setBounds(bounds, 18, 18, 18, 18);
+
+    preservedCenter = map.getCenter();
+    preservedLevel = map.getLevel();
   }
 
   async function loadXmlAndDrawMarkers(xmlFilename = "") {
@@ -1000,7 +1018,11 @@
         drawIndoorMarker(target);
       }
 
-      forceRelayout();
+      // 영흥수목원 최초 setBounds 직후에는 일반 relayout의 기존 시점 복원을
+      // 실행하지 않습니다. 실내 지도와 이후 갱신에서만 기존 화면을 유지합니다.
+      if (filename !== "yharbor.xml" || !initialOutdoorBoundsApplied) {
+        forceRelayout();
+      }
       log("XML loaded", xmlUrl, sceneCoords.length);
     } catch (error) {
       warn(error);
