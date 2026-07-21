@@ -114,13 +114,23 @@
         min-width: 1px;
         min-height: 1px;
       }
-      #map.suwon360-map-dragging .suwon360-map-marker-circle {
-        transition: none !important;
-      }
       #map .suwon360-map-marker {
-        will-change: transform;
-        transform: translateZ(0);
-        backface-visibility: hidden;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: auto;
+      }
+      #map .suwon360-map-marker-circle {
+        flex: 0 0 auto;
+        transition: none !important;
+        transform: none !important;
+        backface-visibility: visible !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: geometricPrecision;
+        font-variant-numeric: tabular-nums;
       }
       @media (max-width: 768px) {
         #suwon360-desktop-map-wrapper {
@@ -260,10 +270,12 @@
   // setBounds()를 한 번만 적용합니다.
   let initialOutdoorBoundsApplied = false;
 
-  // v126: 지도 드래그 중 resize/relayout이 겹치지 않도록 상태를 분리합니다.
+  // v127: 지도 드래그 중 resize/relayout이 겹치지 않도록 상태를 분리합니다.
   let isMapDragging = false;
   let pendingRelayout = false;
   let relayoutTimer = null;
+  let lastMapWidth = 0;
+  let lastMapHeight = 0;
 
   const state = {
     keepCenter: true,
@@ -463,7 +475,7 @@
       if (map) preservedLevel = map.getLevel();
     });
 
-    // v126: 지도 자체를 끌고 있는 동안에는 resize/relayout을 실행하지 않습니다.
+    // v127: 지도 자체를 끌고 있는 동안에는 resize/relayout을 실행하지 않습니다.
     // CustomOverlay의 CSS 전환도 잠시 끄므로 번호 원형이 밀리는 느낌을 줄입니다.
     window.kakao.maps.event.addListener(map, "dragstart", () => {
       isMapDragging = true;
@@ -473,21 +485,17 @@
 
     window.kakao.maps.event.addListener(map, "dragend", () => {
       isMapDragging = false;
+      pendingRelayout = false;
       getMapElement()?.classList.remove("suwon360-map-dragging");
       preserveViewState();
-
-      if (pendingRelayout) {
-        pendingRelayout = false;
-        window.requestAnimationFrame(() => forceRelayout());
-      }
+      // v127: 일반 지도 이동 종료 시 resize/relayout을 절대 호출하지 않습니다.
+      // Kakao Maps가 이동 중 CustomOverlay 좌표를 자체 갱신하도록 그대로 둡니다.
     });
 
     window.kakao.maps.event.addListener(map, "idle", () => {
       if (!map || isMapDragging) return;
       preserveViewState();
-
-      // 선택 포인트의 레이어 순서만 재확인합니다. 마커를 다시 만들지는 않습니다.
-      highlightCurrentScene(currentSceneName);
+      // v127: idle마다 마커 스타일/크기를 다시 적용하지 않습니다.
     });
 
     log("map created");
@@ -597,8 +605,8 @@
     element.classList.toggle("is-active", Boolean(selected));
 
     Object.assign(circle.style, {
-      width: selected ? "28px" : "22px",
-      height: selected ? "28px" : "22px",
+      width: selected ? "30px" : "24px",
+      height: selected ? "30px" : "24px",
       borderRadius: "50%",
       display: "flex",
       alignItems: "center",
@@ -606,14 +614,16 @@
       boxSizing: "border-box",
       background: selected ? "#ff3d00" : "#2f8cff",
       color: "#ffffff",
-      border: "0.5px solid rgba(255,255,255,.38)",
-      boxShadow: "0 2px 7px rgba(0,0,0,.42)",
-      fontSize: selected ? "11px" : "10px",
+      border: "1px solid rgba(255,255,255,.82)",
+      boxShadow: "0 1px 4px rgba(0,0,0,.34)",
+      fontFamily: '"Malgun Gothic", "Noto Sans KR", sans-serif',
+      fontSize: selected ? "13px" : "12px",
       fontWeight: "800",
+      letterSpacing: "-0.2px",
       lineHeight: "1",
       cursor: "pointer",
       userSelect: "none",
-      transition: "all .16s ease"
+      transition: "none"
     });
   }
 
@@ -978,12 +988,21 @@
   function forceRelayout(options = {}) {
     if (!map || !window.kakao?.maps?.event) return;
 
-    // v126: 지도 이동 중 resize가 실행되면 타일과 CustomOverlay 위치가
-    // 서로 다른 프레임에서 갱신되어 빈 배경/마커 밀림이 나타날 수 있습니다.
-    if (isMapDragging) {
-      pendingRelayout = true;
-      return;
-    }
+    // v127: relayout은 지도 컨테이너의 실제 크기가 바뀐 경우에만 실행합니다.
+    // 일반 마우스 드래그/지도 이동 중에는 호출하지 않습니다.
+    if (isMapDragging) return;
+
+    const element = getMapElement();
+    if (!element) return;
+
+    const rect = element.getBoundingClientRect();
+    const width = Math.round(rect.width);
+    const height = Math.round(rect.height);
+    if (width < 2 || height < 2) return;
+
+    const force = options.force === true;
+    const sizeChanged = width !== lastMapWidth || height !== lastMapHeight;
+    if (!force && !sizeChanged) return;
 
     const preserveView = options.preserveView !== false;
     if (preserveView) preserveViewState();
@@ -991,10 +1010,12 @@
     if (relayoutTimer) window.clearTimeout(relayoutTimer);
     relayoutTimer = window.setTimeout(() => {
       relayoutTimer = null;
-      if (!map || isMapDragging) {
-        pendingRelayout = true;
-        return;
-      }
+      if (!map || isMapDragging) return;
+
+      const latest = getMapElement()?.getBoundingClientRect();
+      if (!latest || latest.width < 2 || latest.height < 2) return;
+      lastMapWidth = Math.round(latest.width);
+      lastMapHeight = Math.round(latest.height);
 
       window.kakao.maps.event.trigger(map, "resize");
 
@@ -1004,7 +1025,7 @@
         if (preservedCenter) map.setCenter(preservedCenter);
         if (preservedLevel !== null) map.setLevel(preservedLevel, { animate: false });
       });
-    }, 50);
+    }, 40);
   }
 
   function fitOutdoorMarkers(bounds) {
@@ -1015,8 +1036,13 @@
     syncResponsiveMapHost();
     if (isMapDragging) return;
 
-    // setBounds 직전에 한 번만 resize하고, 이후에는 setBounds 결과를 보존합니다.
-    window.kakao.maps.event.trigger(map, "resize");
+    // setBounds 직전에 현재 컨테이너 크기로 한 번만 resize합니다.
+    const rect = getMapElement()?.getBoundingClientRect();
+    if (rect && rect.width > 1 && rect.height > 1) {
+      lastMapWidth = Math.round(rect.width);
+      lastMapHeight = Math.round(rect.height);
+      window.kakao.maps.event.trigger(map, "resize");
+    }
     map.setBounds(bounds, 18, 18, 18, 18);
 
     preservedCenter = map.getCenter();
@@ -1213,7 +1239,7 @@
   window.js_force_minimap_relayout = forceRelayout;
 
   window.js_suwon360_on_view_changed = function jsSuwon360OnViewChanged(hlookat, fov) {
-    // v126: common_layout.xml은 인수 없이 이 함수를 호출합니다.
+    // v127: common_layout.xml은 인수 없이 이 함수를 호출합니다.
     // map.js가 panorama.js의 동일 전역 함수를 덮어쓰더라도 krpano에서
     // 현재 시선값을 직접 읽어 남수헌 방향마커가 계속 회전하게 합니다.
     let heading = Number(hlookat);
