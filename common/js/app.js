@@ -110,7 +110,15 @@
     }
   }
 
-  function closeTour() {
+  function closeTour(event) {
+    const closeButton = event?.currentTarget || document.getElementById("close-btn");
+
+    // v122: 모바일에서 종료 버튼을 누른 뒤 파란색 상태가 남지 않도록 즉시 해제
+    closeButton?.blur();
+    if (document.activeElement === closeButton) {
+      document.activeElement.blur();
+    }
+
     if (window.history.length > 1) {
       window.history.back();
       return;
