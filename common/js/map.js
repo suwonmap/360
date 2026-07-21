@@ -44,9 +44,9 @@
         min-width: 235px;
         min-height: 160px;
         overflow: hidden;
-        background: #f8fafc;
-        border: 2px solid rgba(255,255,255,.88);
-        border-radius: 10px;
+        background: transparent;
+        border: 1px solid rgba(255,255,255,.30);
+        border-radius: 15px;
         box-shadow: 0 5px 18px rgba(0,0,0,.42);
       }
       #suwon360-desktop-map-wrapper[hidden] {
@@ -54,17 +54,23 @@
       }
       #suwon360-desktop-map-wrapper .suwon360-desktop-map-title {
         position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
+        top: 10px;
+        right: 10px;
+        left: auto;
         z-index: 120;
-        height: 29px;
+        height: 30px;
+        min-width: 76px;
         display: flex;
         align-items: center;
-        padding: 0 10px 0 34px;
-        color: #334155;
-        background: linear-gradient(180deg,rgba(255,255,255,.98),rgba(241,245,249,.96));
-        border-bottom: 1px solid rgba(148,163,184,.42);
+        justify-content: center;
+        padding: 0 12px;
+        color: #fff;
+        background: rgba(0,0,0,.62);
+        border: 1px solid rgba(255,255,255,.24);
+        border-radius: 999px;
+        box-shadow: 0 3px 10px rgba(0,0,0,.25);
+        -webkit-backdrop-filter: blur(7px);
+        backdrop-filter: blur(7px);
         font: 800 11px/1 "Malgun Gothic", sans-serif;
         pointer-events: none;
       }
@@ -93,7 +99,7 @@
         position: absolute !important;
         left: 0 !important;
         right: 0 !important;
-        top: 29px !important;
+        top: 0 !important;
         bottom: 0 !important;
         display: block !important;
         width: 100% !important;

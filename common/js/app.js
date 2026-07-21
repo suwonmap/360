@@ -42,18 +42,18 @@
     const dateEl = document.getElementById("shooting-date");
     const finalTitle = title || window.Suwon360.config.tour;
 
-    // v96: 콘텐츠명은 최대 10자로 표시하고 뒤에 "둘러보기"를 붙임
+    // v96: 콘텐츠명은 최대 10자로 표시하고 뒤에 ""를 붙임
     const shortTitle = Array.from(finalTitle).slice(0, 10).join("");
-    const explorerTitle = `${shortTitle} 둘러보기`;
+    const explorerTitle = `${shortTitle}`;
 
     if (titleEl) {
-      titleEl.textContent = explorerTitle;
-      titleEl.title = `${finalTitle} 둘러보기`;
+      titleEl.textContent = finalTitle;
+      titleEl.title = finalTitle;
     }
 
     if (brandNameEl) {
-      brandNameEl.textContent = `수원360°투어 │ ${finalTitle}`;
-      brandNameEl.title = `수원360°투어 │ ${finalTitle}`;
+      brandNameEl.textContent = `수원360투어 | ${finalTitle}`;
+      brandNameEl.title = `수원360투어 | ${finalTitle}`;
     }
 
     if (dateEl) {
@@ -61,7 +61,7 @@
       dateEl.hidden = !shootingDate;
     }
 
-    document.title = `수원360°투어 │ ${finalTitle}`;
+    document.title = `수원360투어 | ${finalTitle}`;
   }
 
   async function shareCurrentLink() {

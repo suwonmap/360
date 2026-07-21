@@ -81,7 +81,7 @@ button{font:inherit}
   .mobile-pane{position:relative;min-width:0;height:100%;overflow:hidden;background:#fff}
   .mobile-menu-pane{border-right:1px solid #d1d5db;background:#f3f4f6}
 
-  /* 둘러보기 고정 헤더: 최대한 얇게 */
+  /* 메뉴 고정 헤더: 최대한 얇게 */
   .mobile-pane-header{
     position:absolute;left:0;right:0;top:0;z-index:40;
     display:flex;align-items:center;height:27px;min-height:27px;
@@ -222,7 +222,7 @@ button{font:inherit}
 
 /* =========================================================
    v101 - 모바일 미니맵 헤더
-   둘러보기와 동일한 프레임, 왼쪽 화살표 / 오른쪽 '미니맵'
+   메뉴와 동일한 프레임, 왼쪽 화살표 / 오른쪽 '미니맵'
    ========================================================= */
 @media(max-width:768px){
   .map-pane-header{
@@ -360,7 +360,7 @@ button{font:inherit}
 }
 
 /* =========================================================
-   v105 - 모바일 독립 알약형 둘러보기 / 미니맵 컨트롤
+   v105 - 모바일 독립 알약형 메뉴 / 미니맵 컨트롤
    긴 헤더바 제거, 93% 반투명 흰색 + 은은한 드롭 그림자
    ========================================================= */
 @media (max-width:768px), (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
@@ -570,7 +570,7 @@ button{font:inherit}
    ※ 모바일 가로 토글 위치와 동작은 v105 그대로 유지
    ========================================================= */
 @media (max-width:768px) and (orientation:portrait) {
-  /* 둘러보기·미니맵 토글을 글자 높이에 맞춘 타이트한 라벨형으로 조정 */
+  /* 메뉴·미니맵 토글을 글자 높이에 맞춘 타이트한 라벨형으로 조정 */
   .mobile-panel-pill {
     height:26px;
     min-height:26px;
@@ -695,7 +695,7 @@ button{font:inherit}
     z-index:130 !important;
   }
 
-  /* 둘러보기 목록은 버튼 아래부터 시작 */
+  /* 메뉴 목록은 버튼 아래부터 시작 */
   .mobile-menu-list {
     top:36px !important;
     bottom:0 !important;
@@ -958,7 +958,7 @@ button{font:inherit}
     cursor:default;
   }
 
-  /* 둘러보기/미니맵 토글 상태를 화살표 방향으로 표시 */
+  /* 메뉴/미니맵 토글 상태를 화살표 방향으로 표시 */
   .mobile-panel-pill[aria-pressed="true"] .pill-arrow {
     transform:rotate(180deg) !important;
   }
@@ -1211,6 +1211,29 @@ button{font:inherit}
 
   /* PC 알약에서는 펼침 화살표 제거 */
   .mobile-map-pill .pill-arrow{
+    display:none !important;
+  }
+}
+
+
+/* =========================================================
+   v116 - 모바일 로고 및 콘텐츠 제목 최종 정리
+   표시 형식: 수원360투어 | XML title
+   ========================================================= */
+@media (max-width:768px){
+  .brand-service-name::after{
+    content:"" !important;
+  }
+
+  .brand-mobile-separator{
+    display:inline !important;
+  }
+
+  .brand-content-title{
+    display:inline !important;
+  }
+
+  .brand-content-title:empty{
     display:none !important;
   }
 }
