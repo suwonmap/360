@@ -219,3 +219,52 @@ button{font:inherit}
 .suwon360-map-tooltip{pointer-events:none!important;background:transparent!important;border:0!important;box-shadow:none!important;}
 .suwon360-map-info{display:block!important;border:0!important;outline:0!important;}
 @media(max-width:768px){.suwon360-map-tooltip,.suwon360-map-info{display:none!important;}}
+
+/* =========================================================
+   v101 - 모바일 미니맵 헤더
+   둘러보기와 동일한 프레임, 왼쪽 화살표 / 오른쪽 '미니맵'
+   ========================================================= */
+@media(max-width:768px){
+  .map-pane-header{
+    padding:0 8px 0 31px;
+    justify-content:flex-end;
+  }
+
+  .map-pane-header strong{
+    margin-left:auto;
+    text-align:right;
+  }
+
+  .map-pane-header .menu-show-arrow,
+  .map-pane-header .map-hide-arrow{
+    left:3px;
+    right:auto;
+    top:2px;
+  }
+
+  .map-pane-header .menu-show-arrow::before,
+  .map-pane-header .map-hide-arrow::before{
+    content:"←";
+  }
+
+  .map-pane > .map{
+    top:27px;
+    bottom:0;
+    height:auto;
+  }
+}
+
+@media(orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  .map-pane-header .menu-show-arrow,
+  .map-pane-header .map-hide-arrow{
+    top:2px;
+    bottom:auto;
+    left:3px;
+    right:auto;
+  }
+
+  .map-pane-header .menu-show-arrow::before,
+  .map-pane-header .map-hide-arrow::before{
+    content:"←";
+  }
+}
