@@ -114,6 +114,14 @@
         min-width: 1px;
         min-height: 1px;
       }
+      #map.suwon360-map-dragging .suwon360-map-marker-circle {
+        transition: none !important;
+      }
+      #map .suwon360-map-marker {
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+      }
       @media (max-width: 768px) {
         #suwon360-desktop-map-wrapper {
           display: none !important;
@@ -251,6 +259,11 @@
   // v123: 영흥수목원 최초 진입 시 전체 메뉴 포인트가 보이도록
   // setBounds()를 한 번만 적용합니다.
   let initialOutdoorBoundsApplied = false;
+
+  // v126: 지도 드래그 중 resize/relayout이 겹치지 않도록 상태를 분리합니다.
+  let isMapDragging = false;
+  let pendingRelayout = false;
+  let relayoutTimer = null;
 
   const state = {
     keepCenter: true,
@@ -448,6 +461,33 @@
 
     window.kakao.maps.event.addListener(map, "zoom_changed", () => {
       if (map) preservedLevel = map.getLevel();
+    });
+
+    // v126: 지도 자체를 끌고 있는 동안에는 resize/relayout을 실행하지 않습니다.
+    // CustomOverlay의 CSS 전환도 잠시 끄므로 번호 원형이 밀리는 느낌을 줄입니다.
+    window.kakao.maps.event.addListener(map, "dragstart", () => {
+      isMapDragging = true;
+      getMapElement()?.classList.add("suwon360-map-dragging");
+      closeInfoWindow();
+    });
+
+    window.kakao.maps.event.addListener(map, "dragend", () => {
+      isMapDragging = false;
+      getMapElement()?.classList.remove("suwon360-map-dragging");
+      preserveViewState();
+
+      if (pendingRelayout) {
+        pendingRelayout = false;
+        window.requestAnimationFrame(() => forceRelayout());
+      }
+    });
+
+    window.kakao.maps.event.addListener(map, "idle", () => {
+      if (!map || isMapDragging) return;
+      preserveViewState();
+
+      // 선택 포인트의 레이어 순서만 재확인합니다. 마커를 다시 만들지는 않습니다.
+      highlightCurrentScene(currentSceneName);
     });
 
     log("map created");
@@ -862,7 +902,11 @@
     const cone = indoorOverlayElement?.querySelector("#fovCone");
     if (!direction) return;
 
-    direction.style.transform = `translate(-50%, -50%) rotate(${lastView.hlookat}deg)`;
+    // 지도 북쪽(위쪽)을 0도로 보고 krpano hlookat을 시계방향으로 적용합니다.
+    // 콘텐츠별 보정값이 필요하면 window.SUWON360_HEADING_OFFSET에 각도를 지정할 수 있습니다.
+    const headingOffset = Number(window.SUWON360_HEADING_OFFSET || 0);
+    const mapHeading = ((lastView.hlookat + headingOffset) % 360 + 360) % 360;
+    direction.style.transform = `translate(-50%, -50%) rotateZ(${mapHeading}deg)`;
 
     if (cone && Number.isFinite(lastView.fov)) {
       const clamped = Math.max(30, Math.min(120, lastView.fov));
@@ -934,21 +978,33 @@
   function forceRelayout(options = {}) {
     if (!map || !window.kakao?.maps?.event) return;
 
-    const preserveView = options.preserveView !== false;
-
-    if (preserveView) {
-      preserveViewState();
+    // v126: 지도 이동 중 resize가 실행되면 타일과 CustomOverlay 위치가
+    // 서로 다른 프레임에서 갱신되어 빈 배경/마커 밀림이 나타날 수 있습니다.
+    if (isMapDragging) {
+      pendingRelayout = true;
+      return;
     }
 
-    window.kakao.maps.event.trigger(map, "resize");
+    const preserveView = options.preserveView !== false;
+    if (preserveView) preserveViewState();
 
-    if (!preserveView) return;
+    if (relayoutTimer) window.clearTimeout(relayoutTimer);
+    relayoutTimer = window.setTimeout(() => {
+      relayoutTimer = null;
+      if (!map || isMapDragging) {
+        pendingRelayout = true;
+        return;
+      }
 
-    window.setTimeout(() => {
-      if (!map) return;
-      if (preservedCenter) map.setCenter(preservedCenter);
-      if (preservedLevel !== null) map.setLevel(preservedLevel);
-    }, 30);
+      window.kakao.maps.event.trigger(map, "resize");
+
+      if (!preserveView) return;
+      window.requestAnimationFrame(() => {
+        if (!map || isMapDragging) return;
+        if (preservedCenter) map.setCenter(preservedCenter);
+        if (preservedLevel !== null) map.setLevel(preservedLevel, { animate: false });
+      });
+    }, 50);
   }
 
   function fitOutdoorMarkers(bounds) {
@@ -957,7 +1013,10 @@
     // v124: PC 미니맵이 모바일 영역에서 우측 하단 고정 프레임으로
     // 이동한 뒤 실제 크기를 기준으로 전체 포인트 축척을 계산합니다.
     syncResponsiveMapHost();
-    forceRelayout({ preserveView: false });
+    if (isMapDragging) return;
+
+    // setBounds 직전에 한 번만 resize하고, 이후에는 setBounds 결과를 보존합니다.
+    window.kakao.maps.event.trigger(map, "resize");
     map.setBounds(bounds, 18, 18, 18, 18);
 
     preservedCenter = map.getCenter();
@@ -1154,7 +1213,29 @@
   window.js_force_minimap_relayout = forceRelayout;
 
   window.js_suwon360_on_view_changed = function jsSuwon360OnViewChanged(hlookat, fov) {
-    onViewChanged({ hlookat, fov });
+    // v126: common_layout.xml은 인수 없이 이 함수를 호출합니다.
+    // map.js가 panorama.js의 동일 전역 함수를 덮어쓰더라도 krpano에서
+    // 현재 시선값을 직접 읽어 남수헌 방향마커가 계속 회전하게 합니다.
+    let heading = Number(hlookat);
+    let fieldOfView = Number(fov);
+
+    if (!Number.isFinite(heading) || !Number.isFinite(fieldOfView)) {
+      const krpano = getKrpano();
+      if (krpano) {
+        if (!Number.isFinite(heading)) {
+          heading = Number(krpano.get?.("view.hlookat"));
+        }
+        if (!Number.isFinite(fieldOfView)) {
+          fieldOfView = Number(krpano.get?.("view.fov"));
+        }
+      }
+    }
+
+    onViewChanged({
+      sceneName: currentSceneName,
+      hlookat: heading,
+      fov: fieldOfView
+    });
   };
 
   window.Suwon360Map = {

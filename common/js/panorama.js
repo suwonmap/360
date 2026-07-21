@@ -153,7 +153,7 @@
           fov
         });
       }
-    }, 80);
+    }, 60);
   }
 
   function loadScene(sceneName) {
