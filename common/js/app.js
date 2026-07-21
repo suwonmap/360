@@ -75,9 +75,16 @@
       window.Suwon360?.config?.tour ||
       "수원360투어";
 
-    const shareTitle = `수원360투어 | ${rawContentTitle}`;
-    const shareText = `수원360투어에서 ${rawContentTitle}을(를) 둘러보세요.`;
-    const copyText = `${shareTitle}\n\n${shareText}\n\n${url}`;
+    const shareTitle = `수원360°투어 | ${rawContentTitle}`;
+    const shareText = shareTitle;
+    const copyText = `${shareTitle}\n\n${url}`;
+
+    // v120: 공유창이 열리기 전에 포커스를 먼저 해제하여
+    // 모바일에서 파란색 hover/focus 상태가 남지 않도록 합니다.
+    shareButton?.blur();
+    if (document.activeElement === shareButton) {
+      document.activeElement.blur();
+    }
 
     try {
       if (navigator.share) {

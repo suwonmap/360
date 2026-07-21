@@ -1290,3 +1290,29 @@ button{font:inherit}
     transform: none !important;
   }
 }
+
+
+/* =========================================================
+   v120 - 모바일 공유 버튼 파란색 hover/focus 완전 제거
+   터치 브라우저의 고정 hover 상태까지 원래 검은 배경으로 강제
+   ========================================================= */
+@media (max-width:768px){
+  #share-btn,
+  #share-btn:hover,
+  #share-btn:focus,
+  #share-btn:active,
+  #share-btn:focus-visible{
+    background:var(--glass) !important;
+    color:#fff !important;
+    border-color:var(--glass-border) !important;
+    outline:0 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.22) !important;
+    transform:none !important;
+    transition:none !important;
+    -webkit-tap-highlight-color:rgba(0,0,0,0) !important;
+  }
+
+  #share-btn::-moz-focus-inner{
+    border:0 !important;
+  }
+}
