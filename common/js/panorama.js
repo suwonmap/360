@@ -37,6 +37,7 @@
     hideKrpanoConsole(krpano);
     hideDefaultSkin(krpano);
     readScenes(krpano);
+    readMapConfig(krpano);
 
     const title = String(get(krpano, "title") || state.config.tour);
     const shootingDate = String(get(krpano, "capturedate") || get(krpano, "shooting_date") || "");
@@ -46,7 +47,9 @@
 
     window.Suwon360Menu?.render?.(state.menuScenes);
     window.Suwon360Map?.setScenes?.(state.scenes, state.menuScenes);
-    window.Suwon360Map?.init?.(`${state.config.tour}.xml`);
+    const firstScene = String(get(krpano, "xml.scene") || state.scenes[0]?.name || "");
+    if (firstScene) window.Suwon360Map?.updateFromScene?.(firstScene);
+    window.Suwon360Map?.init?.();
     watchScene(krpano);
   }
 
@@ -79,8 +82,11 @@
         get(krpano, `${base}.lng`) ?? get(krpano, `${base}.lon`) ??
         get(krpano, `${base}.longitude`) ?? get(krpano, `${base}.map_lng`)
       );
+      const heading = numberOrNaN(
+        get(krpano, `${base}.heading`) ?? get(krpano, `${base}.map_heading`)
+      );
 
-      scenes.push({ index, name, title, menuShow, menuParent, lat, lng });
+      scenes.push({ index, name, title, menuShow, menuParent, lat, lng, heading });
     }
 
     const menuScenes = scenes.filter((scene) => scene.menuShow);
@@ -106,6 +112,18 @@
     state.menuScenes = menuScenes;
     state.resolveMenuScene = resolveMenuScene;
     state.mainSceneNames = menuScenes.map((scene) => scene.name);
+  }
+
+  function readMapConfig(krpano) {
+    const state = window.Suwon360;
+    const config = {
+      mode: String(get(krpano, "mapmode") || get(krpano, "map_mode") || "auto"),
+      lat: numberOrNaN(get(krpano, "maplat") ?? get(krpano, "map_lat")),
+      lng: numberOrNaN(get(krpano, "maplng") ?? get(krpano, "map_lng")),
+      level: numberOrNaN(get(krpano, "maplevel") ?? get(krpano, "map_level"))
+    };
+    state.mapConfig = config;
+    window.Suwon360Map?.setConfig?.(config);
   }
 
   function watchScene(krpano) {
@@ -195,7 +213,8 @@
   window.js_initialize_suwon360 = function () {
     if (!window.Suwon360?.ready) return;
     window.Suwon360Map?.setScenes?.(window.Suwon360.scenes, window.Suwon360.menuScenes);
-    window.Suwon360Map?.init?.(`${window.Suwon360.config.tour}.xml`);
+    window.Suwon360Map?.setConfig?.(window.Suwon360.mapConfig || {});
+    window.Suwon360Map?.init?.();
   };
 
   window.js_suwon360_on_scene_changed = function () {
