@@ -1341,3 +1341,74 @@ button{font:inherit}
     border:0 !important;
   }
 }
+
+/* =========================================================
+   v200 - 안정형 카카오 미니맵
+   PC 지도 크기를 고정하여 카카오 내부 타일/마커 좌표계 불일치 방지
+   ========================================================= */
+@media (min-width:769px){
+  #suwon360-desktop-map-wrapper{
+    display:block!important;
+    position:fixed!important;
+    right:20px!important;
+    bottom:20px!important;
+    width:300px!important;
+    height:205px!important;
+    min-width:300px!important;
+    max-width:300px!important;
+    min-height:205px!important;
+    max-height:205px!important;
+    overflow:hidden!important;
+    transform:none!important;
+    filter:none!important;
+    backdrop-filter:none!important;
+    contain:none!important;
+    isolation:auto!important;
+  }
+  #suwon360-desktop-map-wrapper .suwon360-map-resize-handle{display:none!important}
+  #desktop-map{
+    position:absolute!important;
+    inset:0!important;
+    width:300px!important;
+    height:205px!important;
+    min-width:300px!important;
+    min-height:205px!important;
+    max-width:300px!important;
+    max-height:205px!important;
+    transform:none!important;
+    filter:none!important;
+    zoom:1!important;
+  }
+}
+.s360-indoor-marker{
+  --s360-heading:0deg;
+  position:relative;
+  width:70px;
+  height:70px;
+  transform:rotate(var(--s360-heading));
+  transform-origin:50% 50%;
+  pointer-events:none;
+}
+.s360-indoor-fov{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:0;
+  height:0;
+  transform:translate(-50%,-92%);
+  border-left:18px solid transparent;
+  border-right:18px solid transparent;
+  border-bottom:46px solid rgba(37,99,235,.28);
+}
+.s360-indoor-dot{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:16px;
+  height:16px;
+  transform:translate(-50%,-50%);
+  border:2px solid #fff;
+  border-radius:50%;
+  background:#2563eb;
+  box-shadow:0 1px 5px rgba(0,0,0,.35);
+}
