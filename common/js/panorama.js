@@ -110,20 +110,50 @@
 
   function watchScene(krpano) {
     if (sceneWatcher) clearInterval(sceneWatcher);
+
     let previousScene = "";
+    let previousHlookat = NaN;
+    let previousFov = NaN;
 
     sceneWatcher = setInterval(() => {
       const currentScene = String(get(krpano, "xml.scene") || "");
-      if (!currentScene || currentScene === previousScene) return;
-      previousScene = currentScene;
+      const hlookat = Number(get(krpano, "view.hlookat"));
+      const fov = Number(get(krpano, "view.fov"));
 
-      const state = window.Suwon360;
-      state.currentScene = currentScene;
-      state.activeMenuScene = state.resolveMenuScene?.(currentScene) || currentScene;
+      if (currentScene && currentScene !== previousScene) {
+        previousScene = currentScene;
 
-      window.Suwon360Menu?.select?.(currentScene);
-      window.Suwon360Map?.updateFromScene?.(currentScene);
-    }, 180);
+        const state = window.Suwon360;
+        state.currentScene = currentScene;
+        state.activeMenuScene = state.resolveMenuScene?.(currentScene) || currentScene;
+
+        window.Suwon360Menu?.select?.(currentScene);
+        window.Suwon360Map?.updateFromScene?.(currentScene);
+      }
+
+      // v125: 일부 모바일 환경에서 krpano onviewchange 이벤트가
+      // 누락되더라도 남수헌 방향 마커가 시선을 계속 따라가도록 보정합니다.
+      const headingChanged =
+        Number.isFinite(hlookat) &&
+        (!Number.isFinite(previousHlookat) ||
+         Math.abs(hlookat - previousHlookat) >= 0.15);
+
+      const fovChanged =
+        Number.isFinite(fov) &&
+        (!Number.isFinite(previousFov) ||
+         Math.abs(fov - previousFov) >= 0.15);
+
+      if (headingChanged || fovChanged) {
+        previousHlookat = hlookat;
+        previousFov = fov;
+
+        window.Suwon360Map?.onViewChanged?.({
+          sceneName: currentScene,
+          hlookat,
+          fov
+        });
+      }
+    }, 80);
   }
 
   function loadScene(sceneName) {

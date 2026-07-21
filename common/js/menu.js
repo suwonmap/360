@@ -106,9 +106,23 @@
 
   function scrollToButton(button) {
     if (!button || button.parentElement?.id !== "mobile-menu-list") return;
+
     const container = button.parentElement;
-    const top = button.offsetTop - (container.clientHeight - button.offsetHeight) / 2;
-    container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    const top = Math.max(
+      0,
+      button.offsetTop - (container.clientHeight - button.offsetHeight) / 2
+    );
+
+    // v125: 모바일 미니맵 포인트 선택 시 메뉴가 길게 흘러가는
+    // 애니메이션을 제거하고 선택 위치로 즉시 이동합니다.
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    if (isMobile) {
+      container.scrollTop = top;
+      return;
+    }
+
+    container.scrollTo({ top, behavior: "smooth" });
   }
 
   function select(sceneName, scroll = true) {

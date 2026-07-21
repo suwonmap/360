@@ -813,6 +813,11 @@
     }
 
     updateDirection(lastView.hlookat, lastView.fov);
+
+    // CustomOverlay DOM 장착 직후 한 번 더 적용하여 모바일 렌더링 지연을 보정합니다.
+    window.requestAnimationFrame(() => {
+      updateDirection(lastView.hlookat, lastView.fov);
+    });
   }
 
   function findScene(sceneName) {
@@ -846,7 +851,11 @@
     const heading = Number(hlookat);
     const fieldOfView = Number(fov);
 
-    if (Number.isFinite(heading)) lastView.hlookat = heading;
+    if (Number.isFinite(heading)) {
+      // v125: 음수 및 360도를 넘는 krpano hlookat 값을 정규화합니다.
+      lastView.hlookat = ((heading % 360) + 360) % 360;
+    }
+
     if (Number.isFinite(fieldOfView)) lastView.fov = fieldOfView;
 
     const direction = indoorOverlayElement?.querySelector("#rvDirection");
