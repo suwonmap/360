@@ -1412,3 +1412,38 @@ button{font:inherit}
   background:#2563eb;
   box-shadow:0 1px 5px rgba(0,0,0,.35);
 }
+
+
+/* =========================================================
+   v201 - PC 미니맵 표시 및 남수헌 좌표 보정
+   ========================================================= */
+@media (min-width:769px){
+  #suwon360-desktop-map-wrapper{
+    z-index:1100!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    background:#fff!important;
+    border:1px solid rgba(255,255,255,.75)!important;
+    border-radius:12px!important;
+    box-shadow:0 10px 28px rgba(0,0,0,.28)!important;
+  }
+  #desktop-map{
+    z-index:1!important;
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  .suwon360-desktop-map-title{
+    display:none!important;
+  }
+}
+@media (max-width:768px){
+  #mobile-map{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    min-width:120px!important;
+    min-height:120px!important;
+  }
+}

@@ -27,6 +27,7 @@
   let currentSceneName = "";
   let currentXmlFilename = "";
   let latestView = { hlookat: 0, fov: 90 };
+  let latestPosition = { lat: NaN, lng: NaN };
   let initToken = 0;
 
   function createContext(name, elementId) {
@@ -204,8 +205,8 @@
   }
 
   function buildIndoorOverlay(context) {
-    const source = validScenes(allScenes)[0] || validScenes(menuScenes)[0];
-    if (!source) return;
+    const source = validScenes(allScenes)[0] || validScenes(menuScenes)[0] ||
+      (Number.isFinite(latestPosition.lat) && Number.isFinite(latestPosition.lng) ? latestPosition : DEFAULT_CENTER);
 
     const root = document.createElement("div");
     root.className = "s360-indoor-marker";
@@ -239,7 +240,9 @@
   function configureMapForContent(context) {
     const outdoor = currentXmlFilename === "yharbor.xml";
     const source = outdoor ? menuScenes : validScenes(allScenes);
-    const center = sceneCenter(source);
+    const center = (!outdoor && Number.isFinite(latestPosition.lat) && Number.isFinite(latestPosition.lng))
+      ? latestPosition
+      : sceneCenter(source);
 
     context.map.setCenter(new kakao.maps.LatLng(center.lat, center.lng));
     context.map.setLevel(outdoor ? OUTDOOR_LEVEL : INDOOR_LEVEL, { animate: false });
@@ -376,6 +379,26 @@
   }
 
   function updatePosition(lat, lng, sceneName, hlookat, fov) {
+    const nextLat = Number(lat);
+    const nextLng = Number(lng);
+
+    if (Number.isFinite(nextLat) && Number.isFinite(nextLng)) {
+      latestPosition = { lat: nextLat, lng: nextLng };
+
+      Object.values(contexts).forEach((context) => {
+        if (!context.map || currentXmlFilename === "yharbor.xml") return;
+
+        const position = new kakao.maps.LatLng(nextLat, nextLng);
+        context.map.setCenter(position);
+
+        if (!context.indoorOverlay) {
+          buildIndoorOverlay(context);
+        } else {
+          context.indoorOverlay.setPosition(position);
+        }
+      });
+    }
+
     if (sceneName) updateFromScene(sceneName);
     onViewChanged({ hlookat, fov });
   }
