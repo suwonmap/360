@@ -284,3 +284,66 @@ button{font:inherit}
   .panel-toggle-text{display:none}
   .app[data-mobile-layout="hidden"] .panel-toggle{transform:none}
 }
+
+/* ==========================================================
+   v103 모바일 토글 정리
+   - 전체접기/전체보기: 세로·가로 모두 화면 중앙 하단 고정
+   - 가로모드 메뉴/미니맵 토글: 세로모드와 동일한 버튼 디자인·배치
+   - 가로모드 우측 하단 위쪽 화살표 제거
+   ========================================================== */
+@media(max-width:768px){
+  /* 전체 토글은 레이아웃 상태와 관계없이 항상 화면 중앙 하단에 표시 */
+  .panel-toggle,
+  .app[data-mobile-layout="hidden"] .panel-toggle{
+    position:fixed;
+    left:50%;
+    right:auto;
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    transform:translateX(-50%);
+    z-index:2200;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+}
+
+@media(orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  /* 세로모드와 같은 회색 원형 버튼 및 좌우 꺾쇠를 사용 */
+  .pane-arrow{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:#eef2f6;
+    color:#334155;
+    font-size:16px;
+    line-height:1;
+  }
+
+  .menu-hide-arrow{top:2px;right:3px;bottom:auto;left:auto}
+  .menu-show-arrow{top:2px;left:3px;right:auto;bottom:auto}
+  .map-hide-arrow{top:2px;left:3px;right:auto;bottom:auto}
+  .map-show-arrow{top:2px;right:3px;left:auto;bottom:auto}
+
+  .menu-hide-arrow::before{content:"←"}
+  .menu-show-arrow::before{content:"→"}
+  .map-hide-arrow::before{content:"→"}
+  .map-show-arrow::before{content:"←"}
+
+  /* 가로모드에서도 전체접기/전체보기 문구를 표시 */
+  .panel-toggle,
+  .app[data-mobile-layout="hidden"] .panel-toggle{
+    min-width:92px;
+    width:auto;
+    height:30px;
+    padding:0 12px;
+    gap:5px;
+    left:50%;
+    right:auto;
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    transform:translateX(-50%);
+  }
+  .panel-toggle-text{display:inline}
+}
