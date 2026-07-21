@@ -171,32 +171,7 @@ button{font:inherit}
 
   .app[data-mobile-layout="menu"] .mobile-panel{grid-template-columns:1fr}
   .app[data-mobile-layout="menu"] .mobile-menu-pane{display:block;border-right:0}
-  .app[data-mobile-layout="menu"] .map-pane{
-    display:block;
-    width:28px;
-    min-width:28px;
-    overflow:visible;
-    background:transparent;
-  }
-
-  .app[data-mobile-layout="menu"] .map{
-    display:none;
-  }
-
-  .app[data-mobile-layout="menu"] .map-pane-header{
-    position:absolute;
-    inset:0;
-    border:none;
-    background:transparent;
-    padding:0;
-  }
-
-  .app[data-mobile-layout="menu"] .map-show-arrow{
-    display:grid;
-    position:absolute;
-    top:2px;
-    right:3px;
-  }
+  .app[data-mobile-layout="menu"] .map-pane{display:none}
   .app[data-mobile-layout="menu"] .menu-hide-arrow{display:none}
   .app[data-mobile-layout="menu"] .map-show-arrow{display:grid}
 
@@ -383,3 +358,209 @@ button{font:inherit}
     content:"↑";
   }
 }
+
+/* =========================================================
+   v105 - 모바일 독립 알약형 둘러보기 / 미니맵 컨트롤
+   긴 헤더바 제거, 93% 반투명 흰색 + 은은한 드롭 그림자
+   ========================================================= */
+@media (max-width:768px), (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .mobile-panel {
+    position:fixed;
+    overflow:hidden;
+  }
+
+  .mobile-pane-header {
+    display:none !important;
+  }
+
+  .mobile-panel-pill {
+    position:absolute;
+    z-index:80;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    min-width:108px;
+    height:34px;
+    padding:0 12px;
+    border:1px solid rgba(255,255,255,.56);
+    border-radius:999px;
+    background:rgba(255,255,255,.93);
+    color:#273444;
+    box-shadow:
+      0 5px 16px rgba(15,23,42,.14),
+      0 1px 3px rgba(15,23,42,.09);
+    -webkit-backdrop-filter:blur(8px) saturate(125%);
+    backdrop-filter:blur(8px) saturate(125%);
+    font:700 13px/1 system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;
+    cursor:pointer;
+    transition:
+      transform .18s ease,
+      box-shadow .18s ease,
+      background-color .18s ease,
+      opacity .18s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .mobile-panel-pill:hover,
+  .mobile-panel-pill:focus-visible {
+    outline:none;
+    background:rgba(255,255,255,.97);
+    box-shadow:
+      0 7px 20px rgba(15,23,42,.18),
+      0 2px 5px rgba(15,23,42,.10);
+    transform:translateY(-1px);
+  }
+
+  .mobile-panel-pill:active {
+    transform:translateY(0) scale(.98);
+  }
+
+  .mobile-panel-pill .pill-icon {
+    width:16px;
+    height:16px;
+    flex:0 0 16px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.86;
+  }
+
+  .mobile-panel-pill .pill-label {
+    white-space:nowrap;
+  }
+
+  .mobile-panel-pill .pill-arrow {
+    position:relative;
+    width:9px;
+    height:9px;
+    flex:0 0 9px;
+  }
+
+  .mobile-panel-pill .pill-arrow::before {
+    content:"";
+    position:absolute;
+    inset:1px;
+    border-right:1.8px solid currentColor;
+    border-bottom:1.8px solid currentColor;
+    transform:rotate(45deg);
+    transition:transform .2s ease;
+    opacity:.72;
+  }
+
+  .mobile-panel-pill.is-collapsed .pill-arrow::before {
+    transform:rotate(-135deg);
+  }
+
+  .mobile-menu-pill {
+    top:8px;
+    left:8px;
+  }
+
+  .mobile-map-pill {
+    top:8px;
+    right:8px;
+  }
+
+  .mobile-menu-list {
+    top:0;
+    padding-top:50px;
+  }
+
+  .map {
+    inset:0;
+    height:100%;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-menu-pane,
+  .app[data-mobile-layout="split"] .map-pane {
+    display:block;
+  }
+
+  .app[data-mobile-layout="map"] .mobile-menu-pane {
+    display:none;
+  }
+
+  .app[data-mobile-layout="map"] .map-pane {
+    display:block;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-menu-pane {
+    display:block;
+    border-right:0;
+  }
+
+  .app[data-mobile-layout="menu"] .map-pane {
+    display:none;
+  }
+
+  .app[data-mobile-layout="hidden"] .mobile-panel-pill {
+    opacity:0;
+    pointer-events:none;
+  }
+}
+
+/* 모바일 세로: 좌우 각각 독립 알약 */
+@media (max-width:768px) and (orientation:portrait) {
+  .app[data-mobile-layout="split"] .mobile-menu-pill {
+    left:8px;
+    right:auto;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-map-pill {
+    right:8px;
+    left:auto;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-menu-pill,
+  .app[data-mobile-layout="map"] .mobile-menu-pill {
+    left:8px;
+    right:auto;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-map-pill,
+  .app[data-mobile-layout="map"] .mobile-map-pill {
+    right:8px;
+    left:auto;
+  }
+}
+
+/* 모바일 가로: 메뉴 알약은 위, 미니맵 알약은 지도 영역 시작점에 배치 */
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .mobile-panel-pill {
+    height:32px;
+    min-width:102px;
+    padding:0 11px;
+    font-size:12px;
+  }
+
+  .mobile-menu-pill {
+    top:7px;
+    left:8px;
+    right:auto;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-map-pill {
+    top:calc(45% + 7px);
+    left:8px;
+    right:auto;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-map-pill,
+  .app[data-mobile-layout="map"] .mobile-map-pill {
+    top:7px;
+    right:8px;
+    left:auto;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-menu-list {
+    padding-top:46px;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-menu-list {
+    padding-top:46px;
+  }
+}
+

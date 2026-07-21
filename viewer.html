@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <title>수원360°투어</title>
-  <link rel="stylesheet" href="common/css/tour.css?v=20260721-v103">
+  <link rel="stylesheet" href="common/css/tour.css?v=20260721-v105">
 </head>
 <body>
   <main id="app" class="app" aria-busy="true" data-mobile-layout="split">
@@ -77,34 +77,36 @@
     </section>
 
     <section id="mobile-panel" class="mobile-panel" aria-label="모바일 메뉴와 지도">
+      <button id="mobile-menu-pill"
+              class="mobile-panel-pill mobile-menu-pill"
+              type="button"
+              aria-label="둘러보기 감추기"
+              aria-pressed="false">
+        <svg class="pill-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6.5h16M4 12h16M4 17.5h16"></path>
+        </svg>
+        <span class="pill-label">둘러보기</span>
+        <span class="pill-arrow" aria-hidden="true"></span>
+      </button>
+
+      <button id="mobile-map-pill"
+              class="mobile-panel-pill mobile-map-pill"
+              type="button"
+              aria-label="미니맵 감추기"
+              aria-pressed="false">
+        <svg class="pill-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3.5 6.5l5-2.5 7 2.5 5-2.5v13.5l-5 2.5-7-2.5-5 2.5z"></path>
+          <path d="M8.5 4v13.5M15.5 6.5V20"></path>
+        </svg>
+        <span class="pill-label">미니맵</span>
+        <span class="pill-arrow" aria-hidden="true"></span>
+      </button>
+
       <div id="mobile-menu-pane" class="mobile-pane mobile-menu-pane">
-        <header class="mobile-pane-header menu-pane-header">
-          <strong>둘러보기</strong>
-          <button id="mobile-menu-hide"
-                  class="pane-arrow menu-hide-arrow"
-                  type="button"
-                  aria-label="메뉴 감추기"></button>
-          <button id="mobile-map-show"
-                  class="pane-arrow map-show-arrow"
-                  type="button"
-                  aria-label="지도 나타내기"></button>
-        </header>
         <div id="mobile-menu-list" class="mobile-menu-list"></div>
       </div>
 
       <div id="map-pane" class="mobile-pane map-pane">
-        <!-- v101: 둘러보기와 같은 디자인의 미니맵 헤더 -->
-        <header class="mobile-pane-header map-pane-header">
-          <button id="mobile-menu-show"
-                  class="pane-arrow menu-show-arrow"
-                  type="button"
-                  aria-label="메뉴 나타내기"></button>
-          <button id="mobile-map-hide"
-                  class="pane-arrow map-hide-arrow"
-                  type="button"
-                  aria-label="지도 감추기"></button>
-          <strong>미니맵</strong>
-        </header>
         <div id="map" class="map" aria-label="카카오 미니맵"></div>
       </div>
     </section>
@@ -117,7 +119,7 @@
   <script src="common/krpano/tour.js"></script>
   <script src="common/js/app.js?v=20260721-v99"></script>
   <script src="common/js/panorama.js"></script>
-  <script src="common/js/menu.js?v=20260721-v103"></script>
+  <script src="common/js/menu.js?v=20260721-v105"></script>
   <script src="common/js/map.js?v=20260721-v99"></script>
 </body>
 </html>

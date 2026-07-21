@@ -172,6 +172,31 @@
     panelToggle.title = hidden ? "메뉴·지도 전체보기" : "메뉴·지도 숨기기";
   }
 
+  function updateMobilePills(layout) {
+    const menuPill = document.getElementById("mobile-menu-pill");
+    const mapPill = document.getElementById("mobile-map-pill");
+
+    const menuHidden = layout === MOBILE_LAYOUT.MAP;
+    const mapHidden = layout === MOBILE_LAYOUT.MENU;
+    const allHidden = layout === MOBILE_LAYOUT.HIDDEN;
+
+    if (menuPill) {
+      menuPill.classList.toggle("is-collapsed", menuHidden);
+      menuPill.classList.toggle("is-panel-hidden", allHidden);
+      menuPill.setAttribute("aria-pressed", String(menuHidden));
+      menuPill.setAttribute("aria-label", menuHidden ? "둘러보기 나타내기" : "둘러보기 감추기");
+      menuPill.title = menuHidden ? "둘러보기 나타내기" : "둘러보기 감추기";
+    }
+
+    if (mapPill) {
+      mapPill.classList.toggle("is-collapsed", mapHidden);
+      mapPill.classList.toggle("is-panel-hidden", allHidden);
+      mapPill.setAttribute("aria-pressed", String(mapHidden));
+      mapPill.setAttribute("aria-label", mapHidden ? "미니맵 나타내기" : "미니맵 감추기");
+      mapPill.title = mapHidden ? "미니맵 나타내기" : "미니맵 감추기";
+    }
+  }
+
   function applyLayout(nextLayout) {
     const app = document.getElementById("app");
     if (!app || !Object.values(MOBILE_LAYOUT).includes(nextLayout)) return;
@@ -183,6 +208,7 @@
     app.dataset.mobileLayout = nextLayout;
     const hidden = nextLayout === MOBILE_LAYOUT.HIDDEN;
     updatePanelToggle(hidden);
+    updateMobilePills(nextLayout);
     requestMapRelayout(hidden ? 240 : 80);
   }
 
@@ -220,32 +246,43 @@
       );
     });
 
-    document.getElementById("mobile-menu-hide")?.addEventListener("click", () => {
-      applyLayout(MOBILE_LAYOUT.MAP);
+    document.getElementById("mobile-menu-pill")?.addEventListener("click", () => {
+      const layout = getLayout();
+
+      if (layout === MOBILE_LAYOUT.HIDDEN) {
+        applyLayout(MOBILE_LAYOUT.SPLIT);
+      } else if (layout === MOBILE_LAYOUT.MAP) {
+        applyLayout(MOBILE_LAYOUT.SPLIT);
+      } else {
+        applyLayout(MOBILE_LAYOUT.MAP);
+      }
     });
 
-    document.getElementById("mobile-menu-show")?.addEventListener("click", () => {
-      applyLayout(MOBILE_LAYOUT.SPLIT);
-    });
+    document.getElementById("mobile-map-pill")?.addEventListener("click", () => {
+      const layout = getLayout();
 
-    document.getElementById("mobile-map-hide")?.addEventListener("click", () => {
-      applyLayout(MOBILE_LAYOUT.MENU);
-    });
-
-    document.getElementById("mobile-map-show")?.addEventListener("click", () => {
-      applyLayout(MOBILE_LAYOUT.SPLIT);
+      if (layout === MOBILE_LAYOUT.HIDDEN) {
+        applyLayout(MOBILE_LAYOUT.SPLIT);
+      } else if (layout === MOBILE_LAYOUT.MENU) {
+        applyLayout(MOBILE_LAYOUT.SPLIT);
+      } else {
+        applyLayout(MOBILE_LAYOUT.MENU);
+      }
     });
 
     window.addEventListener("orientationchange", () => {
       updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
+    updateMobilePills(getLayout());
       requestMapRelayout(280);
     }, { passive: true });
     window.addEventListener("resize", () => {
       updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
+    updateMobilePills(getLayout());
       requestMapRelayout(120);
     }, { passive: true });
 
     updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
+    updateMobilePills(getLayout());
   }
 
   window.Suwon360MobileLayout = {
