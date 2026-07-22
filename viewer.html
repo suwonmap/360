@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
 <title>수원360투어</title>
-<link rel="stylesheet" href="common/css/tour.css?v=20260722-v208">
+<link rel="stylesheet" href="common/css/tour.css?v=20260722-v209">
 </head>
 <body>
 <main id="app" class="app" aria-busy="true" data-mobile-layout="split">
@@ -62,14 +62,14 @@
 </section>
 <div class="top-actions">
 <button id="close-btn" class="top-action-btn circle-action-btn close-btn"
-                  type="button" title="종료" aria-label="종료" data-tooltip="종료">
+                  type="button" aria-label="종료" data-tooltip="종료">
 <svg viewBox="0 0 24 24" aria-hidden="true">
 <path d="M6 6L18 18M18 6L6 18">
 </path>
 </svg>
 </button>
 <button id="share-btn" class="top-action-btn circle-action-btn share-btn"
-                  type="button" title="링크 공유" aria-label="링크 공유" data-tooltip="링크공유">
+                  type="button" aria-label="링크 공유" data-tooltip="링크공유">
 <svg viewBox="0 0 24 24" aria-hidden="true">
 <circle cx="18" cy="5" r="2.5">
 </circle>
@@ -123,9 +123,11 @@
 </div>
 </div>
 </section>
-<section id="suwon360-desktop-map-wrapper" aria-label="PC 카카오 미니맵">
+<section id="suwon360-desktop-map-wrapper" data-map-size="normal" aria-label="PC 카카오 미니맵">
   <div class="suwon360-desktop-map-title">⌖&nbsp; 미니맵</div>
-  <button type="button" class="suwon360-map-resize-handle" aria-label="미니맵 크기 조절" title="크기 조절"></button>
+  <button type="button" class="suwon360-map-size-toggle" aria-label="미니맵 크기 변경" data-tooltip="지도 크게">
+    <span aria-hidden="true">⊞</span>
+  </button>
   <div id="desktop-map" aria-label="카카오 미니맵"></div>
 </section>
 <button id="panel-toggle" class="panel-toggle" type="button"
@@ -145,7 +147,7 @@
 </script>
 <script src="common/js/menu.js?v=20260721-v203">
 </script>
-<script src="common/js/map.js?v=20260722-v208">
+<script src="common/js/map.js?v=20260722-v209">
 </script>
 </body>
 </html>

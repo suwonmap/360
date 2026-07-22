@@ -516,47 +516,75 @@
     }, 220);
   }
 
-  function initDesktopResizeHandle() {
+  const DESKTOP_MAP_SIZES = [
+    { key: "small", width: 260, height: 180, nextLabel: "지도 보통" },
+    { key: "normal", width: 340, height: 240, nextLabel: "지도 크게" },
+    { key: "large", width: 420, height: 300, nextLabel: "지도 작게" }
+  ];
+
+  function stabilizeMarkersAfterResize(context, center) {
+    if (!context?.map) return;
+
+    context.map.setCenter(center);
+
+    if (resolvedMode === "multi") {
+      context.markerItems.forEach((item) => {
+        item.marker.setPosition(new kakao.maps.LatLng(Number(item.scene.lat), Number(item.scene.lng)));
+        item.marker.setImage(circleImage(item.number, item.active));
+        item.marker.setZIndex(item.active ? 10 : 2);
+      });
+      highlightCurrentScene(currentSceneName);
+    } else if (resolvedMode === "single") {
+      syncCurrentMarker(context, false);
+    }
+  }
+
+  function applyDesktopMapSize(wrapper, size) {
+    const context = contexts.desktop;
+    wrapper.dataset.mapSize = size.key;
+    wrapper.style.setProperty("--desktop-map-width", `${size.width}px`);
+    wrapper.style.setProperty("--desktop-map-height", `${size.height}px`);
+
+    if (!context.map) {
+      window.setTimeout(() => ensureContext(context), 0);
+      return;
+    }
+
+    const center = context.map.getCenter();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        kakao.maps.event.trigger(context.map, "resize");
+        stabilizeMarkersAfterResize(context, center);
+        const rect = elementFor(context)?.getBoundingClientRect();
+        if (rect) {
+          context.lastWidth = Math.round(rect.width);
+          context.lastHeight = Math.round(rect.height);
+        }
+        window.setTimeout(() => stabilizeMarkersAfterResize(context, center), 80);
+      });
+    });
+  }
+
+  function initDesktopMapSizeToggle() {
     const wrapper = document.getElementById("suwon360-desktop-map-wrapper");
-    const handle = wrapper?.querySelector(".suwon360-map-resize-handle");
-    if (!wrapper || !handle || handle.dataset.bound === "true") return;
+    const button = wrapper?.querySelector(".suwon360-map-size-toggle");
+    if (!wrapper || !button || button.dataset.bound === "true") return;
 
-    handle.dataset.bound = "true";
+    button.dataset.bound = "true";
+    let index = Math.max(0, DESKTOP_MAP_SIZES.findIndex((item) => item.key === wrapper.dataset.mapSize));
+    if (index < 0) index = 1;
+    applyDesktopMapSize(wrapper, DESKTOP_MAP_SIZES[index]);
+    button.dataset.tooltip = DESKTOP_MAP_SIZES[index].nextLabel;
 
-    handle.addEventListener("pointerdown", (event) => {
+    button.addEventListener("click", (event) => {
       if (!isDesktop()) return;
       event.preventDefault();
       event.stopPropagation();
-
-      const startRect = wrapper.getBoundingClientRect();
-      const startX = event.clientX;
-      const startY = event.clientY;
-      const minWidth = 240;
-      const maxWidth = Math.min(560, Math.max(minWidth, window.innerWidth - 40));
-      const minHeight = 165;
-      const maxHeight = Math.min(420, Math.max(minHeight, window.innerHeight - 40));
-
-      handle.setPointerCapture?.(event.pointerId);
-      wrapper.classList.add("is-resizing");
-
-      const onMove = (moveEvent) => {
-        const width = Math.max(minWidth, Math.min(maxWidth, startRect.width + startX - moveEvent.clientX));
-        const height = Math.max(minHeight, Math.min(maxHeight, startRect.height + startY - moveEvent.clientY));
-        wrapper.style.setProperty("width", `${Math.round(width)}px`, "important");
-        wrapper.style.setProperty("height", `${Math.round(height)}px`, "important");
-      };
-
-      const onEnd = () => {
-        handle.removeEventListener("pointermove", onMove);
-        handle.removeEventListener("pointerup", onEnd);
-        handle.removeEventListener("pointercancel", onEnd);
-        wrapper.classList.remove("is-resizing");
-        forceRelayout();
-      };
-
-      handle.addEventListener("pointermove", onMove);
-      handle.addEventListener("pointerup", onEnd);
-      handle.addEventListener("pointercancel", onEnd);
+      index = (index + 1) % DESKTOP_MAP_SIZES.length;
+      const size = DESKTOP_MAP_SIZES[index];
+      applyDesktopMapSize(wrapper, size);
+      button.dataset.tooltip = size.nextLabel;
+      button.setAttribute("aria-label", `미니맵 크기 변경: ${size.key}`);
     });
   }
 
@@ -564,7 +592,7 @@
     window.setTimeout(() => ensureContext(activeContext()), 280);
   }, { passive: true });
 
-  initDesktopResizeHandle();
+  initDesktopMapSizeToggle();
 
   window.Suwon360Map = {
     setConfig,
