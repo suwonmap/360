@@ -61,10 +61,11 @@
     document.title = `수원360투어 | ${finalTitle}`;
   }
 
-  async function shareCurrentLink(event) {
-    const shareButton = event?.currentTarget || document.getElementById("share-btn");
-    const url = window.location.href;
+  let shareLastFocusedElement = null;
+  let shareQrUrl = "";
 
+  function getShareData() {
+    const url = window.location.href;
     const rawContentTitle =
       window.Suwon360?.contentTitle ||
       document.getElementById("content-title")?.dataset.contentTitle ||
@@ -75,41 +76,182 @@
       window.Suwon360?.config?.tour ||
       "수원360투어";
 
-    const shareTitle = `수원360°투어 | ${rawContentTitle}`;
-    const shareText = shareTitle;
-    const copyText = `${shareTitle}\n\n${url}`;
+    return {
+      url,
+      title: `수원360°투어 | ${rawContentTitle}`,
+      text: `${rawContentTitle}의 360° 공간을 둘러보세요.`
+    };
+  }
 
-    // v120: 공유창이 열리기 전에 포커스를 먼저 해제하여
-    // 모바일에서 파란색 hover/focus 상태가 남지 않도록 합니다.
-    shareButton?.blur();
-    if (document.activeElement === shareButton) {
-      document.activeElement.blur();
-    }
+  function setShareMessage(message, isError = false) {
+    const element = document.getElementById("share-layer-message");
+    if (!element) return;
+    element.textContent = message || "";
+    element.style.color = isError ? "#fca5a5" : "#bfdbfe";
+  }
+
+  function openShareLayer(event) {
+    event?.currentTarget?.blur();
+
+    const layer = document.getElementById("share-layer");
+    if (!layer) return;
+
+    const data = getShareData();
+    shareLastFocusedElement = event?.currentTarget || document.activeElement;
+
+    document.getElementById("share-dialog-subtitle").textContent = data.title;
+    document.getElementById("share-url-text").textContent = data.url;
+    document.getElementById("share-url-text").title = data.url;
+    setShareMessage("");
+
+    layer.hidden = false;
+    layer.setAttribute("aria-hidden", "false");
+    document.body.classList.add("share-layer-open");
+    document.getElementById("share-layer-close")?.focus();
+  }
+
+  function closeShareLayer() {
+    const layer = document.getElementById("share-layer");
+    if (!layer || layer.hidden) return;
+
+    layer.hidden = true;
+    layer.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("share-layer-open");
+    setShareMessage("");
+    shareLastFocusedElement?.focus?.();
+  }
+
+  async function copyShareLink() {
+    const data = getShareData();
+    const copyText = `${data.title}\n\n${data.url}`;
 
     try {
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-      if (navigator.share && isMobile) {
-        await navigator.share({
-          title: shareTitle,
-          text: shareText,
-          url
-        });
-      } else if (navigator.clipboard) {
+      if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(copyText);
-        setStatus("제목과 링크를 복사했습니다.");
-        window.setTimeout(() => setStatus(""), 1500);
       } else {
-        window.prompt("아래 내용을 복사하세요.", copyText);
+        const textarea = document.createElement("textarea");
+        textarea.value = copyText;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
       }
-    } catch (error) {
-      if (error?.name !== "AbortError") {
-        setStatus("링크 공유에 실패했습니다.", true);
-      }
-    } finally {
-      // v119: 모바일에서 공유 후 파란 포커스 상태가 남지 않도록 즉시 해제
-      window.setTimeout(() => shareButton?.blur(), 0);
+      setShareMessage("제목과 링크를 복사했습니다.");
+    } catch (_) {
+      window.prompt("아래 내용을 복사하세요.", copyText);
     }
+  }
+
+  function openShareWindow(url, name) {
+    const width = 640;
+    const height = 680;
+    const left = Math.max(0, (screen.width - width) / 2);
+    const top = Math.max(0, (screen.height - height) / 2);
+
+    window.open(
+      url,
+      name,
+      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+    );
+  }
+
+  function shareFacebook() {
+    const data = getShareData();
+    openShareWindow(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(data.url)}`,
+      "suwon360-facebook-share"
+    );
+  }
+
+  function shareTwitter() {
+    const data = getShareData();
+    openShareWindow(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(data.title)}&url=${encodeURIComponent(data.url)}`,
+      "suwon360-twitter-share"
+    );
+  }
+
+  function kakaoJavascriptKey() {
+    const script = Array.from(document.scripts).find((item) =>
+      item.src.includes("dapi.kakao.com/v2/maps/sdk.js")
+    );
+    if (!script) return "";
+    return new URL(script.src).searchParams.get("appkey") || "";
+  }
+
+  function shareKakao() {
+    const data = getShareData();
+    const key = kakaoJavascriptKey();
+
+    try {
+      if (!window.Kakao) throw new Error("Kakao SDK unavailable");
+      if (!window.Kakao.isInitialized()) {
+        if (!key) throw new Error("Kakao JavaScript key unavailable");
+        window.Kakao.init(key);
+      }
+
+      window.Kakao.Share.sendDefault({
+        objectType: "text",
+        text: `${data.title}\n${data.text}`,
+        link: {
+          mobileWebUrl: data.url,
+          webUrl: data.url
+        },
+        buttonTitle: "360°투어 보기"
+      });
+    } catch (_) {
+      setShareMessage("카카오톡 공유 설정을 확인해 주세요.", true);
+    }
+  }
+
+  function toggleShareQr() {
+    const panel = document.getElementById("share-qr-panel");
+    const button = document.getElementById("share-qr-btn");
+    const container = document.getElementById("share-qr-code");
+    if (!panel || !button || !container) return;
+
+    const willOpen = panel.hidden;
+    panel.hidden = !willOpen;
+    button.setAttribute("aria-expanded", String(willOpen));
+
+    if (!willOpen) return;
+
+    const url = getShareData().url;
+    if (shareQrUrl === url && container.childElementCount) return;
+
+    container.innerHTML = "";
+    shareQrUrl = url;
+
+    if (typeof window.QRCode === "function") {
+      new window.QRCode(container, {
+        text: url,
+        width: 180,
+        height: 180,
+        correctLevel: window.QRCode.CorrectLevel.M
+      });
+    } else {
+      setShareMessage("QR코드 라이브러리를 불러오지 못했습니다.", true);
+    }
+  }
+
+  function bindShareLayer() {
+    document.getElementById("share-btn")?.addEventListener("click", openShareLayer);
+    document.getElementById("share-layer-close")?.addEventListener("click", closeShareLayer);
+    document.querySelectorAll("[data-share-close]").forEach((element) => {
+      element.addEventListener("click", closeShareLayer);
+    });
+    document.getElementById("share-copy-btn")?.addEventListener("click", copyShareLink);
+    document.getElementById("share-kakao-btn")?.addEventListener("click", shareKakao);
+    document.getElementById("share-facebook-btn")?.addEventListener("click", shareFacebook);
+    document.getElementById("share-twitter-btn")?.addEventListener("click", shareTwitter);
+    document.getElementById("share-qr-btn")?.addEventListener("click", toggleShareQr);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeShareLayer();
+    });
   }
 
   function closeTour(event) {
@@ -143,7 +285,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("share-btn")?.addEventListener("click", shareCurrentLink);
+    bindShareLayer();
     document.getElementById("close-btn")?.addEventListener("click", closeTour);
 
     const homeLogo = document.getElementById("home-logo");
