@@ -38,6 +38,7 @@
     hideDefaultSkin(krpano);
     readScenes(krpano);
     readMapConfig(krpano);
+    syncHotspotSceneLabels(krpano);
 
     const title = String(get(krpano, "title") || state.config.tour);
     const shootingDate = String(get(krpano, "capturedate") || get(krpano, "shooting_date") || "");
@@ -133,6 +134,85 @@
     window.Suwon360Map?.setConfig?.(config);
   }
 
+
+  // v215: 이동 화살표 위에 연결 대상 씬명을 알약형으로 표시합니다.
+  function syncHotspotSceneLabels(krpano) {
+    if (!krpano) return;
+
+    // 이전 씬에서 생성했던 라벨이 남아 있으면 먼저 정리합니다.
+    const previousCount = Number(get(krpano, "hotspot.count") || 0);
+    const oldLabels = [];
+    for (let index = 0; index < previousCount; index += 1) {
+      const name = String(get(krpano, `hotspot[${index}].name`) || "");
+      if (name.startsWith("s360_scene_label_")) oldLabels.push(name);
+    }
+    oldLabels.forEach((name) => {
+      try { krpano.call(`removehotspot('${escapeKrpanoString(name)}');`); } catch { /* 무시 */ }
+    });
+
+    const sceneTitles = new Map(
+      (window.Suwon360?.scenes || []).map((scene) => [scene.name, scene.title || scene.name])
+    );
+
+    const hotspotCount = Number(get(krpano, "hotspot.count") || 0);
+    const sourceHotspots = [];
+
+    for (let index = 0; index < hotspotCount; index += 1) {
+      const base = `hotspot[${index}]`;
+      const name = String(get(krpano, `${base}.name`) || "");
+      const linkedScene = String(get(krpano, `${base}.linkedscene`) || "").trim();
+      if (!name || !linkedScene || name.startsWith("s360_scene_label_")) continue;
+
+      const ath = Number(get(krpano, `${base}.ath`));
+      const atv = Number(get(krpano, `${base}.atv`));
+      if (!Number.isFinite(ath) || !Number.isFinite(atv)) continue;
+
+      sourceHotspots.push({ name, linkedScene, ath, atv });
+    }
+
+    sourceHotspots.forEach((spot, index) => {
+      const title = String(sceneTitles.get(spot.linkedScene) || spot.linkedScene).trim();
+      if (!title) return;
+
+      const labelName = `s360_scene_label_${index}`;
+      try {
+        krpano.call(`addhotspot('${labelName}');`);
+        krpano.set(`hotspot[${labelName}].type`, "text");
+        krpano.set(`hotspot[${labelName}].ath`, spot.ath);
+        krpano.set(`hotspot[${labelName}].atv`, spot.atv - 7);
+        krpano.set(`hotspot[${labelName}].html`, escapeHtml(title));
+        krpano.set(`hotspot[${labelName}].css`, "font-family:Arial,'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;color:#FFFFFF;white-space:nowrap;text-align:center;");
+        krpano.set(`hotspot[${labelName}].bg`, true);
+        krpano.set(`hotspot[${labelName}].bgcolor`, "0x111827");
+        krpano.set(`hotspot[${labelName}].bgalpha`, 0.82);
+        krpano.set(`hotspot[${labelName}].bgborder`, "1 0xFFFFFF 0.24");
+        krpano.set(`hotspot[${labelName}].bgroundedge`, 18);
+        krpano.set(`hotspot[${labelName}].padding`, "7 12");
+        krpano.set(`hotspot[${labelName}].enabled`, false);
+        krpano.set(`hotspot[${labelName}].capture`, false);
+        krpano.set(`hotspot[${labelName}].handcursor`, false);
+        krpano.set(`hotspot[${labelName}].renderer`, "css3d");
+        krpano.set(`hotspot[${labelName}].zorder`, 20);
+        krpano.set(`hotspot[${labelName}].keep`, false);
+      } catch (error) {
+        console.warn("씬명 알약 생성 경고:", spot.name, error);
+      }
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function escapeKrpanoString(value) {
+    return String(value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+  }
+
   function watchScene(krpano) {
     if (sceneWatcher) clearInterval(sceneWatcher);
 
@@ -154,6 +234,7 @@
 
         window.Suwon360Menu?.select?.(currentScene);
         window.Suwon360Map?.updateFromScene?.(currentScene);
+        window.setTimeout(() => syncHotspotSceneLabels(krpano), 120);
       }
 
       // v125: 일부 모바일 환경에서 krpano onviewchange 이벤트가
