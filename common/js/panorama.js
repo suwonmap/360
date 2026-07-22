@@ -37,6 +37,8 @@
     hideKrpanoConsole(krpano);
     hideDefaultSkin(krpano);
     readScenes(krpano);
+    readMapConfig(krpano);
+    syncHotspotSceneLabels(krpano);
 
     const title = String(get(krpano, "title") || state.config.tour);
     const shootingDate = String(get(krpano, "capturedate") || get(krpano, "shooting_date") || "");
@@ -46,7 +48,9 @@
 
     window.Suwon360Menu?.render?.(state.menuScenes);
     window.Suwon360Map?.setScenes?.(state.scenes, state.menuScenes);
-    window.Suwon360Map?.init?.(`${state.config.tour}.xml`);
+    const firstScene = String(get(krpano, "xml.scene") || state.scenes[0]?.name || "");
+    if (firstScene) window.Suwon360Map?.updateFromScene?.(firstScene);
+    window.Suwon360Map?.init?.();
     watchScene(krpano);
   }
 
@@ -55,6 +59,13 @@
   }
 
   function numberOrNaN(value) {
+    // krpano 속성이 없을 때 null 또는 빈 문자열이 반환될 수 있습니다.
+    // Number(null), Number("")는 0이 되므로 좌표가 (0, 0)으로 잘못 인식됩니다.
+    // 값이 실제로 입력된 경우에만 숫자로 변환합니다.
+    if (value === null || value === undefined || String(value).trim() === "") {
+      return NaN;
+    }
+
     const number = Number(value);
     return Number.isFinite(number) ? number : NaN;
   }
@@ -79,8 +90,11 @@
         get(krpano, `${base}.lng`) ?? get(krpano, `${base}.lon`) ??
         get(krpano, `${base}.longitude`) ?? get(krpano, `${base}.map_lng`)
       );
+      const heading = numberOrNaN(
+        get(krpano, `${base}.heading`) ?? get(krpano, `${base}.map_heading`)
+      );
 
-      scenes.push({ index, name, title, menuShow, menuParent, lat, lng });
+      scenes.push({ index, name, title, menuShow, menuParent, lat, lng, heading });
     }
 
     const menuScenes = scenes.filter((scene) => scene.menuShow);
@@ -108,22 +122,144 @@
     state.mainSceneNames = menuScenes.map((scene) => scene.name);
   }
 
+  function readMapConfig(krpano) {
+    const state = window.Suwon360;
+    const config = {
+      mode: String(get(krpano, "mapmode") || get(krpano, "map_mode") || "auto"),
+      lat: numberOrNaN(get(krpano, "maplat") ?? get(krpano, "map_lat")),
+      lng: numberOrNaN(get(krpano, "maplng") ?? get(krpano, "map_lng")),
+      level: numberOrNaN(get(krpano, "maplevel") ?? get(krpano, "map_level"))
+    };
+    state.mapConfig = config;
+    window.Suwon360Map?.setConfig?.(config);
+  }
+
+
+  // v215: 이동 화살표 위에 연결 대상 씬명을 알약형으로 표시합니다.
+  function syncHotspotSceneLabels(krpano) {
+    if (!krpano) return;
+
+    // 이전 씬에서 생성했던 라벨이 남아 있으면 먼저 정리합니다.
+    const previousCount = Number(get(krpano, "hotspot.count") || 0);
+    const oldLabels = [];
+    for (let index = 0; index < previousCount; index += 1) {
+      const name = String(get(krpano, `hotspot[${index}].name`) || "");
+      if (name.startsWith("s360_scene_label_")) oldLabels.push(name);
+    }
+    oldLabels.forEach((name) => {
+      try { krpano.call(`removehotspot('${escapeKrpanoString(name)}');`); } catch { /* 무시 */ }
+    });
+
+    const sceneTitles = new Map(
+      (window.Suwon360?.scenes || []).map((scene) => [scene.name, scene.title || scene.name])
+    );
+
+    const hotspotCount = Number(get(krpano, "hotspot.count") || 0);
+    const sourceHotspots = [];
+
+    for (let index = 0; index < hotspotCount; index += 1) {
+      const base = `hotspot[${index}]`;
+      const name = String(get(krpano, `${base}.name`) || "");
+      const linkedScene = String(get(krpano, `${base}.linkedscene`) || "").trim();
+      if (!name || !linkedScene || name.startsWith("s360_scene_label_")) continue;
+
+      const ath = Number(get(krpano, `${base}.ath`));
+      const atv = Number(get(krpano, `${base}.atv`));
+      if (!Number.isFinite(ath) || !Number.isFinite(atv)) continue;
+
+      sourceHotspots.push({ name, linkedScene, ath, atv });
+    }
+
+    sourceHotspots.forEach((spot, index) => {
+      const title = String(sceneTitles.get(spot.linkedScene) || spot.linkedScene).trim();
+      if (!title) return;
+
+      const labelName = `s360_scene_label_${index}`;
+      try {
+        krpano.call(`addhotspot('${labelName}');`);
+        krpano.set(`hotspot[${labelName}].type`, "text");
+        krpano.set(`hotspot[${labelName}].ath`, spot.ath);
+        krpano.set(`hotspot[${labelName}].atv`, spot.atv - 7);
+        krpano.set(`hotspot[${labelName}].html`, escapeHtml(title));
+        krpano.set(`hotspot[${labelName}].css`, "font-family:Arial,'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;color:#FFFFFF;white-space:nowrap;text-align:center;");
+        krpano.set(`hotspot[${labelName}].bg`, true);
+        krpano.set(`hotspot[${labelName}].bgcolor`, "0x111827");
+        krpano.set(`hotspot[${labelName}].bgalpha`, 0.82);
+        krpano.set(`hotspot[${labelName}].bgborder`, "1 0xFFFFFF 0.24");
+        krpano.set(`hotspot[${labelName}].bgroundedge`, 18);
+        krpano.set(`hotspot[${labelName}].padding`, "7 12");
+        krpano.set(`hotspot[${labelName}].enabled`, false);
+        krpano.set(`hotspot[${labelName}].capture`, false);
+        krpano.set(`hotspot[${labelName}].handcursor`, false);
+        krpano.set(`hotspot[${labelName}].renderer`, "css3d");
+        krpano.set(`hotspot[${labelName}].zorder`, 20);
+        krpano.set(`hotspot[${labelName}].keep`, false);
+      } catch (error) {
+        console.warn("씬명 알약 생성 경고:", spot.name, error);
+      }
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function escapeKrpanoString(value) {
+    return String(value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+  }
+
   function watchScene(krpano) {
     if (sceneWatcher) clearInterval(sceneWatcher);
+
     let previousScene = "";
+    let previousHlookat = NaN;
+    let previousFov = NaN;
 
     sceneWatcher = setInterval(() => {
       const currentScene = String(get(krpano, "xml.scene") || "");
-      if (!currentScene || currentScene === previousScene) return;
-      previousScene = currentScene;
+      const hlookat = Number(get(krpano, "view.hlookat"));
+      const fov = Number(get(krpano, "view.fov"));
 
-      const state = window.Suwon360;
-      state.currentScene = currentScene;
-      state.activeMenuScene = state.resolveMenuScene?.(currentScene) || currentScene;
+      if (currentScene && currentScene !== previousScene) {
+        previousScene = currentScene;
 
-      window.Suwon360Menu?.select?.(currentScene);
-      window.Suwon360Map?.updateFromScene?.(currentScene);
-    }, 180);
+        const state = window.Suwon360;
+        state.currentScene = currentScene;
+        state.activeMenuScene = state.resolveMenuScene?.(currentScene) || currentScene;
+
+        window.Suwon360Menu?.select?.(currentScene);
+        window.Suwon360Map?.updateFromScene?.(currentScene);
+        window.setTimeout(() => syncHotspotSceneLabels(krpano), 120);
+      }
+
+      // v125: 일부 모바일 환경에서 krpano onviewchange 이벤트가
+      // 누락되더라도 남수헌 방향 마커가 시선을 계속 따라가도록 보정합니다.
+      const headingChanged =
+        Number.isFinite(hlookat) &&
+        (!Number.isFinite(previousHlookat) ||
+         Math.abs(hlookat - previousHlookat) >= 0.15);
+
+      const fovChanged =
+        Number.isFinite(fov) &&
+        (!Number.isFinite(previousFov) ||
+         Math.abs(fov - previousFov) >= 0.15);
+
+      if (headingChanged || fovChanged) {
+        previousHlookat = hlookat;
+        previousFov = fov;
+
+        window.Suwon360Map?.onViewChanged?.({
+          sceneName: currentScene,
+          hlookat,
+          fov
+        });
+      }
+    }, 60);
   }
 
   function loadScene(sceneName) {
@@ -165,7 +301,8 @@
   window.js_initialize_suwon360 = function () {
     if (!window.Suwon360?.ready) return;
     window.Suwon360Map?.setScenes?.(window.Suwon360.scenes, window.Suwon360.menuScenes);
-    window.Suwon360Map?.init?.(`${window.Suwon360.config.tour}.xml`);
+    window.Suwon360Map?.setConfig?.(window.Suwon360.mapConfig || {});
+    window.Suwon360Map?.init?.();
   };
 
   window.js_suwon360_on_scene_changed = function () {

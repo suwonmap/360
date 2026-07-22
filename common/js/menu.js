@@ -39,7 +39,7 @@
 
     button.addEventListener("click", () => {
       select(scene.name);
-      closeOverflow();
+      // v215: 더보기 메뉴 항목 선택 후에도 드롭다운을 열린 상태로 유지합니다.
       window.Suwon360Map?.selectMenuScene?.(scene.name);
       window.Suwon360Panorama?.loadScene?.(scene.name);
       // 모바일 메뉴 선택 시 현재 레이아웃을 유지합니다.
@@ -106,9 +106,23 @@
 
   function scrollToButton(button) {
     if (!button || button.parentElement?.id !== "mobile-menu-list") return;
+
     const container = button.parentElement;
-    const top = button.offsetTop - (container.clientHeight - button.offsetHeight) / 2;
-    container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    const top = Math.max(
+      0,
+      button.offsetTop - (container.clientHeight - button.offsetHeight) / 2
+    );
+
+    // v125: 모바일 미니맵 포인트 선택 시 메뉴가 길게 흘러가는
+    // 애니메이션을 제거하고 선택 위치로 즉시 이동합니다.
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    if (isMobile) {
+      container.scrollTop = top;
+      return;
+    }
+
+    container.scrollTo({ top, behavior: "smooth" });
   }
 
   function select(sceneName, scroll = true) {
@@ -169,7 +183,44 @@
       "aria-label",
       hidden ? "메뉴와 지도 전체 보기" : "메뉴와 지도 전체 숨김"
     );
-    panelToggle.title = hidden ? "메뉴·지도 전체보기" : "메뉴·지도 숨기기";
+    panelToggle.title = hidden ? "메뉴·지도 보기" : "숨기기";
+
+    const arrow = panelToggle.querySelector(".panel-toggle-arrow");
+    const label = panelToggle.querySelector(".panel-toggle-label");
+
+    if (arrow) arrow.textContent = hidden ? "⌃" : "⌄";
+    if (label) label.textContent = hidden ? "메뉴·지도 보기" : "숨기기";
+  }
+
+  function updateMobilePills(layout) {
+    const menuPill = document.getElementById("mobile-menu-pill");
+    const mapPill = document.getElementById("mobile-map-pill");
+
+    const menuHidden = layout === MOBILE_LAYOUT.MAP;
+    const mapHidden = layout === MOBILE_LAYOUT.MENU;
+    const allHidden = layout === MOBILE_LAYOUT.HIDDEN;
+
+    if (menuPill) {
+      menuPill.setAttribute("aria-pressed", String(menuHidden));
+      menuPill.setAttribute(
+        "aria-label",
+        menuHidden ? "둘러보기 나타내기" : "둘러보기 감추기"
+      );
+      menuPill.title = menuHidden ? "둘러보기 나타내기" : "둘러보기 감추기";
+      const menuLabel = menuPill.querySelector(".pill-label");
+      if (menuLabel) menuLabel.textContent = "둘러보기";
+      menuPill.disabled = allHidden;
+    }
+
+    if (mapPill) {
+      mapPill.setAttribute("aria-pressed", String(mapHidden));
+      mapPill.setAttribute(
+        "aria-label",
+        mapHidden ? "미니맵 나타내기" : "미니맵 감추기"
+      );
+      mapPill.title = mapHidden ? "미니맵 나타내기" : "미니맵 감추기";
+      mapPill.disabled = allHidden;
+    }
   }
 
   function applyLayout(nextLayout) {
@@ -183,10 +234,47 @@
     app.dataset.mobileLayout = nextLayout;
     const hidden = nextLayout === MOBILE_LAYOUT.HIDDEN;
     updatePanelToggle(hidden);
+    updateMobilePills(nextLayout);
     requestMapRelayout(hidden ? 240 : 80);
   }
 
+  function syncBrandContentTitle() {
+    const source = document.getElementById("content-title");
+    const target = document.getElementById("brand-content-title");
+    if (!source || !target) return;
+
+    // v117: PC 제목의 "둘러보기"는 유지하고,
+    // 모바일 로고에는 XML title만 표시합니다.
+    const rawTitle =
+      source.dataset.contentTitle ||
+      window.Suwon360?.contentTitle ||
+      (source.textContent || "").replace(/\s*둘러보기\s*$/, "").trim();
+
+    target.textContent =
+      rawTitle && rawTitle !== "불러오는 중…" ? rawTitle : "";
+  }
+
+  function bindBrandTitleSync() {
+    const source = document.getElementById("content-title");
+    if (!source || source.dataset.brandTitleBound === "true") {
+      syncBrandContentTitle();
+      return;
+    }
+
+    source.dataset.brandTitleBound = "true";
+    syncBrandContentTitle();
+
+    const observer = new MutationObserver(syncBrandContentTitle);
+    observer.observe(source, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+  }
+
   function bindControls() {
+    bindBrandTitleSync();
+
     if (document.body.dataset.menuBound === "true") return;
     document.body.dataset.menuBound = "true";
 
@@ -220,20 +308,28 @@
       );
     });
 
-    document.getElementById("mobile-menu-hide")?.addEventListener("click", () => {
-      applyLayout(MOBILE_LAYOUT.MAP);
+    document.getElementById("mobile-menu-pill")?.addEventListener("click", () => {
+      const layout = getLayout();
+
+      if (layout === MOBILE_LAYOUT.HIDDEN) return;
+
+      applyLayout(
+        layout === MOBILE_LAYOUT.MAP
+          ? MOBILE_LAYOUT.SPLIT
+          : MOBILE_LAYOUT.MAP
+      );
     });
 
-    document.getElementById("mobile-menu-show")?.addEventListener("click", () => {
-      applyLayout(MOBILE_LAYOUT.SPLIT);
-    });
+    document.getElementById("mobile-map-pill")?.addEventListener("click", () => {
+      const layout = getLayout();
 
-    document.getElementById("mobile-map-hide")?.addEventListener("click", () => {
-      applyLayout(MOBILE_LAYOUT.MENU);
-    });
+      if (layout === MOBILE_LAYOUT.HIDDEN) return;
 
-    document.getElementById("mobile-map-show")?.addEventListener("click", () => {
-      applyLayout(MOBILE_LAYOUT.SPLIT);
+      applyLayout(
+        layout === MOBILE_LAYOUT.MENU
+          ? MOBILE_LAYOUT.SPLIT
+          : MOBILE_LAYOUT.MENU
+      );
     });
 
     window.addEventListener("orientationchange", () => {
@@ -245,7 +341,9 @@
       requestMapRelayout(120);
     }, { passive: true });
 
-    updatePanelToggle(getLayout() === MOBILE_LAYOUT.HIDDEN);
+    const initialLayout = getLayout();
+    updatePanelToggle(initialLayout === MOBILE_LAYOUT.HIDDEN);
+    updateMobilePills(initialLayout);
   }
 
   window.Suwon360MobileLayout = {
