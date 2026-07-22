@@ -18,15 +18,15 @@ button{font:inherit}
 .topbar{position:absolute;top:max(var(--top-gap),env(safe-area-inset-top));left:16px;right:16px;z-index:1000;min-height:clamp(84px,10vh,108px);pointer-events:none}
 .topbar>*{pointer-events:auto}
 .brand-panel,.desktop-explorer,.top-action-btn{border:1px solid var(--glass-border);background:var(--glass);color:#fff;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
-.brand-panel{position:absolute;left:0;top:0;display:flex;align-items:center;gap:10px;min-width:196px;min-height:72px;padding:9px 13px;border-radius:13px;cursor:pointer;transition:.18s}
+.brand-panel{position:absolute;left:0;top:0;display:flex;align-items:center;gap:10px;min-width:245px;min-height:72px;padding:9px 13px;border-radius:13px;cursor:pointer;transition:.18s}
 .brand-panel:hover,.brand-panel:focus-visible{background:rgba(31,41,55,.9);transform:translateY(-1px);outline:none}
 .brand-panel:active{transform:scale(.98)}
 .brand-logo{width:46px;height:46px;object-fit:contain;flex:0 0 auto}
 .brand-copy{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
 .brand-name{font-size:16px;line-height:1.25;white-space:nowrap}
 .shooting-date{margin-top:6px;font-size:12px;line-height:1.2;opacity:.86;white-space:nowrap}
-.desktop-explorer{position:absolute;top:0;left:50%;width:min(760px,calc(100vw - 520px));min-width:420px;transform:translateX(-50%);padding:8px 10px 10px;border-radius:14px}
-.explorer-heading{display:flex;align-items:center;justify-content:space-between;min-height:30px;gap:10px}
+.desktop-explorer{position:absolute;top:-4px;left:50%;width:min(760px,calc(100vw - 520px));min-width:420px;transform:translateX(-50%);padding:5px 10px 6px;border-radius:14px}
+.explorer-heading{display:flex;align-items:center;justify-content:space-between;min-height:26px;gap:10px}
 .explorer-title-wrap{display:flex;align-items:baseline;gap:10px;min-width:0}
 .xml-title{min-width:0;color:#fff;font-size:15px;font-weight:700;line-height:1.25;white-space:nowrap}
 .explorer-tools{display:flex;align-items:center;gap:5px;flex:0 0 auto}
@@ -34,7 +34,7 @@ button{font:inherit}
 .menu-tool-btn{height:26px;min-width:34px;padding:0 8px;border-radius:8px;background:rgba(255,255,255,.13);color:#fff;font-size:12px}
 .menu-tool-btn:hover,.menu-tool-btn:focus-visible{background:rgba(255,255,255,.24)}
 .hamburger-btn,.menu-more-toggle{display:inline-grid;place-items:center;font-weight:700;line-height:1}
-.desktop-menu{margin-top:5px}
+.desktop-menu{margin-top:2px}
 .menu-track{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(2,31px);gap:6px;min-height:68px}
 .menu-chip{width:100%;min-width:0;padding:5px 8px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
 .menu-chip:hover,.menu-chip:focus-visible{background:rgba(255,255,255,.22)}
@@ -81,7 +81,7 @@ button{font:inherit}
   .mobile-pane{position:relative;min-width:0;height:100%;overflow:hidden;background:#fff}
   .mobile-menu-pane{border-right:1px solid #d1d5db;background:#f3f4f6}
 
-  /* 둘러보기 고정 헤더: 최대한 얇게 */
+  /* 메뉴 고정 헤더: 최대한 얇게 */
   .mobile-pane-header{
     position:absolute;left:0;right:0;top:0;z-index:40;
     display:flex;align-items:center;height:27px;min-height:27px;
@@ -135,6 +135,16 @@ button{font:inherit}
   }
   .mobile-menu-title{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:600}
   .mobile-menu-item.is-active .mobile-menu-number{opacity:.8}
+
+  /* 모바일 카카오맵 제목 */
+  .mobile-map-title{
+    position:absolute;top:0;right:0;z-index:45;
+    display:flex;align-items:center;justify-content:flex-end;
+    height:27px;min-height:27px;padding:0 8px 0 31px;
+    color:#334155;background:rgba(255,255,255,.86);
+    font-size:11px;font-weight:700;line-height:1;
+    pointer-events:none;
+  }
   .map{position:absolute;inset:0;width:100%;height:100%;background:#e5e7eb}
 
   .panel-toggle{
@@ -210,57 +220,1707 @@ button{font:inherit}
 .suwon360-map-info{display:block!important;border:0!important;outline:0!important;}
 @media(max-width:768px){.suwon360-map-tooltip,.suwon360-map-info{display:none!important;}}
 
-
 /* =========================================================
-   v101 : 미니맵 헤더 + 메뉴·지도 전체 토글 개선
+   v101 - 모바일 미니맵 헤더
+   메뉴와 동일한 프레임, 왼쪽 화살표 / 오른쪽 '미니맵'
    ========================================================= */
 @media(max-width:768px){
-  .map-pane-header{padding-left:9px}
-  .map-header-icon{display:inline-block;margin-right:2px;font-size:12px;line-height:1}
-  .map-pane .map{top:27px;bottom:0;height:auto}
-
-  .panel-toggle{
-    left:50%;right:auto;bottom:calc(10px + env(safe-area-inset-bottom));
-    z-index:9999;display:inline-flex;align-items:center;justify-content:center;
-    width:42px;height:42px;padding:0;gap:0;
-    transform:translateX(-50%);border:1px solid rgba(255,255,255,.34);
-    border-radius:50%;background:rgba(15,23,42,.68);color:#fff;
-    box-shadow:0 8px 22px rgba(0,0,0,.26);
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    transition:width .2s ease,transform .18s ease,background .18s ease,border-radius .2s ease;
+  .map-pane-header{
+    padding:0 8px 0 31px;
+    justify-content:flex-end;
   }
-  .panel-toggle:active{transform:translateX(-50%) scale(.94)}
-  .panel-toggle-icon{display:grid;place-items:center;width:22px;height:22px;flex:0 0 auto}
-  .panel-toggle-icon svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .panel-toggle .icon-show{display:none}
-  .panel-toggle-label,.panel-toggle-tooltip{display:none}
 
-  .app[data-mobile-layout="hidden"] .panel-toggle{
-    display:inline-flex!important;visibility:visible!important;opacity:1!important;
-    width:auto;min-width:160px;height:42px;padding:0 16px;gap:8px;
-    border-radius:999px;background:rgba(15,23,42,.84);
-    transform:translateX(-50%);
+  .map-pane-header strong{
+    margin-left:auto;
+    text-align:right;
   }
-  .app[data-mobile-layout="hidden"] .panel-toggle .icon-hide{display:none}
-  .app[data-mobile-layout="hidden"] .panel-toggle .icon-show{display:block}
-  .app[data-mobile-layout="hidden"] .panel-toggle-label{display:inline;font-size:12px;font-weight:800;white-space:nowrap}
-  .app[data-mobile-layout="hidden"] .mobile-panel{pointer-events:none}
+
+  .map-pane-header .menu-show-arrow,
+  .map-pane-header .map-hide-arrow{
+    left:3px;
+    right:auto;
+    top:2px;
+  }
+
+  .map-pane-header .menu-show-arrow::before,
+  .map-pane-header .map-hide-arrow::before{
+    content:"←";
+  }
+
+  .map-pane > .map{
+    top:27px;
+    bottom:0;
+    height:auto;
+  }
 }
 
 @media(orientation:landscape) and (max-height:600px) and (pointer:coarse){
-  .panel-toggle{left:auto;right:calc(35% + 12px);bottom:calc(10px + env(safe-area-inset-bottom));transform:none}
-  .panel-toggle:active{transform:scale(.94)}
-  .app[data-mobile-layout="hidden"] .panel-toggle{left:auto;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));transform:none}
-  .app[data-mobile-layout="hidden"] .panel-toggle:active{transform:scale(.97)}
-  .panel-toggle::before,.panel-toggle::after{content:none!important}
+  .map-pane-header .menu-show-arrow,
+  .map-pane-header .map-hide-arrow{
+    top:2px;
+    bottom:auto;
+    left:3px;
+    right:auto;
+  }
+
+  .map-pane-header .menu-show-arrow::before,
+  .map-pane-header .map-hide-arrow::before{
+    content:"←";
+  }
 }
 
-@media(hover:hover) and (pointer:fine){
-  .panel-toggle:not(.is-restore):hover .panel-toggle-tooltip,
-  .panel-toggle:not(.is-restore):focus-visible .panel-toggle-tooltip{
-    display:block;position:absolute;right:calc(100% + 9px);top:50%;
-    transform:translateY(-50%);padding:6px 9px;border-radius:7px;
-    background:rgba(15,23,42,.95);color:#fff;font-size:11px;font-weight:700;
-    white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.22)
+/* =========================================================
+   v102 - 모바일 토글 화살표 방향/위치 최종 정리
+   ========================================================= */
+
+/* 모바일 세로
+   메뉴 열림 ← / 메뉴 닫힘 →
+   지도 열림 → / 지도 닫힘 ←
+*/
+@media (max-width:768px) and (orientation:portrait){
+  .menu-hide-arrow{
+    left:auto;
+    right:3px;
   }
+  .menu-hide-arrow::before{
+    content:"←";
+  }
+
+  .menu-show-arrow{
+    left:3px;
+    right:auto;
+  }
+  .menu-show-arrow::before{
+    content:"→";
+  }
+
+  .map-hide-arrow{
+    left:3px;
+    right:auto;
+  }
+  .map-hide-arrow::before{
+    content:"→";
+  }
+
+  .map-show-arrow{
+    left:auto;
+    right:3px;
+  }
+  .map-show-arrow::before{
+    content:"←";
+  }
+}
+
+/* 모바일 가로
+   메뉴 열림: 우측 상단 ↑
+   메뉴 닫힘: 우측 상단 ↓
+   지도 열림: 우측 상단 ↓
+   지도 닫힘: 우측 상단 ↑
+   미니맵 제목: 좌측 끝
+*/
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){
+  .menu-pane-header,
+  .map-pane-header{
+    padding-left:8px;
+    padding-right:31px;
+    justify-content:flex-start;
+  }
+
+  .map-pane-header strong{
+    margin-left:0;
+    margin-right:auto;
+    text-align:left;
+  }
+
+  .menu-hide-arrow,
+  .menu-show-arrow,
+  .map-hide-arrow,
+  .map-show-arrow{
+    top:2px;
+    right:3px;
+    bottom:auto;
+    left:auto;
+  }
+
+  .menu-hide-arrow::before{
+    content:"↑";
+  }
+
+  .menu-show-arrow::before{
+    content:"↓";
+  }
+
+  .map-hide-arrow::before{
+    content:"↓";
+  }
+
+  .map-show-arrow::before{
+    content:"↑";
+  }
+}
+
+/* =========================================================
+   v105 - 모바일 독립 알약형 메뉴 / 미니맵 컨트롤
+   긴 헤더바 제거, 93% 반투명 흰색 + 은은한 드롭 그림자
+   ========================================================= */
+@media (max-width:768px), (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .mobile-panel {
+    position:fixed;
+    overflow:hidden;
+  }
+
+  .mobile-pane-header {
+    display:none !important;
+  }
+
+  .mobile-panel-pill {
+    position:absolute;
+    z-index:80;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    min-width:108px;
+    height:34px;
+    padding:0 12px;
+    border:1px solid rgba(255,255,255,.56);
+    border-radius:999px;
+    background:rgba(255,255,255,.93);
+    color:#273444;
+    box-shadow:
+      0 5px 16px rgba(15,23,42,.14),
+      0 1px 3px rgba(15,23,42,.09);
+    -webkit-backdrop-filter:blur(8px) saturate(125%);
+    backdrop-filter:blur(8px) saturate(125%);
+    font:700 13px/1 system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;
+    cursor:pointer;
+    transition:
+      transform .18s ease,
+      box-shadow .18s ease,
+      background-color .18s ease,
+      opacity .18s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .mobile-panel-pill:hover,
+  .mobile-panel-pill:focus-visible {
+    outline:none;
+    background:rgba(255,255,255,.97);
+    box-shadow:
+      0 7px 20px rgba(15,23,42,.18),
+      0 2px 5px rgba(15,23,42,.10);
+    transform:translateY(-1px);
+  }
+
+  .mobile-panel-pill:active {
+    transform:translateY(0) scale(.98);
+  }
+
+  .mobile-panel-pill .pill-icon {
+    width:16px;
+    height:16px;
+    flex:0 0 16px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.86;
+  }
+
+  .mobile-panel-pill .pill-label {
+    white-space:nowrap;
+  }
+
+  .mobile-panel-pill .pill-arrow {
+    position:relative;
+    width:9px;
+    height:9px;
+    flex:0 0 9px;
+  }
+
+  .mobile-panel-pill .pill-arrow::before {
+    content:"";
+    position:absolute;
+    inset:1px;
+    border-right:1.8px solid currentColor;
+    border-bottom:1.8px solid currentColor;
+    transform:rotate(45deg);
+    transition:transform .2s ease;
+    opacity:.72;
+  }
+
+  .mobile-panel-pill.is-collapsed .pill-arrow::before {
+    transform:rotate(-135deg);
+  }
+
+  .mobile-menu-pill {
+    top:8px;
+    left:8px;
+  }
+
+  .mobile-map-pill {
+    top:8px;
+    right:8px;
+  }
+
+  .mobile-menu-list {
+    top:0;
+    padding-top:50px;
+  }
+
+  .map {
+    inset:0;
+    height:100%;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-menu-pane,
+  .app[data-mobile-layout="split"] .map-pane {
+    display:block;
+  }
+
+  .app[data-mobile-layout="map"] .mobile-menu-pane {
+    display:none;
+  }
+
+  .app[data-mobile-layout="map"] .map-pane {
+    display:block;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-menu-pane {
+    display:block;
+    border-right:0;
+  }
+
+  .app[data-mobile-layout="menu"] .map-pane {
+    display:none;
+  }
+
+  .app[data-mobile-layout="hidden"] .mobile-panel-pill {
+    opacity:0;
+    pointer-events:none;
+  }
+}
+
+/* 모바일 세로: 좌우 각각 독립 알약 */
+@media (max-width:768px) and (orientation:portrait) {
+  .app[data-mobile-layout="split"] .mobile-menu-pill {
+    left:8px;
+    right:auto;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-map-pill {
+    right:8px;
+    left:auto;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-menu-pill,
+  .app[data-mobile-layout="map"] .mobile-menu-pill {
+    left:8px;
+    right:auto;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-map-pill,
+  .app[data-mobile-layout="map"] .mobile-map-pill {
+    right:8px;
+    left:auto;
+  }
+}
+
+/* 모바일 가로: 메뉴 알약은 위, 미니맵 알약은 지도 영역 시작점에 배치 */
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .mobile-panel-pill {
+    height:32px;
+    min-width:102px;
+    padding:0 11px;
+    font-size:12px;
+  }
+
+  .mobile-menu-pill {
+    top:7px;
+    left:8px;
+    right:auto;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-map-pill {
+    top:calc(45% + 7px);
+    left:8px;
+    right:auto;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-map-pill,
+  .app[data-mobile-layout="map"] .mobile-map-pill {
+    top:7px;
+    right:8px;
+    left:auto;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-menu-list {
+    padding-top:46px;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-menu-list {
+    padding-top:46px;
+  }
+}
+
+
+/* =========================================================
+   v106 - 모바일 세로 토글/콘텐츠 겹침 개선
+   ※ 모바일 가로 토글 위치와 동작은 v105 그대로 유지
+   ========================================================= */
+@media (max-width:768px) and (orientation:portrait) {
+  /* 메뉴·미니맵 토글을 글자 높이에 맞춘 타이트한 라벨형으로 조정 */
+  .mobile-panel-pill {
+    height:26px;
+    min-height:26px;
+    min-width:0;
+    padding:0 9px;
+    gap:4px;
+    font-size:12px;
+    line-height:1;
+    box-sizing:border-box;
+    box-shadow:0 3px 10px rgba(15,23,42,.13),0 1px 2px rgba(15,23,42,.08);
+  }
+
+  .mobile-panel-pill .pill-icon {
+    width:14px;
+    height:14px;
+    flex-basis:14px;
+  }
+
+  .mobile-panel-pill .pill-arrow {
+    width:7px;
+    height:7px;
+    flex-basis:7px;
+  }
+
+  .mobile-panel-pill .pill-arrow::before {
+    inset:1px;
+    border-right-width:1.5px;
+    border-bottom-width:1.5px;
+  }
+
+  .mobile-menu-pill,
+  .mobile-map-pill {
+    top:5px;
+  }
+
+  /* 기존 헤더/흰색 바가 다시 나타나지 않도록 완전히 제거 */
+  .mobile-pane-header,
+  .menu-pane-header,
+  .map-pane-header {
+    display:none !important;
+    height:0 !important;
+    min-height:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+
+  /* 토글 아래까지만 메뉴가 스크롤되도록 스크롤 영역 자체를 분리 */
+  .mobile-menu-list {
+    top:36px !important;
+    bottom:0 !important;
+    height:auto !important;
+    padding-top:4px !important;
+    overflow-y:auto !important;
+    overscroll-behavior:contain;
+    scroll-padding-top:4px;
+  }
+
+  /* 미니맵 역시 토글 아래에서 시작하여 버튼 영역을 침범하지 않음 */
+  .map-pane {
+    background:transparent !important;
+  }
+
+  .map-pane > .map,
+  #map {
+    top:36px !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+    width:auto !important;
+    height:auto !important;
+  }
+
+  /* 토글은 콘텐츠보다 항상 위에 유지 */
+  .mobile-panel-pill {
+    z-index:120 !important;
+  }
+
+  .mobile-menu-pane,
+  .map-pane,
+  .mobile-menu-list,
+  .map {
+    z-index:auto;
+  }
+}
+
+/* =========================================================
+   v107 - 모바일 세로 미니맵 상단 흰색 띠 제거
+   지도는 패널 상단부터 꽉 채우고, 알약 버튼만 지도 위에 표시
+   ※ 모바일 가로 레이아웃/토글 위치는 기존 방식 유지
+   ========================================================= */
+@media (max-width:768px) and (orientation:portrait) {
+  /* 패널 바탕이 흰색 띠로 드러나지 않도록 투명 처리 */
+  .mobile-panel {
+    background:transparent !important;
+  }
+
+  /* 각 패널 고유 배경 유지 */
+  .mobile-menu-pane {
+    background:#f3f4f6 !important;
+  }
+
+  .map-pane {
+    background:transparent !important;
+  }
+
+  /* 미니맵은 패널 상단부터 끝까지 채움 */
+  .map-pane > .map,
+  #map {
+    top:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+    width:100% !important;
+    height:100% !important;
+  }
+
+  /* 미니맵 알약 버튼만 지도 위에 떠 있도록 유지 */
+  .mobile-map-pill {
+    z-index:130 !important;
+  }
+
+  /* 메뉴 목록은 버튼 아래부터 시작 */
+  .mobile-menu-list {
+    top:36px !important;
+    bottom:0 !important;
+    height:auto !important;
+    padding-top:4px !important;
+  }
+}
+
+/* =========================================================
+   v108 - 모바일 가로 알약 높이 축소 및 흰색 띠 제거
+   모바일 가로의 기존 토글 위치와 동작은 유지
+   ========================================================= */
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  /* 전체 패널의 흰색 바탕이 빈 영역으로 드러나지 않도록 제거 */
+  .mobile-panel {
+    background:transparent !important;
+  }
+
+  /* 각 영역의 원래 배경만 유지 */
+  .mobile-menu-pane {
+    background:#f3f4f6 !important;
+  }
+
+  .map-pane {
+    background:transparent !important;
+  }
+
+  /* 가로 모드 알약 버튼도 세로 모드처럼 타이트하게 축소 */
+  .mobile-panel-pill {
+    height:26px !important;
+    min-height:26px !important;
+    min-width:0 !important;
+    padding:0 9px !important;
+    gap:4px !important;
+    font-size:12px !important;
+    line-height:1 !important;
+    box-sizing:border-box;
+    box-shadow:0 3px 10px rgba(15,23,42,.13),0 1px 2px rgba(15,23,42,.08);
+    z-index:130 !important;
+  }
+
+  .mobile-panel-pill .pill-icon {
+    width:14px !important;
+    height:14px !important;
+    flex:0 0 14px !important;
+  }
+
+  .mobile-panel-pill .pill-arrow {
+    width:7px !important;
+    height:7px !important;
+    flex:0 0 7px !important;
+  }
+
+  .mobile-panel-pill .pill-arrow::before {
+    inset:1px !important;
+    border-right-width:1.5px !important;
+    border-bottom-width:1.5px !important;
+  }
+
+  /* 기존 가로 위치는 그대로 유지하되 위쪽 간격만 조금 줄임 */
+  .mobile-menu-pill {
+    top:5px !important;
+  }
+
+  .app[data-mobile-layout="split"] .mobile-map-pill {
+    top:calc(45% + 5px) !important;
+  }
+
+  .app[data-mobile-layout="menu"] .mobile-map-pill,
+  .app[data-mobile-layout="map"] .mobile-map-pill {
+    top:5px !important;
+  }
+
+  /* 메뉴는 알약 아래부터 스크롤 */
+  .app[data-mobile-layout="split"] .mobile-menu-list,
+  .app[data-mobile-layout="menu"] .mobile-menu-list {
+    top:36px !important;
+    bottom:0 !important;
+    height:auto !important;
+    padding-top:4px !important;
+  }
+
+  /* 미니맵은 지도 영역을 상단부터 꽉 채워 흰색 띠 제거 */
+  .map-pane > .map,
+  #map {
+    top:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+    width:100% !important;
+    height:100% !important;
+  }
+
+  /* 기존 헤더 요소가 남아 있어도 완전히 숨김 */
+  .mobile-pane-header,
+  .menu-pane-header,
+  .map-pane-header,
+  .mobile-map-title {
+    display:none !important;
+    height:0 !important;
+    min-height:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+}
+
+/* =========================================================
+   v109 - 메뉴·지도 전체 감추기 버튼 알약형 디자인
+   패널을 가리지 않도록 파노라마 영역 안쪽에 배치
+   ========================================================= */
+@media (max-width:768px) {
+  .panel-toggle {
+    position:fixed;
+    left:50%;
+    bottom:calc(var(--mobile-panel-size) + 7px);
+    z-index:1250;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    width:auto;
+    min-width:142px;
+    height:28px;
+    min-height:28px;
+    padding:0 13px;
+    transform:translateX(-50%);
+    border:1px solid rgba(255,255,255,.58);
+    border-radius:999px;
+    background:rgba(255,255,255,.93);
+    color:#273444;
+    box-shadow:
+      0 4px 14px rgba(15,23,42,.15),
+      0 1px 3px rgba(15,23,42,.09);
+    -webkit-backdrop-filter:blur(8px) saturate(125%);
+    backdrop-filter:blur(8px) saturate(125%);
+    font:700 12px/1 system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:
+      bottom .22s ease,
+      transform .18s ease,
+      background-color .18s ease,
+      box-shadow .18s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .panel-toggle:hover,
+  .panel-toggle:focus-visible {
+    outline:none;
+    background:rgba(255,255,255,.98);
+    box-shadow:
+      0 6px 18px rgba(15,23,42,.18),
+      0 2px 5px rgba(15,23,42,.10);
+    transform:translateX(-50%) translateY(-1px);
+  }
+
+  .panel-toggle:active {
+    transform:translateX(-50%) scale(.98);
+  }
+
+  .panel-toggle-arrow {
+    display:inline-grid;
+    place-items:center;
+    width:14px;
+    height:14px;
+    flex:0 0 14px;
+    font-size:16px;
+    font-weight:700;
+    line-height:1;
+    transform:translateY(-1px);
+  }
+
+  .panel-toggle-label {
+    display:inline-block;
+    line-height:1;
+  }
+
+  /* 패널을 감춘 뒤에는 화면 하단 중앙에 보기 버튼 표시 */
+  .app[data-mobile-layout="hidden"] .panel-toggle {
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    transform:translateX(-50%);
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle:hover,
+  .app[data-mobile-layout="hidden"] .panel-toggle:focus-visible {
+    transform:translateX(-50%) translateY(-1px);
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle:active {
+    transform:translateX(-50%) scale(.98);
+  }
+}
+
+/* 모바일 가로: 파노라마 우측 하단, 지도 패널 바깥에 배치 */
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse) {
+  .panel-toggle {
+    left:auto;
+    right:calc(35% + 10px);
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    min-width:136px;
+    height:26px;
+    min-height:26px;
+    padding:0 11px;
+    transform:none;
+  }
+
+  .panel-toggle:hover,
+  .panel-toggle:focus-visible {
+    transform:translateY(-1px);
+  }
+
+  .panel-toggle:active {
+    transform:scale(.98);
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle {
+    right:10px;
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    transform:none;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle:hover,
+  .app[data-mobile-layout="hidden"] .panel-toggle:focus-visible {
+    transform:translateY(-1px);
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle:active {
+    transform:scale(.98);
+  }
+}
+
+/* =========================================================
+   v110 - 모바일 토글 기능 복구 + 전체 버튼 검정 Glass
+   ========================================================= */
+@media (max-width:768px) {
+  .panel-toggle {
+    background:rgba(15,15,18,.76) !important;
+    color:#fff !important;
+    border-color:rgba(255,255,255,.18) !important;
+    box-shadow:
+      0 2px 9px rgba(0,0,0,.30),
+      inset 0 1px 0 rgba(255,255,255,.07) !important;
+    -webkit-backdrop-filter:blur(10px) saturate(120%);
+    backdrop-filter:blur(10px) saturate(120%);
+  }
+
+  .panel-toggle:hover,
+  .panel-toggle:focus-visible {
+    background:rgba(10,10,12,.88) !important;
+    box-shadow:
+      0 3px 11px rgba(0,0,0,.34),
+      inset 0 1px 0 rgba(255,255,255,.09) !important;
+  }
+
+  .panel-toggle:disabled {
+    opacity:.45;
+    cursor:default;
+  }
+
+  /* 메뉴/미니맵 토글 상태를 화살표 방향으로 표시 */
+  .mobile-panel-pill[aria-pressed="true"] .pill-arrow {
+    transform:rotate(180deg) !important;
+  }
+}
+
+/* 모바일 세로: 메뉴·지도 패널 경계선에 바로 닿게 배치 */
+@media (orientation:portrait) and (max-width:768px) {
+  .panel-toggle {
+    bottom:var(--mobile-panel-size) !important;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle {
+    bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+
+/* v110.1 - 전체 숨기기 버튼 타이트하게 */
+@media (max-width:768px){
+  .panel-toggle{
+    min-width:auto !important;
+    width:auto !important;
+    height:24px !important;
+    min-height:24px !important;
+    padding:0 6px !important;
+    gap:2px !important;
+    font-size:12px !important;
+    line-height:1 !important;
+  }
+  .panel-toggle-arrow{
+    width:12px !important;
+    height:12px !important;
+    flex:0 0 12px !important;
+    font-size:14px !important;
+  }
+}
+
+
+/* =========================================================
+   v111 - 모바일 로고에 XML title 표시
+   PC: 수원360°투어
+   모바일: 수원360°투어 │ 콘텐츠명
+   ========================================================= */
+.brand-name{
+  display:flex;
+  align-items:center;
+  gap:0;
+}
+
+.brand-mobile-separator,
+.brand-content-title{
+  display:none;
+}
+
+@media (max-width:768px){
+  .brand-panel{
+    max-width:calc(100% - 82px);
+  }
+
+  .brand-name{
+    max-width:100%;
+    min-width:0;
+    flex-direction:row;
+    align-items:center;
+    font-size:14px;
+    line-height:1.2;
+    white-space:nowrap;
+  }
+
+  .brand-service-name{
+    flex:0 0 auto;
+  }
+
+  .brand-mobile-separator{
+    display:inline;
+    flex:0 0 auto;
+    margin:0 5px;
+    opacity:.75;
+  }
+
+  .brand-content-title{
+    display:inline-block;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+}
+
+
+/* =========================================================
+   v112 - 모바일 로고 표기 및 복원 버튼 여백 조정
+   모바일 로고: 수원360투어 | XML title
+   열린 상태: 숨기기 버튼 타이트
+   숨김 상태: 메뉴·지도 보기 버튼 여유 있게
+   ========================================================= */
+@media (max-width:768px){
+  .panel-toggle{
+    padding-left:6px !important;
+    padding-right:6px !important;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle,
+  .panel-toggle.is-restore{
+    padding-left:14px !important;
+    padding-right:14px !important;
+    gap:4px !important;
+  }
+
+  .brand-mobile-separator{
+    margin-left:5px !important;
+    margin-right:5px !important;
+  }
+}
+
+
+/* v113 restore button spacing */
+@media (max-width:768px){
+  .app[data-mobile-layout="hidden"] .panel-toggle,
+  .panel-toggle.is-restore{
+    min-height:32px !important;
+    height:32px !important;
+    padding:4px 16px !important;
+    gap:6px !important;
+    border-radius:18px !important;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle .panel-toggle-label{
+    line-height:1.2 !important;
+  }
+
+  .app[data-mobile-layout="hidden"] .panel-toggle .panel-toggle-arrow{
+    width:14px !important;
+    height:14px !important;
+    font-size:15px !important;
+  }
+}
+
+
+/* =========================================================
+   v114 - PC 미니맵 헤더 제거 및 우측 상단 검정 반투명 알약
+   ========================================================= */
+@media (min-width:769px){
+  /* PC에서는 하단 모바일 패널을 미니맵 전용 플로팅 창으로 사용 */
+  .mobile-panel{
+    position:absolute !important;
+    left:auto !important;
+    right:16px !important;
+    top:auto !important;
+    bottom:16px !important;
+    z-index:950 !important;
+    display:block !important;
+    width:360px !important;
+    height:240px !important;
+    overflow:hidden !important;
+    border:1px solid rgba(255,255,255,.30) !important;
+    border-radius:15px !important;
+    background:transparent !important;
+    box-shadow:0 10px 28px rgba(0,0,0,.34) !important;
+  }
+
+  /* PC에서는 메뉴 관련 모바일 요소를 감춤 */
+  .mobile-menu-pill,
+  .mobile-menu-pane,
+  .panel-toggle{
+    display:none !important;
+  }
+
+  /* 지도 프레임과 지도는 여백 없이 전체 채움 */
+  .map-pane{
+    position:absolute !important;
+    inset:0 !important;
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    overflow:hidden !important;
+    border:0 !important;
+    background:transparent !important;
+  }
+
+  .map-pane > .map,
+  #map{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+  }
+
+  /* 기존 흰색 미니맵 제목 바 완전 제거 */
+  .mobile-map-title,
+  .mobile-pane-header,
+  .map-pane-header{
+    display:none !important;
+    height:0 !important;
+    min-height:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+
+  /* 우측 상단 검정 반투명 알약형 '미니맵' 표시 */
+  .mobile-map-pill{
+    position:absolute !important;
+    top:10px !important;
+    right:10px !important;
+    left:auto !important;
+    bottom:auto !important;
+    z-index:30 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:6px !important;
+    width:auto !important;
+    min-width:76px !important;
+    height:30px !important;
+    padding:0 12px !important;
+    border:1px solid rgba(255,255,255,.24) !important;
+    border-radius:999px !important;
+    background:rgba(0,0,0,.62) !important;
+    color:#fff !important;
+    box-shadow:0 3px 10px rgba(0,0,0,.25) !important;
+    -webkit-backdrop-filter:blur(7px) !important;
+    backdrop-filter:blur(7px) !important;
+    font-size:12px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+    pointer-events:none !important;
+  }
+
+  .mobile-map-pill .pill-icon{
+    width:15px !important;
+    height:15px !important;
+    flex:0 0 15px !important;
+    fill:none !important;
+    stroke:currentColor !important;
+    stroke-width:1.7 !important;
+    stroke-linecap:round !important;
+    stroke-linejoin:round !important;
+  }
+
+  .mobile-map-pill .pill-label{
+    display:inline-block !important;
+    white-space:nowrap !important;
+  }
+
+  /* PC 알약에서는 펼침 화살표 제거 */
+  .mobile-map-pill .pill-arrow{
+    display:none !important;
+  }
+}
+
+
+/* =========================================================
+   v116 - 모바일 로고 및 콘텐츠 제목 최종 정리
+   표시 형식: 수원360투어 | XML title
+   ========================================================= */
+@media (max-width:768px){
+  .brand-service-name::after{
+    content:"" !important;
+  }
+
+  .brand-mobile-separator{
+    display:inline !important;
+  }
+
+  .brand-content-title{
+    display:inline !important;
+  }
+
+  .brand-content-title:empty{
+    display:none !important;
+  }
+}
+
+
+/* =========================================================
+   v118 - PC 미니맵 이중 프레임 제거
+   PC에서는 map.js가 생성하는 #suwon360-desktop-map-wrapper만 사용
+   ========================================================= */
+@media (min-width:769px){
+  .mobile-panel{
+    display:none !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+
+  #suwon360-desktop-map-wrapper{
+    display:block;
+  }
+
+  #suwon360-desktop-map-wrapper[hidden]{
+    display:none !important;
+  }
+}
+
+
+/* =========================================================
+   v119 - 모바일 공유 버튼 클릭 후 파란색 잔상 제거
+   ========================================================= */
+#share-btn,
+#share-btn:hover,
+#share-btn:focus,
+#share-btn:active,
+#share-btn:focus-visible{
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#share-btn{
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+@media (hover:none) and (pointer:coarse){
+  #share-btn:hover,
+  #share-btn:focus,
+  #share-btn:active,
+  #share-btn:focus-visible{
+    background: var(--top-action-bg, rgba(0,0,0,.46)) !important;
+    color: inherit !important;
+    border-color: inherit !important;
+    transform: none !important;
+  }
+}
+
+
+/* =========================================================
+   v120 - 모바일 공유 버튼 파란색 hover/focus 완전 제거
+   터치 브라우저의 고정 hover 상태까지 원래 검은 배경으로 강제
+   ========================================================= */
+@media (max-width:768px){
+  #share-btn,
+  #share-btn:hover,
+  #share-btn:focus,
+  #share-btn:active,
+  #share-btn:focus-visible{
+    background:var(--glass) !important;
+    color:#fff !important;
+    border-color:var(--glass-border) !important;
+    outline:0 !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.22) !important;
+    transform:none !important;
+    transition:none !important;
+    -webkit-tap-highlight-color:rgba(0,0,0,0) !important;
+  }
+
+  #share-btn::-moz-focus-inner{
+    border:0 !important;
+  }
+}
+
+
+/* =========================================================
+   v122 - 모바일 상단 종료/공유 버튼 파란색 잔상 제거
+   ========================================================= */
+@media (max-width:768px){
+  .top-action-btn,
+  .top-action-btn:hover,
+  .top-action-btn:focus,
+  .top-action-btn:active,
+  .top-action-btn:focus-visible{
+    background:var(--glass) !important;
+    color:#fff !important;
+    border-color:var(--glass-border) !important;
+    outline:none !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.22) !important;
+    transform:none !important;
+    transition:none !important;
+    -webkit-tap-highlight-color:rgba(0,0,0,0) !important;
+  }
+
+  .top-action-btn::-moz-focus-inner{
+    border:0 !important;
+  }
+}
+
+/* =========================================================
+   v200 - 안정형 카카오 미니맵
+   PC 지도 크기를 고정하여 카카오 내부 타일/마커 좌표계 불일치 방지
+   ========================================================= */
+@media (min-width:769px){
+  #suwon360-desktop-map-wrapper{
+    display:block!important;
+    position:fixed!important;
+    right:20px!important;
+    bottom:20px!important;
+    width:300px!important;
+    height:205px!important;
+    min-width:300px!important;
+    max-width:300px!important;
+    min-height:205px!important;
+    max-height:205px!important;
+    overflow:hidden!important;
+    transform:none!important;
+    filter:none!important;
+    backdrop-filter:none!important;
+    contain:none!important;
+    isolation:auto!important;
+  }
+  #suwon360-desktop-map-wrapper .suwon360-map-resize-handle{display:none!important}
+  #desktop-map{
+    position:absolute!important;
+    inset:0!important;
+    width:300px!important;
+    height:205px!important;
+    min-width:300px!important;
+    min-height:205px!important;
+    max-width:300px!important;
+    max-height:205px!important;
+    transform:none!important;
+    filter:none!important;
+    zoom:1!important;
+  }
+}
+.s360-indoor-marker{
+  --s360-heading:0deg;
+  position:relative!important;
+  width:48px!important;
+  height:48px!important;
+  overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  pointer-events:none!important;
+  transform:rotate(var(--s360-heading))!important;
+  transform-origin:24px 31px!important;
+}
+.s360-indoor-marker-svg{
+  display:block!important;
+  width:48px!important;
+  height:48px!important;
+  overflow:visible!important;
+  background:transparent!important;
+}
+.s360-indoor-arrow{
+  fill:#2563eb;
+  stroke:#ffffff;
+  stroke-width:1.6;
+  stroke-linejoin:round;
+}
+.s360-indoor-ring{
+  fill:#ffffff;
+  stroke:rgba(15,23,42,.28);
+  stroke-width:1;
+}
+.s360-indoor-core{
+  fill:#2563eb;
+}
+
+
+/* =========================================================
+   v201 - PC 미니맵 표시 및 남수헌 좌표 보정
+   ========================================================= */
+@media (min-width:769px){
+  #suwon360-desktop-map-wrapper{
+    z-index:1100!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    background:#fff!important;
+    border:1px solid rgba(255,255,255,.75)!important;
+    border-radius:12px!important;
+    box-shadow:0 10px 28px rgba(0,0,0,.28)!important;
+  }
+  #desktop-map{
+    z-index:1!important;
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  .suwon360-desktop-map-title{
+    display:none!important;
+  }
+}
+@media (max-width:768px){
+  #mobile-map{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    min-width:120px!important;
+    min-height:120px!important;
+  }
+}
+
+
+/* =========================================================
+   v202 - 남수헌 방향마커 파란 면 확장 방지
+   ========================================================= */
+.s360-indoor-marker,
+.s360-indoor-marker *{
+  box-sizing:border-box!important;
+}
+.s360-indoor-marker::before,
+.s360-indoor-marker::after{
+  content:none!important;
+}
+
+/* =========================================================
+   v209 - PC 미니맵 3단계 크기 버튼 / Glass 상단 버튼
+   ========================================================= */
+@media (min-width:769px){
+  #suwon360-desktop-map-wrapper{
+    --desktop-map-width:340px;
+    --desktop-map-height:240px;
+    width:var(--desktop-map-width)!important;
+    height:var(--desktop-map-height)!important;
+    min-width:var(--desktop-map-width)!important;
+    max-width:var(--desktop-map-width)!important;
+    min-height:var(--desktop-map-height)!important;
+    max-height:var(--desktop-map-height)!important;
+    transition:none!important;
+  }
+
+  #desktop-map{
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    min-width:100%!important;
+    max-width:100%!important;
+    min-height:100%!important;
+    max-height:100%!important;
+  }
+
+  #suwon360-desktop-map-wrapper .suwon360-map-resize-handle{
+    display:none!important;
+  }
+
+  .suwon360-map-size-toggle{
+    position:absolute!important;
+    top:8px!important;
+    right:8px!important;
+    z-index:120!important;
+    display:grid!important;
+    place-items:center!important;
+    width:31px!important;
+    height:31px!important;
+    padding:0!important;
+    border:1px solid rgba(255,255,255,.72)!important;
+    border-radius:9px!important;
+    background:rgba(17,24,39,.72)!important;
+    color:#fff!important;
+    font-size:20px!important;
+    line-height:1!important;
+    cursor:pointer!important;
+    box-shadow:0 4px 12px rgba(0,0,0,.22)!important;
+    backdrop-filter:blur(8px)!important;
+    transition:background .15s ease,transform .15s ease!important;
+  }
+
+  .suwon360-map-size-toggle:hover,
+  .suwon360-map-size-toggle:focus-visible{
+    background:rgba(255,255,255,.24)!important;
+    transform:translateY(-1px)!important;
+    outline:none!important;
+  }
+
+  .suwon360-map-size-toggle:active{
+    background:rgba(255,255,255,.32)!important;
+    transform:translateY(0)!important;
+  }
+}
+
+.top-action-btn{
+  position:relative!important;
+  overflow:visible!important;
+  width:42px!important;
+  height:38px!important;
+  border-radius:11px!important;
+  background:rgba(255,255,255,.12)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  color:#fff!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.22)!important;
+  backdrop-filter:blur(10px)!important;
+  transition:background .15s ease,transform .15s ease,border-color .15s ease!important;
+}
+
+.top-action-btn:active{
+  background:rgba(255,255,255,.30)!important;
+  transform:translateY(0)!important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .top-action-btn:hover,
+  .top-action-btn:focus-visible{
+    background:rgba(255,255,255,.22)!important;
+    border-color:rgba(255,255,255,.30)!important;
+    color:#fff!important;
+    outline:none!important;
+    transform:translateY(-1px)!important;
+  }
+
+  .top-action-btn[data-tooltip]::after,
+  .suwon360-map-size-toggle[data-tooltip]::after{
+    content:attr(data-tooltip)!important;
+    position:absolute!important;
+    z-index:3000!important;
+    display:block!important;
+    padding:6px 9px!important;
+    border-radius:7px!important;
+    background:rgba(17,24,39,.94)!important;
+    color:#fff!important;
+    font-size:11px!important;
+    font-weight:700!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transition:none!important;
+    box-shadow:0 4px 12px rgba(0,0,0,.24)!important;
+  }
+
+  .top-action-btn[data-tooltip]::after{
+    right:calc(100% + 8px)!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+  }
+
+  .suwon360-map-size-toggle[data-tooltip]::after{
+    right:0!important;
+    top:calc(100% + 7px)!important;
+  }
+
+  .top-action-btn[data-tooltip]:hover::after,
+  .top-action-btn[data-tooltip]:focus-visible::after,
+  .suwon360-map-size-toggle[data-tooltip]:hover::after,
+  .suwon360-map-size-toggle[data-tooltip]:focus-visible::after{
+    opacity:1!important;
+    visibility:visible!important;
+  }
+}
+
+@media (max-width:768px){
+  .top-action-btn{
+    width:34px!important;
+    height:32px!important;
+    border-radius:9px!important;
+  }
+}
+
+
+/* =========================================================
+   v210 - 원형 상단 버튼 복원 / PC 미니맵 포인트 알약 툴팁
+   ========================================================= */
+.top-action-btn{
+  width:40px!important;
+  height:40px!important;
+  border-radius:50%!important;
+  background:rgba(17,24,39,.78)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  color:#fff!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.24)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+  backdrop-filter:blur(10px)!important;
+  transition:background-color .15s ease,transform .15s ease,box-shadow .15s ease!important;
+}
+
+.top-action-btn:active{
+  background:rgba(8,12,20,.94)!important;
+  transform:translateY(0)!important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .top-action-btn:hover,
+  .top-action-btn:focus-visible{
+    background:rgba(8,12,20,.92)!important;
+    border-color:rgba(255,255,255,.30)!important;
+    box-shadow:0 10px 24px rgba(0,0,0,.34)!important;
+    transform:translateY(-1px)!important;
+  }
+
+  .top-action-btn:hover svg,
+  .top-action-btn:focus-visible svg{
+    transform:scale(1.06);
+  }
+
+  .top-action-btn svg{
+    transition:transform .15s ease;
+  }
+
+  .top-action-btn[data-tooltip]::after,
+  .suwon360-map-size-toggle[data-tooltip]::after{
+    padding:6px 11px!important;
+    border:1px solid rgba(255,255,255,.14)!important;
+    border-radius:999px!important;
+    background:rgba(8,12,20,.86)!important;
+    -webkit-backdrop-filter:blur(7px)!important;
+    backdrop-filter:blur(7px)!important;
+    box-shadow:0 5px 14px rgba(0,0,0,.28)!important;
+  }
+}
+
+@media (min-width:769px){
+  .suwon360-map-tooltip{
+    display:block!important;
+    position:relative!important;
+    pointer-events:none!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    opacity:0;
+    transform:translateY(4px);
+    animation:suwon360TooltipIn .15s ease forwards;
+    white-space:nowrap!important;
+  }
+
+  .suwon360-map-info{
+    display:block!important;
+    padding:7px 13px!important;
+    border:1px solid rgba(255,255,255,.14)!important;
+    border-radius:999px!important;
+    background:rgba(8,12,20,.84)!important;
+    color:#fff!important;
+    font-family:Arial,"Noto Sans KR","Malgun Gothic",sans-serif!important;
+    font-size:12px!important;
+    font-weight:700!important;
+    line-height:1!important;
+    letter-spacing:-.02em!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+    -webkit-backdrop-filter:blur(7px) saturate(120%)!important;
+    backdrop-filter:blur(7px) saturate(120%)!important;
+    box-shadow:0 5px 14px rgba(0,0,0,.28)!important;
+  }
+
+  @keyframes suwon360TooltipIn{
+    to{opacity:1;transform:translateY(0)}
+  }
+}
+
+@media (max-width:768px){
+  .top-action-btn{
+    width:32px!important;
+    height:32px!important;
+    border-radius:50%!important;
+  }
+}
+
+
+/* =========================================================
+   v213 - 공유 레이어 팝업
+   링크복사 / 카카오톡 / 페이스북 / 트위터 / QR코드
+   ========================================================= */
+.share-layer[hidden]{display:none!important}
+.share-layer{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  display:grid;
+  place-items:center;
+  padding:18px;
+}
+.share-layer-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.56);
+  -webkit-backdrop-filter:blur(3px);
+  backdrop-filter:blur(3px);
+}
+.share-dialog{
+  position:relative;
+  z-index:1;
+  width:min(420px,calc(100vw - 28px));
+  max-height:calc(100vh - 36px);
+  overflow:auto;
+  padding:18px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:18px;
+  background:rgba(17,24,39,.96);
+  color:#fff;
+  box-shadow:0 22px 60px rgba(0,0,0,.46);
+  -webkit-backdrop-filter:blur(16px) saturate(120%);
+  backdrop-filter:blur(16px) saturate(120%);
+  animation:s360ShareLayerIn .18s ease;
+}
+@keyframes s360ShareLayerIn{
+  from{opacity:0;transform:translateY(8px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.share-dialog-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:15px;
+}
+.share-dialog-header>div{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  gap:5px;
+}
+.share-dialog-header strong{
+  font-size:19px;
+  line-height:1.2;
+}
+.share-dialog-subtitle,
+#share-dialog-subtitle{
+  overflow:hidden;
+  color:rgba(255,255,255,.68);
+  font-size:12px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.share-dialog-close{
+  display:grid;
+  place-items:center;
+  width:32px;
+  height:32px;
+  flex:0 0 32px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50%;
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  font-size:23px;
+  line-height:1;
+  cursor:pointer;
+}
+.share-dialog-close:hover,
+.share-dialog-close:focus-visible{
+  background:rgba(255,255,255,.20);
+  outline:none;
+}
+.share-url-box{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  padding:7px 7px 7px 12px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:11px;
+  background:rgba(255,255,255,.07);
+}
+#share-url-text{
+  min-width:0;
+  flex:1;
+  overflow:hidden;
+  color:rgba(255,255,255,.78);
+  font-size:12px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#share-copy-btn{
+  flex:0 0 auto;
+  height:32px;
+  padding:0 12px;
+  border:0;
+  border-radius:8px;
+  background:#2563eb;
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+#share-copy-btn:hover,
+#share-copy-btn:focus-visible{
+  background:#1d4ed8;
+  outline:none;
+}
+.share-service-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+  margin-top:16px;
+}
+.share-service-button{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 4px 9px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+.share-service-button:hover,
+.share-service-button:focus-visible{
+  background:rgba(255,255,255,.15);
+  outline:none;
+  transform:translateY(-1px);
+}
+.share-service-icon{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  font-weight:900;
+  line-height:1;
+}
+.kakao-icon{
+  background:#fee500;
+  color:#191919;
+  font-size:10px;
+  letter-spacing:-.05em;
+}
+.facebook-icon{
+  background:#1877f2;
+  color:#fff;
+  font:900 27px/1 Arial,sans-serif;
+}
+.twitter-icon{
+  background:#000;
+  color:#fff;
+  font-size:21px;
+}
+.qr-icon{
+  background:#fff;
+  color:#111827;
+  font-size:25px;
+}
+.share-qr-panel{
+  margin-top:15px;
+  padding:15px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:13px;
+  background:#fff;
+  color:#334155;
+  text-align:center;
+}
+.share-qr-panel[hidden]{display:none!important}
+.share-qr-code{
+  display:grid;
+  place-items:center;
+  min-height:180px;
+}
+.share-qr-code img,
+.share-qr-code canvas{
+  display:block;
+  max-width:100%;
+  height:auto!important;
+}
+.share-qr-panel p{
+  margin:10px 0 0;
+  font-size:12px;
+}
+.share-layer-message{
+  min-height:18px;
+  margin-top:10px;
+  color:#bfdbfe;
+  font-size:12px;
+  text-align:center;
+}
+body.share-layer-open{overflow:hidden}
+
+@media(max-width:520px){
+  .share-dialog{padding:16px}
+  .share-service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .share-service-button{padding:10px 6px}
 }

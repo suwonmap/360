@@ -12,6 +12,8 @@
   let menuScenes = [];
   let activeMenuScene = "";
   let lastVisibleLayout = MOBILE_LAYOUT.SPLIT;
+  // v220: 점3개 메뉴의 열린 상태를 씬 이동과 재렌더링 후에도 유지합니다.
+  let overflowPinned = false;
 
   function makeButton(scene, index, className) {
     const button = document.createElement("button");
@@ -84,7 +86,19 @@
 
     const hasOverflow = menuScenes.length > DESKTOP_VISIBLE_LIMIT;
     more.hidden = !hasOverflow;
-    if (!hasOverflow) closeOverflow();
+
+    if (!hasOverflow) {
+      overflowPinned = false;
+      closeOverflow();
+      return;
+    }
+
+    if (overflowPinned) {
+      overflow.hidden = false;
+      more.setAttribute("aria-expanded", "true");
+    } else {
+      closeOverflow();
+    }
   }
 
   function renderMobile() {
@@ -154,10 +168,11 @@
   function toggleOverflow() {
     const overflow = document.getElementById("menu-overflow");
     const more = document.getElementById("menu-more-toggle");
-    if (!overflow || !more) return;
-    const willOpen = overflow.hidden;
-    overflow.hidden = !willOpen;
-    more.setAttribute("aria-expanded", String(willOpen));
+    if (!overflow || !more || more.hidden) return;
+
+    overflowPinned = !overflowPinned;
+    overflow.hidden = !overflowPinned;
+    more.setAttribute("aria-expanded", String(overflowPinned));
   }
 
   function getLayout() {
@@ -293,11 +308,15 @@
       allToggle.title = label;
       allToggle.setAttribute("aria-pressed", String(collapsed));
       allToggle.setAttribute("aria-label", label);
+      overflowPinned = false;
       closeOverflow();
     });
 
     document.addEventListener("click", (event) => {
-      if (!event.target.closest("#desktop-explorer")) closeOverflow();
+      if (!event.target.closest("#desktop-explorer")) {
+        overflowPinned = false;
+        closeOverflow();
+      }
     });
 
     document.getElementById("panel-toggle")?.addEventListener("click", () => {

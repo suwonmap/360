@@ -2,1147 +2,666 @@
   "use strict";
 
   /**
-   * Suwon360 Kakao minimap module
+   * Suwon360 Universal Map Engine v210
    * ------------------------------------------------------------
-   * 지원 대상
-   *  - namsuheon.xml : 현재 위치 1개 + 방향(FOV) 표시
-   *  - yharbor.xml   : 주요 메뉴 씬 24개 번호 마커 + 말풍선
+   * 콘텐츠명을 코드에 등록하지 않습니다.
+   * krpano XML의 mapmode와 scene 좌표를 읽어 자동으로 동작합니다.
    *
-   * 전제
-   *  - Kakao Maps SDK가 autoload=false 로 로드되어 있어야 합니다.
-   *  - 지도 컨테이너 id는 #map 입니다.
-   *  - krpano 객체는 window.krpano 또는 document.getElementById('krpanoSWFObject')로 접근합니다.
-   *  - XML scene 태그에 lat/lng 또는 latitude/longitude 속성이 있어야 합니다.
-   *  - 영흥수목원 씬명 형식: yharbor_1, yharbor_5 ... (괄호 없음)
+   * XML 권장값
+   *   mapmode="multi"  : menu_show="true" 씬들을 번호 포인트로 표시
+   *   mapmode="single" : 현재 씬 위치 1개와 시선 방향을 표시
+   *   mapmode="auto"   : 좌표가 있는 메뉴 씬이 2개 이상이면 multi, 아니면 single
+   *   mapmode="off"    : 미니맵 사용 안 함
+   *   maplat / maplng   : 초기 중심 좌표(선택)
+   *   maplevel          : 초기 확대 단계(선택)
    */
 
-  /* ==========================================================
-   * PC / 모바일 미니맵 컨테이너 호환 레이어
-   * ----------------------------------------------------------
-   * 모바일 : viewer.html의 #map-pane 내부 #map 사용
-   * PC     : 예전 정상 구조처럼 우측 하단 고정 프레임을 생성하고
-   *          동일한 #map 요소를 그 안으로 이동하여 사용
-   * ========================================================== */
-  const DESKTOP_BREAKPOINT = 769;
-  let mobileMapAnchor = null;
-  let desktopMapWrapper = null;
-  let desktopResizeState = null;
-
-  function injectResponsiveMapCss() {
-    if (document.getElementById("suwon360-responsive-map-css")) return;
-
-    const style = document.createElement("style");
-    style.id = "suwon360-responsive-map-css";
-    style.textContent = `
-      #suwon360-desktop-map-wrapper {
-        position: fixed;
-        right: 20px;
-        bottom: 20px;
-        z-index: 6500;
-        width: 300px;
-        height: 205px;
-        min-width: 235px;
-        min-height: 160px;
-        overflow: hidden;
-        background: #f8fafc;
-        border: 2px solid rgba(255,255,255,.88);
-        border-radius: 10px;
-        box-shadow: 0 5px 18px rgba(0,0,0,.42);
-      }
-      #suwon360-desktop-map-wrapper[hidden] {
-        display: none !important;
-      }
-      #suwon360-desktop-map-wrapper .suwon360-desktop-map-title {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        z-index: 120;
-        height: 29px;
-        display: flex;
-        align-items: center;
-        padding: 0 10px 0 34px;
-        color: #334155;
-        background: linear-gradient(180deg,rgba(255,255,255,.98),rgba(241,245,249,.96));
-        border-bottom: 1px solid rgba(148,163,184,.42);
-        font: 800 11px/1 "Malgun Gothic", sans-serif;
-        pointer-events: none;
-      }
-      #suwon360-desktop-map-wrapper .suwon360-map-resize-handle {
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 130;
-        width: 26px;
-        height: 26px;
-        cursor: nwse-resize;
-        touch-action: none;
-        background: linear-gradient(315deg, transparent 0, transparent 45%, rgba(15,23,42,.88) 46%, rgba(15,23,42,.88) 100%);
-      }
-      #suwon360-desktop-map-wrapper .suwon360-map-resize-handle::after {
-        content: "";
-        position: absolute;
-        left: 4px;
-        top: 4px;
-        width: 9px;
-        height: 9px;
-        border-left: 2px solid #fff;
-        border-top: 2px solid #fff;
-      }
-      #suwon360-desktop-map-wrapper > #map {
-        position: absolute !important;
-        left: 0 !important;
-        right: 0 !important;
-        top: 29px !important;
-        bottom: 0 !important;
-        display: block !important;
-        width: 100% !important;
-        height: 100% !important;
-        min-width: 1px !important;
-        min-height: 1px !important;
-      }
-      #map-pane > #map {
-        width: 100%;
-        height: 100%;
-        min-width: 1px;
-        min-height: 1px;
-      }
-      @media (max-width: 768px) {
-        #suwon360-desktop-map-wrapper {
-          display: none !important;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  function isDesktopMapMode() {
-    return window.innerWidth >= DESKTOP_BREAKPOINT &&
-      !document.documentElement.classList.contains("s360-mobile");
-  }
-
-  function ensureMobileMapAnchor() {
-    const mapElement = document.getElementById("map");
-    if (!mapElement) return null;
-
-    if (!mobileMapAnchor) {
-      mobileMapAnchor = document.createComment("suwon360-map-mobile-anchor");
-      mapElement.parentNode?.insertBefore(mobileMapAnchor, mapElement);
-    }
-    return mapElement;
-  }
-
-  function ensureDesktopMapWrapper() {
-    if (desktopMapWrapper?.isConnected) return desktopMapWrapper;
-
-    desktopMapWrapper = document.createElement("section");
-    desktopMapWrapper.id = "suwon360-desktop-map-wrapper";
-    desktopMapWrapper.setAttribute("aria-label", "PC 카카오 미니맵");
-    desktopMapWrapper.innerHTML = `
-      <div class="suwon360-desktop-map-title">⌖&nbsp; 미니맵</div>
-      <div class="suwon360-map-resize-handle" title="드래그하여 지도 크기 조절"></div>
-    `;
-    document.body.appendChild(desktopMapWrapper);
-    initializeDesktopMapResize(desktopMapWrapper);
-    return desktopMapWrapper;
-  }
-
-  function restoreMapToMobilePane(mapElement) {
-    if (!mapElement || !mobileMapAnchor?.parentNode) return;
-    mobileMapAnchor.parentNode.insertBefore(mapElement, mobileMapAnchor.nextSibling);
-  }
-
-  function syncResponsiveMapHost() {
-    injectResponsiveMapCss();
-    const mapElement = ensureMobileMapAnchor();
-    if (!mapElement) return;
-
-    const wrapper = ensureDesktopMapWrapper();
-    const desktop = isDesktopMapMode();
-
-    if (desktop) {
-      wrapper.hidden = false;
-      if (mapElement.parentNode !== wrapper) wrapper.appendChild(mapElement);
-    } else {
-      wrapper.hidden = true;
-      restoreMapToMobilePane(mapElement);
-    }
-
-    window.setTimeout(() => {
-      if (typeof forceRelayout === "function") forceRelayout();
-    }, 40);
-  }
-
-  function initializeDesktopMapResize(wrapper) {
-    const handle = wrapper.querySelector(".suwon360-map-resize-handle");
-    if (!handle || handle.dataset.bound === "true") return;
-    handle.dataset.bound = "true";
-
-    const stopResize = () => {
-      if (!desktopResizeState) return;
-      desktopResizeState = null;
-      document.body.style.userSelect = "";
-      forceRelayout();
-    };
-
-    handle.addEventListener("pointerdown", (event) => {
-      if (!isDesktopMapMode()) return;
-      event.preventDefault();
-      handle.setPointerCapture?.(event.pointerId);
-      const rect = wrapper.getBoundingClientRect();
-      desktopResizeState = {
-        pointerId: event.pointerId,
-        startX: event.clientX,
-        startY: event.clientY,
-        startWidth: rect.width,
-        startHeight: rect.height
-      };
-      document.body.style.userSelect = "none";
-    });
-
-    handle.addEventListener("pointermove", (event) => {
-      if (!desktopResizeState || desktopResizeState.pointerId !== event.pointerId) return;
-      event.preventDefault();
-
-      const width = Math.max(235, Math.min(window.innerWidth * 0.72,
-        desktopResizeState.startWidth + (desktopResizeState.startX - event.clientX)));
-      const height = Math.max(160, Math.min(window.innerHeight * 0.72,
-        desktopResizeState.startHeight + (desktopResizeState.startY - event.clientY)));
-
-      wrapper.style.width = `${Math.round(width)}px`;
-      wrapper.style.height = `${Math.round(height)}px`;
-      forceRelayout();
-    });
-
-    handle.addEventListener("pointerup", stopResize);
-    handle.addEventListener("pointercancel", stopResize);
-  }
-
+  const DESKTOP_QUERY = "(min-width: 769px)";
   const DEFAULT_CENTER = { lat: 37.2636, lng: 127.0286 };
-  const DEFAULT_LEVEL = 4;
+  const DEFAULT_MULTI_LEVEL = 4;
+  const DEFAULT_SINGLE_LEVEL = 3;
 
-  const ALLOWED_MAP_XML = ["namsuheon.xml", "yharbor.xml"];
-
-  // 메뉴와 지도 포인트는 XML scene의 menu_show="true" 기준으로 생성합니다.
-
-
-  let map = null;
-  let currentXmlFilename = "";
-  let currentSceneName = "";
-  let sceneCoords = [];
-  let menuSceneCoords = [];
-  let sceneMarkers = [];
-  let indoorOverlay = null;
-  let indoorOverlayElement = null;
-  let infoWindow = null;
-  let sdkLoadStarted = false;
-  let mapInitStarted = false;
-  let lastView = { hlookat: 0, fov: 90 };
-  let preservedCenter = null;
-  let preservedLevel = null;
-
-  const state = {
-    keepCenter: true,
-    keepLevel: true,
-    showInfoWindowOnHover: true,
-    showInfoWindowOnClick: true
+  const contexts = {
+    desktop: createContext("desktop", "desktop-map"),
+    mobile: createContext("mobile", "mobile-map")
   };
 
-  function log(...args) {
-    if (window.SUWON360_MAP_DEBUG) {
-      console.log("[Suwon360Map]", ...args);
+  let allScenes = [];
+  let menuScenes = [];
+  let sceneByName = new Map();
+  let mapConfig = { mode: "auto", lat: NaN, lng: NaN, level: NaN };
+  let resolvedMode = "single";
+  let currentSceneName = "";
+  let latestView = { hlookat: 0, fov: 90 };
+  let latestPosition = { lat: NaN, lng: NaN };
+  let initGeneration = 0;
+  let headingPaintQueued = false;
+  let sceneRevision = 0;
+  let refreshTimer = 0;
+
+  function createContext(name, elementId) {
+    return {
+      name,
+      elementId,
+      map: null,
+      markerItems: [],
+      currentMarker: null,
+      currentMarkerHeading: NaN,
+      initializedSignature: "",
+      creating: false,
+      lastWidth: 0,
+      lastHeight: 0
+    };
+  }
+
+  function isDesktop() {
+    return window.matchMedia(DESKTOP_QUERY).matches;
+  }
+
+  function activeContext() {
+    return isDesktop() ? contexts.desktop : contexts.mobile;
+  }
+
+  function elementFor(context) {
+    return document.getElementById(context.elementId);
+  }
+
+  function finite(value, fallback = NaN) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : fallback;
+  }
+
+  function hasPosition(value) {
+    return value && Number.isFinite(Number(value.lat)) && Number.isFinite(Number(value.lng));
+  }
+
+  function validScenes(source) {
+    return (Array.isArray(source) ? source : []).filter(hasPosition);
+  }
+
+  function normalizeMode(value) {
+    const mode = String(value || "auto").trim().toLowerCase();
+    if (["multi", "multiple", "scene", "scenes", "outdoor", "outside"].includes(mode)) return "multi";
+    if (["single", "current", "position", "indoor", "inside"].includes(mode)) return "single";
+    if (["off", "none", "false", "0"].includes(mode)) return "off";
+    return "auto";
+  }
+
+  function determineMode() {
+    const configured = normalizeMode(mapConfig.mode);
+    if (configured !== "auto") return configured;
+
+    // menu_show 씬 좌표가 있으면 우선 다중 포인트로 판단합니다.
+    // 구형 XML처럼 menu_show 속성 인식이 늦거나 누락된 경우에는
+    // 전체 좌표 씬을 보조 기준으로 사용합니다.
+    const menuCount = validScenes(menuScenes).length;
+    const allCount = validScenes(allScenes).length;
+    return menuCount >= 2 || allCount >= 2 ? "multi" : "single";
+  }
+
+  function multiScenes() {
+    const menus = validScenes(menuScenes);
+    if (menus.length) return menus;
+
+    // 기존 XML 호환용 안전장치: 메뉴 배열이 비어 있어도
+    // 좌표가 입력된 씬이 있으면 지도를 빈 화면으로 두지 않습니다.
+    return validScenes(allScenes);
+  }
+
+  function currentSignature() {
+    // 단순 개수뿐 아니라 데이터 갱신 순서까지 반영합니다.
+    // init()이 먼저 실행되고 setScenes()가 나중에 호출되는 경우에도
+    // 기존 지도를 반드시 다시 구성하도록 sceneRevision을 포함합니다.
+    return `${resolvedMode}|${sceneRevision}|${allScenes.length}|${menuScenes.length}`;
+  }
+
+  function scheduleRefresh(delay = 0) {
+    window.clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(() => {
+      refreshTimer = 0;
+      ensureContext(activeContext());
+    }, delay);
+  }
+
+  function invalidateContexts() {
+    Object.values(contexts).forEach((context) => {
+      context.initializedSignature = "";
+    });
+  }
+
+  function waitForKakao() {
+    return new Promise((resolve, reject) => {
+      let tries = 0;
+      const check = () => {
+        if (window.kakao?.maps?.load) {
+          window.kakao.maps.load(resolve);
+          return;
+        }
+        tries += 1;
+        if (tries > 150) {
+          reject(new Error("카카오 지도 SDK를 불러오지 못했습니다."));
+          return;
+        }
+        window.setTimeout(check, 100);
+      };
+      check();
+    });
+  }
+
+  function waitForVisibleBox(element, generation) {
+    return new Promise((resolve, reject) => {
+      let stable = 0;
+      let previous = "";
+      let attempts = 0;
+
+      const inspect = () => {
+        if (generation !== initGeneration) {
+          reject(new Error("지도 초기화 취소"));
+          return;
+        }
+
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        const key = `${Math.round(rect.width)}x${Math.round(rect.height)}`;
+        const visible = style.display !== "none" && style.visibility !== "hidden" &&
+          rect.width >= 120 && rect.height >= 120;
+
+        stable = visible && key === previous ? stable + 1 : 0;
+        previous = key;
+        attempts += 1;
+
+        if (stable >= 2) {
+          resolve({ width: Math.round(rect.width), height: Math.round(rect.height) });
+          return;
+        }
+        if (attempts > 240) {
+          reject(new Error(`지도 컨테이너 크기 확인 실패: ${key}`));
+          return;
+        }
+        requestAnimationFrame(inspect);
+      };
+      requestAnimationFrame(inspect);
+    });
+  }
+
+  function averageCenter(scenes) {
+    const valid = validScenes(scenes);
+    if (!valid.length) return null;
+    const sum = valid.reduce((acc, scene) => ({
+      lat: acc.lat + Number(scene.lat),
+      lng: acc.lng + Number(scene.lng)
+    }), { lat: 0, lng: 0 });
+    return { lat: sum.lat / valid.length, lng: sum.lng / valid.length };
+  }
+
+  function configuredCenter() {
+    return hasPosition(mapConfig) ? { lat: Number(mapConfig.lat), lng: Number(mapConfig.lng) } : null;
+  }
+
+  function currentScene() {
+    return sceneByName.get(currentSceneName) || null;
+  }
+
+  function singlePosition() {
+    const scene = currentScene();
+    if (hasPosition(scene)) return { lat: Number(scene.lat), lng: Number(scene.lng) };
+    if (hasPosition(latestPosition)) return latestPosition;
+    return configuredCenter() || averageCenter(allScenes) || DEFAULT_CENTER;
+  }
+
+  function initialCenter() {
+    if (resolvedMode === "multi") {
+      return configuredCenter() || averageCenter(multiScenes()) || averageCenter(allScenes) || DEFAULT_CENTER;
     }
+    return singlePosition();
   }
 
-  function warn(...args) {
-    console.warn("[Suwon360Map]", ...args);
+  function mapLevel() {
+    const configured = finite(mapConfig.level);
+    if (Number.isFinite(configured)) return Math.max(1, Math.min(14, configured));
+    return resolvedMode === "multi" ? DEFAULT_MULTI_LEVEL : DEFAULT_SINGLE_LEVEL;
   }
 
-  function getMapElement() {
-    return document.getElementById("map");
+  function circleSvg(number, active) {
+    const size = active ? 26 : 22;
+    const fill = active ? "#ef3b24" : "#2f80ed";
+    const fontSize = active ? 11 : 10;
+    const label = String(number).padStart(2, "0");
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 1.25}" fill="${fill}" stroke="#fff" stroke-width="1.5"/>
+      <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" fill="#fff"
+        font-family="Arial,Malgun Gothic,sans-serif" font-size="${fontSize}" font-weight="700">${label}</text>
+    </svg>`;
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg.replace(/\s+/g, " ").trim())}`;
   }
 
-  function getKrpano() {
-    return (
-      window.krpano ||
-      document.getElementById("krpanoSWFObject") ||
-      document.querySelector("embed[name='krpanoSWFObject']") ||
-      null
+  function circleImage(number, active) {
+    const size = active ? 26 : 22;
+    return new kakao.maps.MarkerImage(
+      circleSvg(number, active),
+      new kakao.maps.Size(size, size),
+      { offset: new kakao.maps.Point(size / 2, size / 2) }
     );
   }
 
-  function getQueryParams() {
-    return new URLSearchParams(window.location.search);
-  }
-
-  function normalizeXmlFilename(value) {
-    if (!value) return "";
-    const raw = String(value).split("?")[0].split("#")[0];
-    return raw.substring(raw.lastIndexOf("/") + 1).toLowerCase();
-  }
-
-  function resolveXmlFilename(explicitFilename = "") {
-    const normalizedExplicit = normalizeXmlFilename(explicitFilename);
-    if (normalizedExplicit) return normalizedExplicit;
-
-    const params = getQueryParams();
-    const tour = (params.get("tour") || "").trim();
-    if (tour) return normalizeXmlFilename(`${tour}.xml`);
-
-    return currentXmlFilename;
-  }
-
-  function resolveXmlUrls(filename) {
-    const params = getQueryParams();
-    const contents = (params.get("contents") || "suwon_tour").trim().replace(/^\/+|\/+$/g, "");
-
-    if (window.Suwon360Config?.xmlUrl) {
-      return [window.Suwon360Config.xmlUrl];
-    }
-
-    if (window.Suwon360Config?.resolveXmlUrl) {
-      const resolved = window.Suwon360Config.resolveXmlUrl(filename, contents);
-      return Array.isArray(resolved) ? resolved : [resolved];
-    }
-
-    // 현재 권장 구조: /suwon_tour/yharbor.xml
-    // 기존 구조도 자동 호환: /suwon_tour/xml/yharbor.xml
-    return [
-      `${contents}/${filename}`,
-      `${contents}/xml/${filename}`
-    ];
+  // PC 미니맵 포인트 툴팁용 표시명입니다.
+  // XML이나 메뉴 데이터는 바꾸지 않고, 화면에 보일 때만 앞 번호를 제거합니다.
+  function tooltipLabel(scene) {
+    return String(scene?.title || scene?.name || "")
+      .replace(/^\s*\d{1,3}\s*[.·:_-]?\s*/, "")
+      .trim();
   }
 
   function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
-  function parseNumber(...values) {
-    for (const value of values) {
-      if (value === null || value === undefined || value === "") continue;
-      const parsed = Number(String(value).trim());
-      if (Number.isFinite(parsed)) return parsed;
-    }
-    return NaN;
-  }
+  function createMarkerTooltip(scene, position) {
+    const label = tooltipLabel(scene);
+    if (!label) return null;
 
-  function readSceneCoordinate(sceneElement) {
-    const lat = parseNumber(
-      sceneElement.getAttribute("lat"),
-      sceneElement.getAttribute("latitude"),
-      sceneElement.getAttribute("map_lat"),
-      sceneElement.getAttribute("gpslat"),
-      sceneElement.querySelector("view")?.getAttribute("lat"),
-      sceneElement.querySelector("view")?.getAttribute("latitude")
-    );
-
-    const lng = parseNumber(
-      sceneElement.getAttribute("lng"),
-      sceneElement.getAttribute("lon"),
-      sceneElement.getAttribute("longitude"),
-      sceneElement.getAttribute("map_lng"),
-      sceneElement.getAttribute("gpslng"),
-      sceneElement.querySelector("view")?.getAttribute("lng"),
-      sceneElement.querySelector("view")?.getAttribute("longitude")
-    );
-
-    return { lat, lng };
-  }
-
-  function readSceneTitle(sceneElement, fallbackName) {
-    return (
-      sceneElement.getAttribute("title") ||
-      sceneElement.getAttribute("caption") ||
-      sceneElement.getAttribute("label") ||
-      fallbackName
-    );
-  }
-
-  function ensureKakaoMaps(callback) {
-    if (window.kakao?.maps?.load) {
-      window.kakao.maps.load(callback);
-      return;
-    }
-
-    if (sdkLoadStarted) {
-      let retry = 0;
-      const timer = window.setInterval(() => {
-        retry += 1;
-        if (window.kakao?.maps?.load) {
-          window.clearInterval(timer);
-          window.kakao.maps.load(callback);
-        } else if (retry > 100) {
-          window.clearInterval(timer);
-          showPlaceholder("카카오 지도 SDK를 불러오지 못했습니다.");
-        }
-      }, 100);
-      return;
-    }
-
-    sdkLoadStarted = true;
-    showPlaceholder("미니맵을 준비 중입니다.");
-
-    let retry = 0;
-    const timer = window.setInterval(() => {
-      retry += 1;
-      if (window.kakao?.maps?.load) {
-        window.clearInterval(timer);
-        window.kakao.maps.load(callback);
-      } else if (retry > 100) {
-        window.clearInterval(timer);
-        showPlaceholder("카카오 지도 SDK를 불러오지 못했습니다.");
-      }
-    }, 100);
-  }
-
-  function showPlaceholder(message) {
-    const element = getMapElement();
-    if (!element) return;
-    element.innerHTML = `<div class="map-placeholder">${escapeHtml(message)}</div>`;
-  }
-
-  function clearPlaceholder() {
-    const element = getMapElement();
-    if (!element) return;
-    const placeholder = element.querySelector(".map-placeholder");
-    if (placeholder) placeholder.remove();
-  }
-
-  function createMap(center = DEFAULT_CENTER) {
-    const element = getMapElement();
-    if (!element || map) return;
-
-    clearPlaceholder();
-
-    const centerLatLng = new window.kakao.maps.LatLng(center.lat, center.lng);
-    map = new window.kakao.maps.Map(element, {
-      center: centerLatLng,
-      level: preservedLevel ?? DEFAULT_LEVEL
-    });
-
-    infoWindow = new window.kakao.maps.CustomOverlay({
-      zIndex: 20,
+    return new kakao.maps.CustomOverlay({
+      position,
+      content: `<div class="suwon360-map-tooltip"><span class="suwon360-map-info">${escapeHtml(label)}</span></div>`,
       xAnchor: 0.5,
-      yAnchor: 1.35
-    });
-
-    window.kakao.maps.event.addListener(map, "center_changed", () => {
-      if (map) preservedCenter = map.getCenter();
-    });
-
-    window.kakao.maps.event.addListener(map, "zoom_changed", () => {
-      if (map) preservedLevel = map.getLevel();
-    });
-
-    log("map created");
-  }
-
-  async function fetchXml(xmlUrls) {
-    const candidates = Array.isArray(xmlUrls) ? xmlUrls : [xmlUrls];
-    let lastError = null;
-
-    for (const xmlUrl of candidates) {
-      try {
-        const response = await fetch(xmlUrl, { cache: "no-store" });
-        if (!response.ok) {
-          throw new Error(`XML 요청 실패 (${response.status}): ${xmlUrl}`);
-        }
-
-        const text = await response.text();
-        const doc = new DOMParser().parseFromString(text, "application/xml");
-        const parserError = doc.querySelector("parsererror");
-        if (parserError) {
-          throw new Error(`XML 파싱 오류: ${xmlUrl}`);
-        }
-
-        return { doc, url: xmlUrl };
-      } catch (error) {
-        lastError = error;
-        log("XML 경로 재시도", xmlUrl, error.message);
-      }
-    }
-
-    throw lastError || new Error("XML을 불러오지 못했습니다.");
-  }
-
-  function extractScenes(xmlDoc) {
-    const result = [];
-
-    xmlDoc.querySelectorAll("scene").forEach((sceneElement) => {
-      const name = sceneElement.getAttribute("name") || "";
-      if (!name) return;
-
-      const { lat, lng } = readSceneCoordinate(sceneElement);
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-
-      const menuShow = ["true", "1", "yes", "on"].includes(
-        String(sceneElement.getAttribute("menu_show") || "").trim().toLowerCase()
-      );
-      const menuParent = String(sceneElement.getAttribute("menu_parent") || "").trim();
-
-      result.push({
-        name,
-        title: readSceneTitle(sceneElement, name),
-        menuShow,
-        menuParent,
-        lat,
-        lng
-      });
-    });
-
-    return result;
-  }
-
-  function clearSceneMarkers() {
-    sceneMarkers.forEach((item) => {
-      item.overlay?.setMap(null);
-    });
-    sceneMarkers = [];
-
-    if (infoWindow) infoWindow.setMap?.(null);
-  }
-
-  function clearIndoorOverlay() {
-    if (indoorOverlay) indoorOverlay.setMap(null);
-    indoorOverlay = null;
-    indoorOverlayElement = null;
-  }
-
-  function clearAllOverlays() {
-    clearSceneMarkers();
-    clearIndoorOverlay();
-  }
-
-  function getMainSceneOrder() {
-    return menuSceneCoords.map((scene) => scene.name);
-  }
-
-  function createNumberMarkerElement(number, sceneName, sceneTitle) {
-    const root = document.createElement("div");
-    root.className = "suwon360-map-marker";
-    root.dataset.scene = sceneName;
-    root.title = sceneTitle;
-    root.setAttribute("role", "button");
-    root.setAttribute("tabindex", "0");
-    root.setAttribute("aria-label", `${number}. ${sceneTitle}`);
-
-    const circle = document.createElement("div");
-    circle.className = "suwon360-map-marker-circle";
-    circle.textContent = String(number).padStart(2, "0");
-    root.appendChild(circle);
-
-    return root;
-  }
-
-  function applyMarkerStyle(element, selected) {
-    const circle = element?.querySelector(".suwon360-map-marker-circle");
-    if (!circle) return;
-
-    element.classList.toggle("is-active", Boolean(selected));
-
-    Object.assign(circle.style, {
-      width: selected ? "28px" : "22px",
-      height: selected ? "28px" : "22px",
-      borderRadius: "50%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      boxSizing: "border-box",
-      background: selected ? "#ff3d00" : "#2f8cff",
-      color: "#ffffff",
-      border: "2px solid #ffffff",
-      boxShadow: "0 2px 7px rgba(0,0,0,.42)",
-      fontSize: selected ? "11px" : "10px",
-      fontWeight: "800",
-      lineHeight: "1",
-      cursor: "pointer",
-      userSelect: "none",
-      transition: "all .16s ease"
+      yAnchor: 1.42,
+      zIndex: 30,
+      clickable: false
     });
   }
 
-  function makeInfoContent(item) {
-    return `
-      <div class="suwon360-map-tooltip">
-        <div class="suwon360-map-info"
-             style="padding:6px 9px;white-space:nowrap;font-size:12px;line-height:1.25;color:#fff;background:rgba(0,0,0,.45);border:0;border-radius:7px;box-shadow:0 4px 12px rgba(0,0,0,.20);">
-          ${escapeHtml(item.title)}
-        </div>
-      </div>
-    `;
+  function directionSvg(degrees) {
+    const angle = ((finite(degrees, 0) % 360) + 360) % 360;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+      <g transform="rotate(${angle} 24 24)">
+        <path d="M24 3 L33 24 L27.5 21 L27.5 34 L20.5 34 L20.5 21 L15 24 Z"
+          fill="#2f80ed" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+      </g>
+      <circle cx="24" cy="31" r="7" fill="#fff" stroke="#2f80ed" stroke-width="3"/>
+      <circle cx="24" cy="31" r="3.5" fill="#2f80ed"/>
+    </svg>`;
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg.replace(/\s+/g, " ").trim())}`;
   }
 
-  function canShowInfoWindow() {
-    return window.matchMedia("(min-width: 769px)").matches;
+  function directionImage(degrees) {
+    return new kakao.maps.MarkerImage(
+      directionSvg(degrees),
+      new kakao.maps.Size(48, 48),
+      { offset: new kakao.maps.Point(24, 31) }
+    );
   }
 
-  function openInfoWindow(item) {
-    if (!map || !infoWindow || !item?.overlay || !canShowInfoWindow()) return;
-
-    infoWindow.setContent(makeInfoContent(item));
-    infoWindow.setPosition(new window.kakao.maps.LatLng(item.lat, item.lng));
-    infoWindow.setMap(map);
-  }
-
-  function closeInfoWindow() {
-    infoWindow?.setMap?.(null);
-  }
-
-  function loadScene(sceneName) {
-    if (!sceneName) return;
-
-    const krpano = getKrpano();
-    if (krpano?.call) {
-      try {
-        krpano.call(`loadscene(${sceneName}, null, MERGE, BLEND(0.5));`);
-      } catch (error) {
-        warn("krpano loadscene 실패", error);
-      }
-    }
-
-    window.Suwon360Menu?.select?.(sceneName);
-    highlightCurrentScene(sceneName);
-  }
-
-  function bindMarkerEvents(item) {
-    const { element } = item;
-
-    const activate = () => {
-      loadScene(item.name);
-      if (state.showInfoWindowOnClick) openInfoWindow(item);
-    };
-
-    element.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      activate();
+  function clearMarkers(context) {
+    context.markerItems.forEach((item) => {
+      item.marker.setMap(null);
+      item.tooltip?.setMap(null);
     });
-
-    element.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        activate();
-      }
-    });
-
-    if (state.showInfoWindowOnHover) {
-      element.addEventListener("mouseenter", () => openInfoWindow(item));
-      element.addEventListener("mouseleave", closeInfoWindow);
-      element.addEventListener("focus", () => openInfoWindow(item));
-      element.addEventListener("blur", closeInfoWindow);
-    }
+    context.markerItems = [];
+    if (context.currentMarker) context.currentMarker.setMap(null);
+    context.currentMarker = null;
+    context.currentMarkerHeading = NaN;
   }
 
-  function drawOutdoorMarkers(xmlFilename) {
-    clearAllOverlays();
-
-    const mainOrder = getMainSceneOrder();
-    if (!mainOrder.length) return;
-
-    const sceneByName = new Map(sceneCoords.map((scene) => [scene.name, scene]));
-    const bounds = new window.kakao.maps.LatLngBounds();
-
-    mainOrder.forEach((sceneName, index) => {
-      const scene = sceneByName.get(sceneName);
-      if (!scene) {
-        warn(`좌표가 없는 주요 씬: ${sceneName}`);
-        return;
-      }
-
+  function buildMultiMarkers(context) {
+    const source = multiScenes();
+    context.markerItems = source.map((scene, index) => {
       const number = index + 1;
-      const position = new window.kakao.maps.LatLng(scene.lat, scene.lng);
-      const element = createNumberMarkerElement(number, scene.name, scene.title);
-      applyMarkerStyle(element, scene.name === resolveMenuSceneName(currentSceneName));
-
-      const overlay = new window.kakao.maps.CustomOverlay({
-        map,
+      const position = new kakao.maps.LatLng(Number(scene.lat), Number(scene.lng));
+      const marker = new kakao.maps.Marker({
+        map: context.map,
         position,
-        content: element,
-        xAnchor: 0.5,
-        yAnchor: 0.5,
-        zIndex: scene.name === currentSceneName ? 15 : 10
+        image: circleImage(number, false),
+        clickable: true,
+        zIndex: 2
+      });
+      const tooltip = context.name === "desktop" ? createMarkerTooltip(scene, position) : null;
+
+      if (tooltip) {
+        kakao.maps.event.addListener(marker, "mouseover", () => {
+          tooltip.setPosition(marker.getPosition());
+          tooltip.setMap(context.map);
+        });
+        kakao.maps.event.addListener(marker, "mouseout", () => tooltip.setMap(null));
+      }
+
+      kakao.maps.event.addListener(marker, "click", () => {
+        tooltip?.setMap(null);
+        currentSceneName = scene.name;
+        highlightCurrentScene(scene.name);
+        window.Suwon360Menu?.select?.(scene.name);
+        window.Suwon360Panorama?.loadScene?.(scene.name);
       });
 
-      const item = {
-        ...scene,
-        number,
-        element,
-        overlay
-      };
-
-      bindMarkerEvents(item);
-      sceneMarkers.push(item);
-      bounds.extend(position);
+      return { scene, number, marker, tooltip, active: false };
     });
+  }
 
-    if (!preservedCenter && sceneMarkers.length > 1) {
-      map.setBounds(bounds, 35, 35, 35, 35);
+  function effectiveHeading() {
+    const sceneHeading = finite(currentScene()?.heading, 0);
+    return sceneHeading + finite(latestView.hlookat, 0);
+  }
+
+  function createSingleMarker(context) {
+    const position = singlePosition();
+    const heading = effectiveHeading();
+    context.currentMarker = new kakao.maps.Marker({
+      map: context.map,
+      position: new kakao.maps.LatLng(position.lat, position.lng),
+      image: directionImage(heading),
+      clickable: false,
+      zIndex: 10
+    });
+    context.currentMarkerHeading = heading;
+  }
+
+  function configureContext(context) {
+    clearMarkers(context);
+    const center = initialCenter();
+    context.map.setCenter(new kakao.maps.LatLng(center.lat, center.lng));
+    context.map.setLevel(mapLevel(), { animate: false });
+
+    if (resolvedMode === "multi") buildMultiMarkers(context);
+    else if (resolvedMode === "single") createSingleMarker(context);
+
+    context.initializedSignature = currentSignature();
+    highlightCurrentScene(currentSceneName);
+  }
+
+  async function ensureContext(context) {
+    if (resolvedMode === "off") {
+      setMapVisibility(false);
+      return context;
     }
+    setMapVisibility(true);
 
-    if (preservedCenter && state.keepCenter) map.setCenter(preservedCenter);
-    if (preservedLevel !== null && state.keepLevel) map.setLevel(preservedLevel);
-  }
+    if (context.creating) return context;
+    const element = elementFor(context);
+    if (!element) return context;
 
-  function createIndoorMarkerElement() {
-    const root = document.createElement("div");
-    root.id = "rvMarker";
-    root.className = "suwon360-indoor-marker";
+    context.creating = true;
+    const generation = ++initGeneration;
 
-    Object.assign(root.style, {
-      position: "relative",
-      width: "70px",
-      height: "70px",
-      pointerEvents: "none",
-      zIndex: "12"
-    });
+    try {
+      await waitForKakao();
+      const box = await waitForVisibleBox(element, generation);
+      const center = initialCenter();
 
-    const direction = document.createElement("div");
-    direction.id = "rvDirection";
-    Object.assign(direction.style, {
-      position: "absolute",
-      left: "50%",
-      top: "50%",
-      width: "0",
-      height: "0",
-      transform: "translate(-50%, -50%) rotate(0deg)",
-      transformOrigin: "center center",
-      pointerEvents: "none"
-    });
+      if (!context.map) {
+        context.map = new kakao.maps.Map(element, {
+          center: new kakao.maps.LatLng(center.lat, center.lng),
+          level: mapLevel(),
+          draggable: true,
+          scrollwheel: true,
+          disableDoubleClickZoom: false
+        });
+        context.lastWidth = box.width;
+        context.lastHeight = box.height;
+      }
 
-    const cone = document.createElement("div");
-    cone.id = "fovCone";
-    Object.assign(cone.style, {
-      position: "absolute",
-      left: "-28px",
-      top: "-44px",
-      width: "0",
-      height: "0",
-      borderLeft: "28px solid transparent",
-      borderRight: "28px solid transparent",
-      borderBottom: "55px solid rgba(0,140,255,0.28)",
-      filter: "drop-shadow(0 1px 1px rgba(0,0,0,.2))",
-      pointerEvents: "none"
-    });
-
-    const arrow = document.createElement("div");
-    arrow.id = "rvArrow";
-    Object.assign(arrow.style, {
-      position: "absolute",
-      left: "-8px",
-      top: "-17px",
-      width: "0",
-      height: "0",
-      borderLeft: "8px solid transparent",
-      borderRight: "8px solid transparent",
-      borderBottom: "20px solid #087cff",
-      filter: "drop-shadow(0 1px 2px rgba(0,0,0,.4))",
-      pointerEvents: "none"
-    });
-
-    const centerDot = document.createElement("div");
-    Object.assign(centerDot.style, {
-      position: "absolute",
-      left: "50%",
-      top: "50%",
-      width: "14px",
-      height: "14px",
-      transform: "translate(-50%, -50%)",
-      borderRadius: "50%",
-      background: "#087cff",
-      border: "3px solid #fff",
-      boxShadow: "0 2px 6px rgba(0,0,0,.45)",
-      boxSizing: "border-box"
-    });
-
-    direction.append(cone, arrow);
-    root.append(direction, centerDot);
-    return root;
-  }
-
-  function drawIndoorMarker(scene) {
-    if (!scene || !map) return;
-
-    clearAllOverlays();
-
-    indoorOverlayElement = createIndoorMarkerElement();
-    indoorOverlay = new window.kakao.maps.CustomOverlay({
-      map,
-      position: new window.kakao.maps.LatLng(scene.lat, scene.lng),
-      content: indoorOverlayElement,
-      xAnchor: 0.5,
-      yAnchor: 0.5,
-      zIndex: 20
-    });
-
-    if (!state.keepCenter || !preservedCenter) {
-      map.setCenter(new window.kakao.maps.LatLng(scene.lat, scene.lng));
-    } else {
-      map.setCenter(preservedCenter);
+      if (context.initializedSignature !== currentSignature()) configureContext(context);
+      else syncCurrentMarker(context, true);
+    } catch (error) {
+      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v210]", error);
+    } finally {
+      context.creating = false;
     }
-
-    updateDirection(lastView.hlookat, lastView.fov);
+    return context;
   }
 
-  function findScene(sceneName) {
-    return sceneCoords.find((item) => item.name === sceneName) || null;
+  function setMapVisibility(visible) {
+    document.getElementById("suwon360-desktop-map-wrapper")?.toggleAttribute("hidden", !visible);
+    document.getElementById("map-pane")?.toggleAttribute("hidden", !visible);
+    document.getElementById("mobile-map-pill")?.toggleAttribute("hidden", !visible);
   }
 
-  function resolveMenuSceneName(sceneName) {
-    return window.Suwon360?.resolveMenuScene?.(sceneName) || sceneName || "";
+  function resolvedMenuScene(sceneName) {
+    return window.Suwon360?.resolveMenuScene?.(sceneName) || sceneName;
   }
 
   function highlightCurrentScene(sceneName) {
-    currentSceneName = sceneName || currentSceneName;
-    const activeMenuScene = resolveMenuSceneName(currentSceneName);
-
-    sceneMarkers.forEach((item) => {
-      const selected = item.name === activeMenuScene;
-      applyMarkerStyle(item.element, selected);
-      item.overlay.setZIndex(selected ? 15 : 10);
+    const target = resolvedMenuScene(sceneName);
+    Object.values(contexts).forEach((context) => {
+      context.markerItems.forEach((item) => {
+        const active = item.scene.name === target;
+        if (active === item.active) return;
+        item.active = active;
+        item.marker.setImage(circleImage(item.number, active));
+        item.marker.setZIndex(active ? 10 : 2);
+      });
     });
   }
 
-  function selectMenuScene(sceneName) {
-    const resolved = resolveMenuSceneName(sceneName);
-    if (!resolved) return;
-    currentSceneName = resolved;
-    highlightCurrentScene(resolved);
-    window.Suwon360Menu?.select?.(resolved);
+  function syncCurrentMarker(context, recenter = false) {
+    if (!context.map || resolvedMode !== "single") return;
+    const position = singlePosition();
+    const latLng = new kakao.maps.LatLng(position.lat, position.lng);
+
+    if (!context.currentMarker) createSingleMarker(context);
+    else context.currentMarker.setPosition(latLng);
+
+    if (recenter) context.map.setCenter(latLng);
+    paintHeading(context);
   }
 
-  function updateDirection(hlookat, fov) {
-    const heading = Number(hlookat);
-    const fieldOfView = Number(fov);
-
-    if (Number.isFinite(heading)) lastView.hlookat = heading;
-    if (Number.isFinite(fieldOfView)) lastView.fov = fieldOfView;
-
-    const direction = indoorOverlayElement?.querySelector("#rvDirection");
-    const cone = indoorOverlayElement?.querySelector("#fovCone");
-    if (!direction) return;
-
-    direction.style.transform = `translate(-50%, -50%) rotate(${lastView.hlookat}deg)`;
-
-    if (cone && Number.isFinite(lastView.fov)) {
-      const clamped = Math.max(30, Math.min(120, lastView.fov));
-      const halfWidth = Math.round(16 + (clamped - 30) * 0.22);
-      cone.style.left = `${-halfWidth}px`;
-      cone.style.borderLeftWidth = `${halfWidth}px`;
-      cone.style.borderRightWidth = `${halfWidth}px`;
-    }
+  function paintHeading(context) {
+    if (!context.currentMarker || resolvedMode !== "single") return;
+    const heading = effectiveHeading();
+    if (Number.isFinite(context.currentMarkerHeading) &&
+        Math.abs(heading - context.currentMarkerHeading) < 0.5) return;
+    context.currentMarkerHeading = heading;
+    context.currentMarker.setImage(directionImage(heading));
   }
 
-  function updatePosition(lat, lng, sceneName = "", hlookat = null, fov = null) {
-    const latitude = Number(lat);
-    const longitude = Number(lng);
+  function queueHeadingPaint() {
+    if (headingPaintQueued) return;
+    headingPaintQueued = true;
+    requestAnimationFrame(() => {
+      headingPaintQueued = false;
+      Object.values(contexts).forEach(paintHeading);
+    });
+  }
 
-    if (sceneName) currentSceneName = sceneName;
+  function setConfig(config = {}) {
+    mapConfig = {
+      mode: normalizeMode(config.mode ?? config.mapmode ?? mapConfig.mode),
+      lat: finite(config.lat ?? config.maplat, mapConfig.lat),
+      lng: finite(config.lng ?? config.maplng, mapConfig.lng),
+      level: finite(config.level ?? config.maplevel, mapConfig.level)
+    };
+    resolvedMode = determineMode();
+    invalidateContexts();
 
-    if (Number.isFinite(hlookat) || Number.isFinite(fov)) {
-      updateDirection(hlookat, fov);
+    // app.js에서 init()보다 setConfig()가 늦게 호출되어도 즉시 재구성합니다.
+    scheduleRefresh(0);
+  }
+
+  function setScenes(scenes, menus) {
+    allScenes = Array.isArray(scenes) ? scenes.slice() : [];
+    menuScenes = Array.isArray(menus) ? menus.slice() : [];
+    sceneByName = new Map(allScenes.map((scene) => [scene.name, scene]));
+    sceneRevision += 1;
+    resolvedMode = determineMode();
+    invalidateContexts();
+
+    // 핵심 수정:
+    // 영흥수목원처럼 scene 목록이 비동기로 전달되는 multi 콘텐츠는
+    // setScenes() 완료 시점에 지도를 다시 초기화해야 번호 마커가 표시됩니다.
+    scheduleRefresh(0);
+  }
+
+  async function init() {
+    resolvedMode = determineMode();
+    await ensureContext(activeContext());
+
+    // 초기 호출 당시 scene 데이터가 아직 없었던 경우를 위한 안전 재시도입니다.
+    // 콘텐츠명을 검사하지 않고 mapmode와 좌표 데이터만 사용합니다.
+    if (resolvedMode === "multi" && multiScenes().length === 0) {
+      scheduleRefresh(120);
     }
-
-    if (!map || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-      highlightCurrentScene(currentSceneName);
-      window.Suwon360Menu?.select?.(currentSceneName);
-      return;
-    }
-
-    const position = new window.kakao.maps.LatLng(latitude, longitude);
-
-    if (currentXmlFilename === "namsuheon.xml") {
-      if (!indoorOverlay) {
-        drawIndoorMarker({ lat: latitude, lng: longitude, name: currentSceneName });
-      } else {
-        indoorOverlay.setPosition(position);
-      }
-
-      if (!state.keepCenter) map.setCenter(position);
-    } else {
-      highlightCurrentScene(currentSceneName);
-    }
-
-    window.Suwon360Menu?.select?.(currentSceneName);
   }
 
   function updateFromScene(sceneName) {
-    if (!sceneName) return;
-
-    currentSceneName = sceneName;
-    highlightCurrentScene(sceneName);
-    window.Suwon360Menu?.select?.(sceneName);
-
-    if (currentXmlFilename === "namsuheon.xml") {
-      const scene = findScene(sceneName);
-      if (scene) {
-        updatePosition(scene.lat, scene.lng, sceneName, lastView.hlookat, lastView.fov);
-      }
+    currentSceneName = String(sceneName || "");
+    highlightCurrentScene(currentSceneName);
+    if (resolvedMode === "single") {
+      Object.values(contexts).forEach((context) => syncCurrentMarker(context, true));
     }
   }
 
-  function onViewChanged(view = {}) {
-    updateDirection(view.hlookat, view.fov);
+  function selectMenuScene(sceneName) {
+    updateFromScene(sceneName);
   }
 
-  function preserveViewState() {
-    if (!map) return;
-    preservedCenter = map.getCenter();
-    preservedLevel = map.getLevel();
+  function onViewChanged(payload = {}) {
+    latestView = {
+      hlookat: finite(payload.hlookat, latestView.hlookat),
+      fov: finite(payload.fov, latestView.fov)
+    };
+    queueHeadingPaint();
   }
 
-  function forceRelayout() {
-    if (!map || !window.kakao?.maps?.event) return;
+  function updatePosition(lat, lng, sceneName, hlookat, fov) {
+    const next = { lat: finite(lat), lng: finite(lng) };
+    if (hasPosition(next)) latestPosition = next;
+    if (sceneName) currentSceneName = String(sceneName);
+    onViewChanged({ hlookat, fov });
 
-    preserveViewState();
-    window.kakao.maps.event.trigger(map, "resize");
+    if (resolvedMode === "single") {
+      Object.values(contexts).forEach((context) => syncCurrentMarker(context, true));
+    }
+  }
+
+  async function forceRelayout() {
+    const context = activeContext();
+    if (!context.map) {
+      await ensureContext(context);
+      return;
+    }
+    const element = elementFor(context);
+    if (!element) return;
 
     window.setTimeout(() => {
-      if (!map) return;
-      if (preservedCenter) map.setCenter(preservedCenter);
-      if (preservedLevel !== null) map.setLevel(preservedLevel);
-    }, 30);
+      const rect = element.getBoundingClientRect();
+      const width = Math.round(rect.width);
+      const height = Math.round(rect.height);
+      if (width < 120 || height < 120) return;
+      if (width === context.lastWidth && height === context.lastHeight) return;
+
+      const center = context.map.getCenter();
+      kakao.maps.event.trigger(context.map, "resize");
+      context.map.setCenter(center);
+      context.lastWidth = width;
+      context.lastHeight = height;
+    }, 220);
   }
 
-  async function loadXmlAndDrawMarkers(xmlFilename = "") {
-    const filename = resolveXmlFilename(xmlFilename);
-    if (!filename) {
-      showPlaceholder("지도 XML을 확인할 수 없습니다.");
-      return;
-    }
+  const DESKTOP_MAP_SIZES = [
+    { key: "small", width: 260, height: 180, nextLabel: "지도 보통" },
+    { key: "normal", width: 340, height: 240, nextLabel: "지도 크게" },
+    { key: "large", width: 420, height: 300, nextLabel: "지도 작게" }
+  ];
 
-    if (!ALLOWED_MAP_XML.includes(filename)) {
-      showPlaceholder("이 콘텐츠는 미니맵을 제공하지 않습니다.");
-      return;
-    }
+  function stabilizeMarkersAfterResize(context, center) {
+    if (!context?.map) return;
 
-    currentXmlFilename = filename;
-    const xmlUrls = resolveXmlUrls(filename);
+    context.map.setCenter(center);
 
-    try {
-      const loaded = await fetchXml(xmlUrls);
-      const xmlDoc = loaded.doc;
-      const xmlUrl = loaded.url;
-      if (!sceneCoords.length) sceneCoords = extractScenes(xmlDoc);
-
-      if (!menuSceneCoords.length) {
-        // XML의 scene 속성 menu_show="true"를 직접 기준으로 사용합니다.
-        // krpano API에서 사용자 정의 scene 속성을 늦게 반환하는 경우에도 동작합니다.
-        menuSceneCoords = sceneCoords.filter((scene) => scene.menuShow === true);
-
-        // 기존 공유 데이터가 정상적으로 준비된 경우에는 이름 기준 결과도 병합합니다.
-        const menuNames = new Set(window.Suwon360?.menuScenes?.map((scene) => scene.name) || []);
-        if (menuNames.size) {
-          const merged = new Map(menuSceneCoords.map((scene) => [scene.name, scene]));
-          sceneCoords.forEach((scene) => {
-            if (menuNames.has(scene.name)) merged.set(scene.name, scene);
-          });
-          menuSceneCoords = Array.from(merged.values());
-        }
-      }
-
-      if (!sceneCoords.length) {
-        showPlaceholder("XML에서 위·경도 좌표를 찾지 못했습니다.");
-        return;
-      }
-
-      if (!map) {
-        createMap(sceneCoords[0]);
-      }
-
-      if (filename === "yharbor.xml") {
-        if (!menuSceneCoords.length) {
-          showPlaceholder("menu_show=\"true\"인 좌표 Scene을 찾지 못했습니다.");
-          return;
-        }
-        drawOutdoorMarkers(filename);
-      } else if (filename === "namsuheon.xml") {
-        const target = findScene(currentSceneName) || sceneCoords[0];
-        drawIndoorMarker(target);
-      }
-
-      forceRelayout();
-      log("XML loaded", xmlUrl, sceneCoords.length);
-    } catch (error) {
-      warn(error);
-      showPlaceholder("미니맵 데이터를 불러오지 못했습니다.");
-    }
-  }
-
-  function setScenes(allScenes = [], visibleMenuScenes = []) {
-    sceneCoords = Array.isArray(allScenes)
-      ? allScenes.filter((scene) => Number.isFinite(scene.lat) && Number.isFinite(scene.lng))
-      : [];
-
-    menuSceneCoords = Array.isArray(visibleMenuScenes)
-      ? visibleMenuScenes.filter((scene) => Number.isFinite(scene.lat) && Number.isFinite(scene.lng))
-      : [];
-
-    if (map && currentXmlFilename === "yharbor.xml" && menuSceneCoords.length) {
-      drawOutdoorMarkers(currentXmlFilename);
+    if (resolvedMode === "multi") {
+      context.markerItems.forEach((item) => {
+        item.marker.setPosition(new kakao.maps.LatLng(Number(item.scene.lat), Number(item.scene.lng)));
+        item.marker.setImage(circleImage(item.number, item.active));
+        item.marker.setZIndex(item.active ? 10 : 2);
+      });
       highlightCurrentScene(currentSceneName);
-      forceRelayout();
+    } else if (resolvedMode === "single") {
+      syncCurrentMarker(context, false);
     }
   }
 
-  function init(xmlFilename = "") {
-    syncResponsiveMapHost();
+  function applyDesktopMapSize(wrapper, size) {
+    const context = contexts.desktop;
+    wrapper.dataset.mapSize = size.key;
+    wrapper.style.setProperty("--desktop-map-width", `${size.width}px`);
+    wrapper.style.setProperty("--desktop-map-height", `${size.height}px`);
 
-    if (mapInitStarted && map) {
-      forceRelayout();
+    if (!context.map) {
+      window.setTimeout(() => ensureContext(context), 0);
       return;
     }
 
-    mapInitStarted = true;
-    const element = getMapElement();
-    if (!element) {
-      mapInitStarted = false;
-      return;
-    }
-
-    ensureKakaoMaps(() => {
-      const filename = resolveXmlFilename(xmlFilename);
-      currentXmlFilename = filename;
-
-      if (sceneCoords.length) {
-        if (!map) createMap(sceneCoords[0]);
-        if (filename === "yharbor.xml" && menuSceneCoords.length) {
-          drawOutdoorMarkers(filename);
-        } else if (filename === "namsuheon.xml") {
-          const target = findScene(currentSceneName) || sceneCoords[0];
-          drawIndoorMarker(target);
+    const center = context.map.getCenter();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        kakao.maps.event.trigger(context.map, "resize");
+        stabilizeMarkersAfterResize(context, center);
+        const rect = elementFor(context)?.getBoundingClientRect();
+        if (rect) {
+          context.lastWidth = Math.round(rect.width);
+          context.lastHeight = Math.round(rect.height);
         }
-        forceRelayout();
-        return;
-      }
-
-      loadXmlAndDrawMarkers(filename);
+        window.setTimeout(() => stabilizeMarkersAfterResize(context, center), 80);
+      });
     });
   }
 
-  function setKeepCenter(value) {
-    state.keepCenter = Boolean(value);
+  function initDesktopMapSizeToggle() {
+    const wrapper = document.getElementById("suwon360-desktop-map-wrapper");
+    const button = wrapper?.querySelector(".suwon360-map-size-toggle");
+    if (!wrapper || !button || button.dataset.bound === "true") return;
+
+    button.dataset.bound = "true";
+    let index = Math.max(0, DESKTOP_MAP_SIZES.findIndex((item) => item.key === wrapper.dataset.mapSize));
+    if (index < 0) index = 1;
+    applyDesktopMapSize(wrapper, DESKTOP_MAP_SIZES[index]);
+    button.dataset.tooltip = DESKTOP_MAP_SIZES[index].nextLabel;
+
+    button.addEventListener("click", (event) => {
+      if (!isDesktop()) return;
+      event.preventDefault();
+      event.stopPropagation();
+      index = (index + 1) % DESKTOP_MAP_SIZES.length;
+      const size = DESKTOP_MAP_SIZES[index];
+      applyDesktopMapSize(wrapper, size);
+      button.dataset.tooltip = size.nextLabel;
+      button.setAttribute("aria-label", `미니맵 크기 변경: ${size.key}`);
+    });
   }
 
-  function setKeepLevel(value) {
-    state.keepLevel = Boolean(value);
-  }
+  window.addEventListener("resize", () => {
+    window.setTimeout(() => ensureContext(activeContext()), 280);
+  }, { passive: true });
 
-  function resetView() {
-    preservedCenter = null;
-    preservedLevel = null;
-
-    if (!map) return;
-
-    if (sceneCoords.length) {
-      map.setCenter(new window.kakao.maps.LatLng(sceneCoords[0].lat, sceneCoords[0].lng));
-    } else {
-      map.setCenter(new window.kakao.maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng));
-    }
-    map.setLevel(DEFAULT_LEVEL);
-  }
-
-  // krpano XML에서 직접 호출할 수 있는 전역 함수
-  window.initKakaoMap = function initKakaoMap(xmlFilename) {
-    init(xmlFilename);
-  };
-
-  window.loadXmlAndDrawMarkers = function loadXmlAndDrawMarkersGlobal(xmlFilename) {
-    ensureKakaoMaps(() => loadXmlAndDrawMarkers(xmlFilename));
-  };
-
-  window.updateMapPosition = function updateMapPositionGlobal(
-    lat,
-    lng,
-    sceneName = "",
-    hlookat = null,
-    fov = null
-  ) {
-    updatePosition(lat, lng, sceneName, hlookat, fov);
-  };
-
-  window.highlightCurrentScene = highlightCurrentScene;
-
-  // 새 프레임워크 panorama.js 호환 함수
-  window.js_update_minimap_position = function jsUpdateMinimapPosition(
-    lat,
-    lng,
-    sceneName = "",
-    hlookat = null,
-    fov = null
-  ) {
-    updatePosition(lat, lng, sceneName, hlookat, fov);
-  };
-
-  window.js_force_minimap_relayout = forceRelayout;
-
-  window.js_suwon360_on_view_changed = function jsSuwon360OnViewChanged(hlookat, fov) {
-    onViewChanged({ hlookat, fov });
-  };
+  initDesktopMapSizeToggle();
 
   window.Suwon360Map = {
-    init,
+    setConfig,
     setScenes,
-    loadXmlAndDrawMarkers,
-    updatePosition,
-    updateMapPosition: updatePosition,
+    init,
     updateFromScene,
-    highlightCurrentScene,
     selectMenuScene,
     onViewChanged,
-    forceRelayout,
-    resetView,
-    setKeepCenter,
-    setKeepLevel,
-    get keepCenter() {
-      return state.keepCenter;
-    },
-    set keepCenter(value) {
-      setKeepCenter(value);
-    },
-    get keepLevel() {
-      return state.keepLevel;
-    },
-    set keepLevel(value) {
-      setKeepLevel(value);
-    },
-    getCurrentXml: () => currentXmlFilename,
-    getCurrentScene: () => currentSceneName,
-    getSceneCoords: () => [...sceneCoords],
-    getLastView: () => ({ ...lastView })
+    updatePosition,
+    forceRelayout
   };
 
-  function initWhenReady(retry = 0) {
-    if (getMapElement()) {
-      init();
-      return;
-    }
-
-    if (retry < 50) {
-      window.setTimeout(() => initWhenReady(retry + 1), 100);
-    }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => initWhenReady());
-  } else {
-    initWhenReady();
-  }
-  window.addEventListener("resize", () => {
-    window.setTimeout(() => {
-      syncResponsiveMapHost();
-      forceRelayout();
-    }, 120);
-  });
-
-  window.addEventListener("orientationchange", () => {
-    window.setTimeout(() => {
-      syncResponsiveMapHost();
-      forceRelayout();
-    }, 250);
-  });
+  window.js_initialize_suwon360 = () => init();
+  window.js_force_minimap_relayout = forceRelayout;
+  window.js_suwon360_on_scene_changed = () => {
+    const krpano = window.Suwon360?.krpano;
+    updateFromScene(krpano?.get?.("xml.scene") || window.Suwon360?.currentScene || "");
+  };
+  window.js_suwon360_on_view_changed = () => {
+    const krpano = window.Suwon360?.krpano;
+    if (!krpano?.get) return;
+    onViewChanged({
+      hlookat: krpano.get("view.hlookat"),
+      fov: krpano.get("view.fov")
+    });
+  };
+  window.updateMapPosition = updatePosition;
 })();
