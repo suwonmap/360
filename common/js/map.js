@@ -2,7 +2,7 @@
   "use strict";
 
   /**
-   * Suwon360 Universal Map Engine v205
+   * Suwon360 Universal Map Engine v207
    * ------------------------------------------------------------
    * 콘텐츠명을 코드에 등록하지 않습니다.
    * krpano XML의 mapmode와 scene 좌표를 읽어 자동으로 동작합니다.
@@ -223,9 +223,9 @@
   }
 
   function circleSvg(number, active) {
-    const size = active ? 30 : 26;
+    const size = active ? 26 : 22;
     const fill = active ? "#ef3b24" : "#2f80ed";
-    const fontSize = active ? 12 : 11;
+    const fontSize = active ? 11 : 10;
     const label = String(number).padStart(2, "0");
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
       <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 1.25}" fill="${fill}" stroke="#fff" stroke-width="1.5"/>
@@ -236,7 +236,7 @@
   }
 
   function circleImage(number, active) {
-    const size = active ? 30 : 26;
+    const size = active ? 26 : 22;
     return new kakao.maps.MarkerImage(
       circleSvg(number, active),
       new kakao.maps.Size(size, size),
@@ -362,7 +362,7 @@
       if (context.initializedSignature !== currentSignature()) configureContext(context);
       else syncCurrentMarker(context, true);
     } catch (error) {
-      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v205]", error);
+      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v207]", error);
     } finally {
       context.creating = false;
     }
@@ -516,9 +516,55 @@
     }, 220);
   }
 
+  function initDesktopResizeHandle() {
+    const wrapper = document.getElementById("suwon360-desktop-map-wrapper");
+    const handle = wrapper?.querySelector(".suwon360-map-resize-handle");
+    if (!wrapper || !handle || handle.dataset.bound === "true") return;
+
+    handle.dataset.bound = "true";
+
+    handle.addEventListener("pointerdown", (event) => {
+      if (!isDesktop()) return;
+      event.preventDefault();
+      event.stopPropagation();
+
+      const startRect = wrapper.getBoundingClientRect();
+      const startX = event.clientX;
+      const startY = event.clientY;
+      const minWidth = 240;
+      const maxWidth = Math.min(560, Math.max(minWidth, window.innerWidth - 40));
+      const minHeight = 165;
+      const maxHeight = Math.min(420, Math.max(minHeight, window.innerHeight - 40));
+
+      handle.setPointerCapture?.(event.pointerId);
+      wrapper.classList.add("is-resizing");
+
+      const onMove = (moveEvent) => {
+        const width = Math.max(minWidth, Math.min(maxWidth, startRect.width + startX - moveEvent.clientX));
+        const height = Math.max(minHeight, Math.min(maxHeight, startRect.height + startY - moveEvent.clientY));
+        wrapper.style.setProperty("width", `${Math.round(width)}px`, "important");
+        wrapper.style.setProperty("height", `${Math.round(height)}px`, "important");
+      };
+
+      const onEnd = () => {
+        handle.removeEventListener("pointermove", onMove);
+        handle.removeEventListener("pointerup", onEnd);
+        handle.removeEventListener("pointercancel", onEnd);
+        wrapper.classList.remove("is-resizing");
+        forceRelayout();
+      };
+
+      handle.addEventListener("pointermove", onMove);
+      handle.addEventListener("pointerup", onEnd);
+      handle.addEventListener("pointercancel", onEnd);
+    });
+  }
+
   window.addEventListener("resize", () => {
     window.setTimeout(() => ensureContext(activeContext()), 280);
   }, { passive: true });
+
+  initDesktopResizeHandle();
 
   window.Suwon360Map = {
     setConfig,
