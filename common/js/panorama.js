@@ -58,6 +58,13 @@
   }
 
   function numberOrNaN(value) {
+    // krpano 속성이 없을 때 null 또는 빈 문자열이 반환될 수 있습니다.
+    // Number(null), Number("")는 0이 되므로 좌표가 (0, 0)으로 잘못 인식됩니다.
+    // 값이 실제로 입력된 경우에만 숫자로 변환합니다.
+    if (value === null || value === undefined || String(value).trim() === "") {
+      return NaN;
+    }
+
     const number = Number(value);
     return Number.isFinite(number) ? number : NaN;
   }
