@@ -179,9 +179,9 @@
         krpano.call(`addhotspot('${labelName}');`);
         krpano.set(`hotspot[${labelName}].type`, "text");
         krpano.set(`hotspot[${labelName}].ath`, spot.ath);
-        krpano.set(`hotspot[${labelName}].atv`, spot.atv - 7);
+        krpano.set(`hotspot[${labelName}].atv`, spot.atv - 8);
         krpano.set(`hotspot[${labelName}].html`, escapeHtml(title));
-        krpano.set(`hotspot[${labelName}].css`, "font-family:Arial,'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;color:#FFFFFF;white-space:nowrap;text-align:center;");
+        krpano.set(`hotspot[${labelName}].css`, "font-family:Arial,'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;color:#FFFFFF;white-space:nowrap;text-align:center;max-width:180px;overflow:hidden;text-overflow:ellipsis;");
         krpano.set(`hotspot[${labelName}].bg`, true);
         krpano.set(`hotspot[${labelName}].bgcolor`, "0x111827");
         krpano.set(`hotspot[${labelName}].bgalpha`, 0.82);
@@ -191,9 +191,13 @@
         krpano.set(`hotspot[${labelName}].enabled`, false);
         krpano.set(`hotspot[${labelName}].capture`, false);
         krpano.set(`hotspot[${labelName}].handcursor`, false);
-        krpano.set(`hotspot[${labelName}].renderer`, "css3d");
+        krpano.set(`hotspot[${labelName}].renderer`, "webgl");
+        krpano.set(`hotspot[${labelName}].mipmapping`, true);
+        krpano.set(`hotspot[${labelName}].oversampling`, 2);
+        krpano.set(`hotspot[${labelName}].alpha`, 0);
         krpano.set(`hotspot[${labelName}].zorder`, 20);
         krpano.set(`hotspot[${labelName}].keep`, false);
+        krpano.call(`tween(hotspot[${labelName}].alpha,1.0,0.25);`);
       } catch (error) {
         console.warn("씬명 알약 생성 경고:", spot.name, error);
       }
@@ -311,6 +315,7 @@
     if (!sceneName) return;
     window.Suwon360Menu?.select?.(sceneName);
     window.Suwon360Map?.updateFromScene?.(sceneName);
+    window.setTimeout(() => syncHotspotSceneLabels(krpano), 120);
   };
 
   window.js_suwon360_on_view_changed = function () {
