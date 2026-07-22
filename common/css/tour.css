@@ -25,8 +25,8 @@ button{font:inherit}
 .brand-copy{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
 .brand-name{font-size:16px;line-height:1.25;white-space:nowrap}
 .shooting-date{margin-top:6px;font-size:12px;line-height:1.2;opacity:.86;white-space:nowrap}
-.desktop-explorer{position:absolute;top:0;left:50%;width:min(760px,calc(100vw - 520px));min-width:420px;transform:translateX(-50%);padding:8px 10px 10px;border-radius:14px}
-.explorer-heading{display:flex;align-items:center;justify-content:space-between;min-height:30px;gap:10px}
+.desktop-explorer{position:absolute;top:-4px;left:50%;width:min(760px,calc(100vw - 520px));min-width:420px;transform:translateX(-50%);padding:5px 10px 6px;border-radius:14px}
+.explorer-heading{display:flex;align-items:center;justify-content:space-between;min-height:26px;gap:10px}
 .explorer-title-wrap{display:flex;align-items:baseline;gap:10px;min-width:0}
 .xml-title{min-width:0;color:#fff;font-size:15px;font-weight:700;line-height:1.25;white-space:nowrap}
 .explorer-tools{display:flex;align-items:center;gap:5px;flex:0 0 auto}
@@ -34,7 +34,7 @@ button{font:inherit}
 .menu-tool-btn{height:26px;min-width:34px;padding:0 8px;border-radius:8px;background:rgba(255,255,255,.13);color:#fff;font-size:12px}
 .menu-tool-btn:hover,.menu-tool-btn:focus-visible{background:rgba(255,255,255,.24)}
 .hamburger-btn,.menu-more-toggle{display:inline-grid;place-items:center;font-weight:700;line-height:1}
-.desktop-menu{margin-top:5px}
+.desktop-menu{margin-top:2px}
 .menu-track{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(2,31px);gap:6px;min-height:68px}
 .menu-chip{width:100%;min-width:0;padding:5px 8px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
 .menu-chip:hover,.menu-chip:focus-visible{background:rgba(255,255,255,.22)}
