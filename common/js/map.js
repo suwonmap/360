@@ -2,7 +2,7 @@
   "use strict";
 
   /**
-   * Suwon360 Universal Map Engine v207
+   * Suwon360 Universal Map Engine v210
    * ------------------------------------------------------------
    * 콘텐츠명을 코드에 등록하지 않습니다.
    * krpano XML의 mapmode와 scene 좌표를 읽어 자동으로 동작합니다.
@@ -244,6 +244,37 @@
     );
   }
 
+  // PC 미니맵 포인트 툴팁용 표시명입니다.
+  // XML이나 메뉴 데이터는 바꾸지 않고, 화면에 보일 때만 앞 번호를 제거합니다.
+  function tooltipLabel(scene) {
+    return String(scene?.title || scene?.name || "")
+      .replace(/^\s*\d{1,3}\s*[.·:_-]?\s*/, "")
+      .trim();
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function createMarkerTooltip(scene, position) {
+    const label = tooltipLabel(scene);
+    if (!label) return null;
+
+    return new kakao.maps.CustomOverlay({
+      position,
+      content: `<div class="suwon360-map-tooltip"><span class="suwon360-map-info">${escapeHtml(label)}</span></div>`,
+      xAnchor: 0.5,
+      yAnchor: 1.42,
+      zIndex: 30,
+      clickable: false
+    });
+  }
+
   function directionSvg(degrees) {
     const angle = ((finite(degrees, 0) % 360) + 360) % 360;
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
@@ -266,7 +297,10 @@
   }
 
   function clearMarkers(context) {
-    context.markerItems.forEach((item) => item.marker.setMap(null));
+    context.markerItems.forEach((item) => {
+      item.marker.setMap(null);
+      item.tooltip?.setMap(null);
+    });
     context.markerItems = [];
     if (context.currentMarker) context.currentMarker.setMap(null);
     context.currentMarker = null;
@@ -277,23 +311,33 @@
     const source = multiScenes();
     context.markerItems = source.map((scene, index) => {
       const number = index + 1;
+      const position = new kakao.maps.LatLng(Number(scene.lat), Number(scene.lng));
       const marker = new kakao.maps.Marker({
         map: context.map,
-        position: new kakao.maps.LatLng(Number(scene.lat), Number(scene.lng)),
+        position,
         image: circleImage(number, false),
-        title: `${String(number).padStart(2, "0")} ${scene.title || scene.name}`,
         clickable: true,
         zIndex: 2
       });
+      const tooltip = context.name === "desktop" ? createMarkerTooltip(scene, position) : null;
+
+      if (tooltip) {
+        kakao.maps.event.addListener(marker, "mouseover", () => {
+          tooltip.setPosition(marker.getPosition());
+          tooltip.setMap(context.map);
+        });
+        kakao.maps.event.addListener(marker, "mouseout", () => tooltip.setMap(null));
+      }
 
       kakao.maps.event.addListener(marker, "click", () => {
+        tooltip?.setMap(null);
         currentSceneName = scene.name;
         highlightCurrentScene(scene.name);
         window.Suwon360Menu?.select?.(scene.name);
         window.Suwon360Panorama?.loadScene?.(scene.name);
       });
 
-      return { scene, number, marker, active: false };
+      return { scene, number, marker, tooltip, active: false };
     });
   }
 
@@ -362,7 +406,7 @@
       if (context.initializedSignature !== currentSignature()) configureContext(context);
       else syncCurrentMarker(context, true);
     } catch (error) {
-      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v207]", error);
+      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v210]", error);
     } finally {
       context.creating = false;
     }

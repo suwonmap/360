@@ -1606,3 +1606,101 @@ button{font:inherit}
     border-radius:9px!important;
   }
 }
+
+
+/* =========================================================
+   v210 - 원형 상단 버튼 복원 / PC 미니맵 포인트 알약 툴팁
+   ========================================================= */
+.top-action-btn{
+  width:40px!important;
+  height:40px!important;
+  border-radius:50%!important;
+  background:rgba(17,24,39,.78)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  color:#fff!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.24)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+  backdrop-filter:blur(10px)!important;
+  transition:background-color .15s ease,transform .15s ease,box-shadow .15s ease!important;
+}
+
+.top-action-btn:active{
+  background:rgba(8,12,20,.94)!important;
+  transform:translateY(0)!important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .top-action-btn:hover,
+  .top-action-btn:focus-visible{
+    background:rgba(8,12,20,.92)!important;
+    border-color:rgba(255,255,255,.30)!important;
+    box-shadow:0 10px 24px rgba(0,0,0,.34)!important;
+    transform:translateY(-1px)!important;
+  }
+
+  .top-action-btn:hover svg,
+  .top-action-btn:focus-visible svg{
+    transform:scale(1.06);
+  }
+
+  .top-action-btn svg{
+    transition:transform .15s ease;
+  }
+
+  .top-action-btn[data-tooltip]::after,
+  .suwon360-map-size-toggle[data-tooltip]::after{
+    padding:6px 11px!important;
+    border:1px solid rgba(255,255,255,.14)!important;
+    border-radius:999px!important;
+    background:rgba(8,12,20,.86)!important;
+    -webkit-backdrop-filter:blur(7px)!important;
+    backdrop-filter:blur(7px)!important;
+    box-shadow:0 5px 14px rgba(0,0,0,.28)!important;
+  }
+}
+
+@media (min-width:769px){
+  .suwon360-map-tooltip{
+    display:block!important;
+    position:relative!important;
+    pointer-events:none!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    opacity:0;
+    transform:translateY(4px);
+    animation:suwon360TooltipIn .15s ease forwards;
+    white-space:nowrap!important;
+  }
+
+  .suwon360-map-info{
+    display:block!important;
+    padding:7px 13px!important;
+    border:1px solid rgba(255,255,255,.14)!important;
+    border-radius:999px!important;
+    background:rgba(8,12,20,.84)!important;
+    color:#fff!important;
+    font-family:Arial,"Noto Sans KR","Malgun Gothic",sans-serif!important;
+    font-size:12px!important;
+    font-weight:700!important;
+    line-height:1!important;
+    letter-spacing:-.02em!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+    -webkit-backdrop-filter:blur(7px) saturate(120%)!important;
+    backdrop-filter:blur(7px) saturate(120%)!important;
+    box-shadow:0 5px 14px rgba(0,0,0,.28)!important;
+  }
+
+  @keyframes suwon360TooltipIn{
+    to{opacity:1;transform:translateY(0)}
+  }
+}
+
+@media (max-width:768px){
+  .top-action-btn{
+    width:32px!important;
+    height:32px!important;
+    border-radius:50%!important;
+  }
+}
