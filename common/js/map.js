@@ -2,7 +2,7 @@
   "use strict";
 
   /**
-   * Suwon360 Universal Map Engine v203
+   * Suwon360 Universal Map Engine v204
    * ------------------------------------------------------------
    * 콘텐츠명을 코드에 등록하지 않습니다.
    * krpano XML의 mapmode와 scene 좌표를 읽어 자동으로 동작합니다.
@@ -79,8 +79,8 @@
 
   function normalizeMode(value) {
     const mode = String(value || "auto").trim().toLowerCase();
-    if (["multi", "multiple", "scene", "scenes"].includes(mode)) return "multi";
-    if (["single", "current", "position", "indoor"].includes(mode)) return "single";
+    if (["multi", "multiple", "scene", "scenes", "outdoor", "outside"].includes(mode)) return "multi";
+    if (["single", "current", "position", "indoor", "inside"].includes(mode)) return "single";
     if (["off", "none", "false", "0"].includes(mode)) return "off";
     return "auto";
   }
@@ -88,7 +88,22 @@
   function determineMode() {
     const configured = normalizeMode(mapConfig.mode);
     if (configured !== "auto") return configured;
-    return validScenes(menuScenes).length >= 2 ? "multi" : "single";
+
+    // menu_show 씬 좌표가 있으면 우선 다중 포인트로 판단합니다.
+    // 구형 XML처럼 menu_show 속성 인식이 늦거나 누락된 경우에는
+    // 전체 좌표 씬을 보조 기준으로 사용합니다.
+    const menuCount = validScenes(menuScenes).length;
+    const allCount = validScenes(allScenes).length;
+    return menuCount >= 2 || allCount >= 2 ? "multi" : "single";
+  }
+
+  function multiScenes() {
+    const menus = validScenes(menuScenes);
+    if (menus.length) return menus;
+
+    // 기존 XML 호환용 안전장치: 메뉴 배열이 비어 있어도
+    // 좌표가 입력된 씬이 있으면 지도를 빈 화면으로 두지 않습니다.
+    return validScenes(allScenes);
   }
 
   function currentSignature() {
@@ -177,7 +192,7 @@
 
   function initialCenter() {
     if (resolvedMode === "multi") {
-      return configuredCenter() || averageCenter(menuScenes) || averageCenter(allScenes) || DEFAULT_CENTER;
+      return configuredCenter() || averageCenter(multiScenes()) || averageCenter(allScenes) || DEFAULT_CENTER;
     }
     return singlePosition();
   }
@@ -240,7 +255,7 @@
   }
 
   function buildMultiMarkers(context) {
-    const source = validScenes(menuScenes);
+    const source = multiScenes();
     context.markerItems = source.map((scene, index) => {
       const number = index + 1;
       const marker = new kakao.maps.Marker({
@@ -328,7 +343,7 @@
       if (context.initializedSignature !== currentSignature()) configureContext(context);
       else syncCurrentMarker(context, true);
     } catch (error) {
-      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v203]", error);
+      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v204]", error);
     } finally {
       context.creating = false;
     }
