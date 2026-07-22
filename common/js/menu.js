@@ -39,7 +39,8 @@
 
     button.addEventListener("click", () => {
       select(scene.name);
-      closeOverflow();
+      // v214: 더보기 메뉴 항목을 선택해도 드롭다운을 유지합니다.
+      // 사용자가 점 3개 버튼을 다시 누르거나 바깥을 클릭할 때만 닫힙니다.
       window.Suwon360Map?.selectMenuScene?.(scene.name);
       window.Suwon360Panorama?.loadScene?.(scene.name);
       // 모바일 메뉴 선택 시 현재 레이아웃을 유지합니다.
