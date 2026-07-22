@@ -12,8 +12,6 @@
   let menuScenes = [];
   let activeMenuScene = "";
   let lastVisibleLayout = MOBILE_LAYOUT.SPLIT;
-  // v220: 점3개 메뉴의 열린 상태를 씬 이동과 재렌더링 후에도 유지합니다.
-  let overflowPinned = false;
 
   function makeButton(scene, index, className) {
     const button = document.createElement("button");
@@ -41,7 +39,8 @@
 
     button.addEventListener("click", () => {
       select(scene.name);
-      // v215: 더보기 메뉴 항목 선택 후에도 드롭다운을 열린 상태로 유지합니다.
+      // v214: 더보기 메뉴 항목을 선택해도 드롭다운을 유지합니다.
+      // 사용자가 점 3개 버튼을 다시 누르거나 바깥을 클릭할 때만 닫힙니다.
       window.Suwon360Map?.selectMenuScene?.(scene.name);
       window.Suwon360Panorama?.loadScene?.(scene.name);
       // 모바일 메뉴 선택 시 현재 레이아웃을 유지합니다.
@@ -86,19 +85,7 @@
 
     const hasOverflow = menuScenes.length > DESKTOP_VISIBLE_LIMIT;
     more.hidden = !hasOverflow;
-
-    if (!hasOverflow) {
-      overflowPinned = false;
-      closeOverflow();
-      return;
-    }
-
-    if (overflowPinned) {
-      overflow.hidden = false;
-      more.setAttribute("aria-expanded", "true");
-    } else {
-      closeOverflow();
-    }
+    if (!hasOverflow) closeOverflow();
   }
 
   function renderMobile() {
@@ -168,11 +155,10 @@
   function toggleOverflow() {
     const overflow = document.getElementById("menu-overflow");
     const more = document.getElementById("menu-more-toggle");
-    if (!overflow || !more || more.hidden) return;
-
-    overflowPinned = !overflowPinned;
-    overflow.hidden = !overflowPinned;
-    more.setAttribute("aria-expanded", String(overflowPinned));
+    if (!overflow || !more) return;
+    const willOpen = overflow.hidden;
+    overflow.hidden = !willOpen;
+    more.setAttribute("aria-expanded", String(willOpen));
   }
 
   function getLayout() {
@@ -308,15 +294,11 @@
       allToggle.title = label;
       allToggle.setAttribute("aria-pressed", String(collapsed));
       allToggle.setAttribute("aria-label", label);
-      overflowPinned = false;
       closeOverflow();
     });
 
     document.addEventListener("click", (event) => {
-      if (!event.target.closest("#desktop-explorer")) {
-        overflowPinned = false;
-        closeOverflow();
-      }
+      if (!event.target.closest("#desktop-explorer")) closeOverflow();
     });
 
     document.getElementById("panel-toggle")?.addEventListener("click", () => {
