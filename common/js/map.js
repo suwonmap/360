@@ -2,7 +2,7 @@
   "use strict";
 
   /**
-   * Suwon360 Universal Map Engine v204
+   * Suwon360 Universal Map Engine v205
    * ------------------------------------------------------------
    * 콘텐츠명을 코드에 등록하지 않습니다.
    * krpano XML의 mapmode와 scene 좌표를 읽어 자동으로 동작합니다.
@@ -36,6 +36,8 @@
   let latestPosition = { lat: NaN, lng: NaN };
   let initGeneration = 0;
   let headingPaintQueued = false;
+  let sceneRevision = 0;
+  let refreshTimer = 0;
 
   function createContext(name, elementId) {
     return {
@@ -107,7 +109,24 @@
   }
 
   function currentSignature() {
-    return `${resolvedMode}|${allScenes.length}|${menuScenes.length}`;
+    // 단순 개수뿐 아니라 데이터 갱신 순서까지 반영합니다.
+    // init()이 먼저 실행되고 setScenes()가 나중에 호출되는 경우에도
+    // 기존 지도를 반드시 다시 구성하도록 sceneRevision을 포함합니다.
+    return `${resolvedMode}|${sceneRevision}|${allScenes.length}|${menuScenes.length}`;
+  }
+
+  function scheduleRefresh(delay = 0) {
+    window.clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(() => {
+      refreshTimer = 0;
+      ensureContext(activeContext());
+    }, delay);
+  }
+
+  function invalidateContexts() {
+    Object.values(contexts).forEach((context) => {
+      context.initializedSignature = "";
+    });
   }
 
   function waitForKakao() {
@@ -343,7 +362,7 @@
       if (context.initializedSignature !== currentSignature()) configureContext(context);
       else syncCurrentMarker(context, true);
     } catch (error) {
-      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v204]", error);
+      if (!/취소/.test(String(error?.message))) console.warn("[Suwon360Map v205]", error);
     } finally {
       context.creating = false;
     }
@@ -411,20 +430,35 @@
       level: finite(config.level ?? config.maplevel, mapConfig.level)
     };
     resolvedMode = determineMode();
-    Object.values(contexts).forEach((context) => { context.initializedSignature = ""; });
+    invalidateContexts();
+
+    // app.js에서 init()보다 setConfig()가 늦게 호출되어도 즉시 재구성합니다.
+    scheduleRefresh(0);
   }
 
   function setScenes(scenes, menus) {
     allScenes = Array.isArray(scenes) ? scenes.slice() : [];
     menuScenes = Array.isArray(menus) ? menus.slice() : [];
     sceneByName = new Map(allScenes.map((scene) => [scene.name, scene]));
+    sceneRevision += 1;
     resolvedMode = determineMode();
-    Object.values(contexts).forEach((context) => { context.initializedSignature = ""; });
+    invalidateContexts();
+
+    // 핵심 수정:
+    // 영흥수목원처럼 scene 목록이 비동기로 전달되는 multi 콘텐츠는
+    // setScenes() 완료 시점에 지도를 다시 초기화해야 번호 마커가 표시됩니다.
+    scheduleRefresh(0);
   }
 
   async function init() {
     resolvedMode = determineMode();
     await ensureContext(activeContext());
+
+    // 초기 호출 당시 scene 데이터가 아직 없었던 경우를 위한 안전 재시도입니다.
+    // 콘텐츠명을 검사하지 않고 mapmode와 좌표 데이터만 사용합니다.
+    if (resolvedMode === "multi" && multiScenes().length === 0) {
+      scheduleRefresh(120);
+    }
   }
 
   function updateFromScene(sceneName) {
