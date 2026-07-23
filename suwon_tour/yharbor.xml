@@ -1,3 +1,4 @@
+
 <krpano version="1.22"
          title="영흥수목원"
          capturedate="2026.06"
@@ -550,7 +551,7 @@ lat="37.26290833" lng="127.07152500" alt="79.34" heading="157.0">
 
 	</scene>
 
-	<scene name="scene_yharbor_78" title="비비추고사리원" onstart="" thumburl="panos/yharbor_78.tiles/thumb.jpg" lat="37.26426111" lng="127.07043333" alt="90.87" heading="256.1">
+	<scene name="scene_yharbor_78" title="비비추고사리원" menu_show="true" onstart="" thumburl="panos/yharbor_78.tiles/thumb.jpg" lat="37.26426111" lng="127.07043333" alt="90.87" heading="256.1">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -566,7 +567,7 @@ lat="37.26290833" lng="127.07152500" alt="79.34" heading="157.0">
 
 	</scene>
 
-	<scene name="scene_yharbor_80" title="비비추고사리원2"  menu_show="true" onstart="" thumburl="panos/yharbor_80.tiles/thumb.jpg" lat="37.26460278" lng="127.07040278" alt="87.02" heading="320.0">
+	<scene name="scene_yharbor_80" title="비비추고사리원2"  onstart="" thumburl="panos/yharbor_80.tiles/thumb.jpg" lat="37.26460278" lng="127.07040278" alt="87.02" heading="320.0">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
