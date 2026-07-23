@@ -1,5 +1,27 @@
 <krpano>
 
+    <!--
+        공통 바닥(나디르) 수원이 로고
+        - common_layout.xml과 같은 common 폴더를 기준으로 images/수원이.png를 사용합니다.
+        - keep="true"이므로 씬 전환 후에도 유지됩니다.
+        - 새로운 콘텐츠 XML에는 별도 hotspot 코드를 추가할 필요가 없습니다.
+    -->
+    <hotspot name="s360_floor_logo"
+             type="image"
+             url="images/수원이.png"
+             ath="0"
+             atv="88"
+             rx="90"
+             scale="0.30"
+             alpha="1.0"
+             keep="true"
+             zoom="true"
+             enabled="false"
+             capture="false"
+             handcursor="false"
+             visible="true"
+             zorder="2" />
+
     <action name="s360_hide_skin">
         set(skin_settings.controlbar_visible, false);
         set(skin_settings.thumbs_opened, false);

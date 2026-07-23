@@ -3,12 +3,6 @@
 
   let sceneWatcher = null;
 
-  // 공통 바닥 로고 설정
-  // JS에서 생성한 hotspot의 상대경로 해석 차이를 피하기 위해
-  // viewer.html 기준의 절대 URL로 변환하여 사용합니다.
-  const FLOOR_LOGO_NAME = "s360_floor_logo";
-  const DEFAULT_FLOOR_LOGO_PATH = "common/images/수원이.png";
-
   function init() {
     const state = window.Suwon360;
     const app = window.Suwon360App;
@@ -45,7 +39,6 @@
     readScenes(krpano);
     readMapConfig(krpano);
     syncHotspotSceneLabels(krpano);
-    window.setTimeout(() => addFloorLogo(krpano), 150);
 
     const title = String(get(krpano, "title") || state.config.tour);
     const shootingDate = String(get(krpano, "capturedate") || get(krpano, "shooting_date") || "");
@@ -139,65 +132,6 @@
     };
     state.mapConfig = config;
     window.Suwon360Map?.setConfig?.(config);
-  }
-
-
-  // 현재 Scene의 바닥(나디르)에 공통 수원이 로고를 생성합니다.
-  // 이미지 URL은 viewer.html 기준 절대 주소로 만들어 XML 위치와 무관하게 읽습니다.
-  function addFloorLogo(krpano) {
-    if (!krpano) return;
-
-    const configuredPath = String(window.Suwon360?.config?.floorLogoPath || "").trim();
-    const sourcePath = configuredPath || DEFAULT_FLOOR_LOGO_PATH;
-    const logoUrl = new URL(sourcePath, window.location.href).href;
-
-    try {
-      try {
-        krpano.call(`removehotspot('${FLOOR_LOGO_NAME}');`);
-      } catch { /* 아직 생성되지 않은 경우 무시 */ }
-
-      krpano.call(`addhotspot('${FLOOR_LOGO_NAME}');`);
-
-      const base = `hotspot[${FLOOR_LOGO_NAME}]`;
-      krpano.set(`${base}.type`, "image");
-      krpano.set(`${base}.url`, logoUrl);
-
-      // 360도 파노라마의 정중앙 바닥(나디르)
-      krpano.set(`${base}.ath`, 0);
-      krpano.set(`${base}.atv`, 90);
-      krpano.set(`${base}.distorted`, true);
-
-      // 바닥면에 수평으로 놓이도록 회전
-      krpano.set(`${base}.rx`, 90);
-      krpano.set(`${base}.ry`, 0);
-      krpano.set(`${base}.rz`, 0);
-
-      // 이미지 자체 크기를 명시해 모바일에서도 안정적으로 표시
-      krpano.set(`${base}.width`, 420);
-      krpano.set(`${base}.height`, 420);
-      krpano.set(`${base}.scale`, 0.55);
-      krpano.set(`${base}.alpha`, 0.95);
-
-      krpano.set(`${base}.renderer`, "webgl");
-      krpano.set(`${base}.enabled`, false);
-      krpano.set(`${base}.capture`, false);
-      krpano.set(`${base}.handcursor`, false);
-      krpano.set(`${base}.keep`, false);
-      krpano.set(`${base}.visible`, true);
-      krpano.set(`${base}.mipmapping`, true);
-      krpano.set(`${base}.oversampling`, 2);
-      krpano.set(`${base}.zorder`, 2);
-
-      // 이미지가 실제로 로드되었는지 브라우저 콘솔에서 확인 가능
-      krpano.set(`${base}.onloaded`,
-        `js(console.log('[수원이 바닥로고] 로드 완료:', hotspot[${FLOOR_LOGO_NAME}].url));`
-      );
-      krpano.set(`${base}.onloaderror`,
-        `js(console.error('[수원이 바닥로고] 이미지 로드 실패:', hotspot[${FLOOR_LOGO_NAME}].url));`
-      );
-    } catch (error) {
-      console.warn("바닥 로고 생성 경고:", error);
-    }
   }
 
 
@@ -306,7 +240,6 @@
         window.Suwon360Map?.updateFromScene?.(currentScene);
         window.setTimeout(() => {
           syncHotspotSceneLabels(krpano);
-          addFloorLogo(krpano);
         }, 180);
       }
 
@@ -386,7 +319,6 @@
     window.Suwon360Map?.updateFromScene?.(sceneName);
     window.setTimeout(() => {
       syncHotspotSceneLabels(krpano);
-      addFloorLogo(krpano);
     }, 180);
   };
 
@@ -406,5 +338,5 @@
     window.Suwon360Map?.updatePosition?.(lat, lng, sceneName, hlookat, fov);
   window.updateMapPosition = window.js_update_minimap_position;
 
-  window.Suwon360Panorama = { init, loadScene, addFloorLogo, hideKrpanoConsole, hideDefaultSkin };
+  window.Suwon360Panorama = { init, loadScene, hideKrpanoConsole, hideDefaultSkin };
 })();
