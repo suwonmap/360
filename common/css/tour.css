@@ -1924,3 +1924,80 @@ body.share-layer-open{overflow:hidden}
   .share-service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .share-service-button{padding:10px 6px}
 }
+
+/* =========================================================
+   v93 - PC 점3개 상세메뉴 알약 통일 + 중앙 정렬
+   - 기본 메뉴와 같은 pill 형태
+   - 팝업 내부 항목 중앙 배치
+   - 점3개 버튼 활성 상태 통일
+   ========================================================= */
+@media (min-width:769px){
+  .menu-overflow{
+    top:calc(100% + 10px);
+    right:0;
+    width:min(460px,calc(100vw - 32px));
+    max-height:min(360px,58vh);
+    padding:12px;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:center;
+    justify-items:stretch;
+    gap:9px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    border:1px solid rgba(255,255,255,.26);
+    border-radius:22px;
+    background:rgba(17,24,39,.94);
+    box-shadow:0 16px 38px rgba(0,0,0,.34);
+    backdrop-filter:blur(12px) saturate(125%);
+    -webkit-backdrop-filter:blur(12px) saturate(125%);
+    transform-origin:top right;
+    animation:s360OverflowOpen .18s ease-out both;
+  }
+
+  .menu-overflow .menu-chip{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-width:0;
+    height:36px;
+    padding:0 14px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.20);
+    border-radius:999px;
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    box-shadow:none;
+    text-align:center;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+  }
+
+  .menu-overflow .menu-chip:hover,
+  .menu-overflow .menu-chip:focus-visible{
+    background:rgba(255,255,255,.23);
+    border-color:rgba(255,255,255,.42);
+    box-shadow:0 5px 14px rgba(0,0,0,.18);
+    transform:translateY(-1px);
+    outline:none;
+  }
+
+  .menu-overflow .menu-chip.is-active{
+    background:var(--active);
+    border-color:var(--active);
+    color:#fff;
+    box-shadow:0 5px 15px rgba(37,99,235,.34);
+  }
+
+  .menu-more-toggle[aria-expanded="true"]{
+    background:var(--active);
+    color:#fff;
+    box-shadow:0 4px 12px rgba(37,99,235,.30);
+  }
+
+  @keyframes s360OverflowOpen{
+    from{opacity:0;transform:translateY(-7px) scale(.985)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+}

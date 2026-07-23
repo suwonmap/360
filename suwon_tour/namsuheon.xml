@@ -1363,7 +1363,7 @@
 
 	</scene>
 
-	<scene name="scene_namsuheon_80" title="namsuheon (80)" onstart="" thumburl="panos/namsuheon_80.tiles/thumb.jpg" lat="37.28399444" lng="127.02154444" alt="92.97" heading="0.0">
+	<scene name="scene_namsuheon_80" title="지하주차장2" onstart="" thumburl="panos/namsuheon_80.tiles/thumb.jpg" lat="37.28399444" lng="127.02154444" alt="92.97" heading="0.0">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -1377,7 +1377,7 @@
 
 	</scene>
 
-	<scene name="scene_namsuheon_81" title="" onstart="" thumburl="panos/namsuheon_81.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="scene_namsuheon_81" title="지하주차장3" onstart="" thumburl="panos/namsuheon_81.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -1394,7 +1394,7 @@
 
 	</scene>
 
-	<scene name="scene_namsuheon_82" title="Ground Level" onstart="" thumburl="panos/namsuheon_82.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="scene_namsuheon_82" title="지하주차장4" onstart="" thumburl="panos/namsuheon_82.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -1411,7 +1411,7 @@
 
 	</scene>
 
-	<scene name="scene_namsuheon_83" title="EV_Level 1" onstart="" thumburl="panos/namsuheon_83.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="scene_namsuheon_83" title="엘리베이터" onstart="" thumburl="panos/namsuheon_83.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -1479,7 +1479,7 @@
 
 	</scene>
 
-	<scene name="scene_namsuheon_87" title="카페" onstart="" thumburl="panos/namsuheon_87.tiles/thumb.jpg" lat="37.28372778" lng="127.02245000" alt="82.77" heading="0.0">
+	<scene name="scene_namsuheon_87" title="갤러리 카페2" onstart="" thumburl="panos/namsuheon_87.tiles/thumb.jpg" lat="37.28372778" lng="127.02245000" alt="82.77" heading="0.0">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -1496,7 +1496,7 @@
 
 	</scene>
 
-	<scene name="scene_namsuheon_88" title="" onstart="" thumburl="panos/namsuheon_88.tiles/thumb.jpg" lat="37.28372778" lng="127.02245000" alt="82.77" heading="0.0">
+	<scene name="scene_namsuheon_88" title="갤러리 카페3" onstart="" thumburl="panos/namsuheon_88.tiles/thumb.jpg" lat="37.28372778" lng="127.02245000" alt="82.77" heading="0.0">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 

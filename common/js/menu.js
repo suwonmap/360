@@ -41,11 +41,18 @@
 
     button.addEventListener("click", () => {
       select(scene.name);
-      // v215: 더보기 메뉴 항목 선택 후에도 드롭다운을 열린 상태로 유지합니다.
+
       window.Suwon360Map?.selectMenuScene?.(scene.name);
       window.Suwon360Panorama?.loadScene?.(scene.name);
+
       // 모바일 메뉴 선택 시 현재 레이아웃을 유지합니다.
       requestMapRelayout(80);
+
+      // 점3개 드롭다운 메뉴 항목 선택 후 빠르게 닫습니다.
+      overflowPinned = false;
+      window.setTimeout(() => {
+        closeOverflow();
+      }, 30);
     });
 
     return button;
@@ -173,6 +180,14 @@
     overflowPinned = !overflowPinned;
     overflow.hidden = !overflowPinned;
     more.setAttribute("aria-expanded", String(overflowPinned));
+
+    // v93: 상세메뉴를 열면 선택된 알약을 팝업 중앙 부근에 즉시 표시합니다.
+    if (overflowPinned) {
+      window.requestAnimationFrame(() => {
+        const active = overflow.querySelector(".menu-chip.is-active");
+        active?.scrollIntoView?.({ block: "center", inline: "nearest", behavior: "auto" });
+      });
+    }
   }
 
   function getLayout() {
