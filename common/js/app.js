@@ -237,8 +237,35 @@
     }
   }
 
+
+  async function handleShareButton(event) {
+    const shareButton = event?.currentTarget || document.getElementById("share-btn");
+    shareButton?.blur();
+    const data = getShareData();
+    const isMobile =
+      window.matchMedia("(max-width: 768px)").matches ||
+      window.matchMedia("(pointer: coarse)").matches;
+
+    if (isMobile && typeof navigator.share === "function") {
+      try {
+        await navigator.share({
+          title: data.title,
+          text: data.text,
+          url: data.url
+        });
+      } catch (error) {
+        if (error?.name !== "AbortError") {
+          setShareMessage("공유 기능을 실행하지 못했습니다.", true);
+        }
+      }
+      return;
+    }
+
+    openShareLayer(event);
+  }
+
   function bindShareLayer() {
-    document.getElementById("share-btn")?.addEventListener("click", openShareLayer);
+    document.getElementById("share-btn")?.addEventListener("click", handleShareButton);
     document.getElementById("share-layer-close")?.addEventListener("click", closeShareLayer);
     document.querySelectorAll("[data-share-close]").forEach((element) => {
       element.addEventListener("click", closeShareLayer);
