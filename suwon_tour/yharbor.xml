@@ -11,6 +11,136 @@
      [SCENE 데이터]
    ========================================================================= -->
 
+	<scene name="scene_yharbor_123" title="방문자센터"  menu_show="true" onstart="" thumburl="panos/yharbor_123.tiles/thumb.jpg" lat="37.26226944" lng="127.07100833" alt="92.33" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/yharbor_123.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/yharbor_123.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2046460520" style="skin_hotspotstyle" ath="-0.466" atv="6.489" depth="1000.0" linkedscene="scene_yharbor_125" linkedscene_lookat="-0.21,-8.01,111.43" />
+
+	</scene>
+
+	<scene name="scene_yharbor_125" title="방문자센터2" onstart="" thumburl="panos/yharbor_125.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/yharbor_125.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/yharbor_125.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2046462166" style="skin_hotspotstyle" ath="41.898" atv="9.72" depth="1000.0" linkedscene="scene_yharbor_126" linkedscene_lookat="11.73,3.96,120.0" />
+		<hotspot name="spot2046462331" style="skin_hotspotstyle" ath="-51.494" atv="8.974" depth="1000.0" linkedscene="scene_yharbor_127" linkedscene_lookat="-11.91,18.34,120.0" />
+
+	</scene>
+
+	<scene name="scene_yharbor_126" title="방문자센터3" onstart="" thumburl="panos/yharbor_126.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/yharbor_126.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/yharbor_126.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2046463018" style="skin_hotspotstyle" ath="125.13" atv="21.329" depth="1000.0" linkedscene="scene_yharbor_125" linkedscene_lookat="6.43,3.14,120.0" />
+
+	</scene>
+
+	<scene name="scene_yharbor_127" title="방문자센터4" onstart="" thumburl="panos/yharbor_127.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="-15.498" vlookat="12.836" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/yharbor_127.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/yharbor_127.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2046463212" style="skin_hotspotstyle" ath="120.853" atv="12.349" depth="1000.0" linkedscene="scene_yharbor_125" linkedscene_lookat="0.0,0.0,120.0" />
+		<hotspot name="spot2046463347" style="skin_hotspotstyle" ath="-29.033" atv="32.158" depth="1000.0" linkedscene="scene_yharbor_128" linkedscene_lookat="106.57,14.76,141.36" />
+
+	</scene>
+
+	<scene name="scene_yharbor_128" title="방문자센터5" onstart="" thumburl="panos/yharbor_128.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/yharbor_128.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/yharbor_128.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2046463543" style="skin_hotspotstyle" ath="-143.909" atv="18.406" depth="1000.0" linkedscene="scene_yharbor_127" linkedscene_lookat="-202.37,-4.6,131.56" />
+		<hotspot name="spot2046463865" style="skin_hotspotstyle" ath="109.233" atv="37.364" depth="1000.0" linkedscene="scene_yharbor_129" linkedscene_lookat="31.87,0.46,120.0" />
+
+	</scene>
+
+	<scene name="scene_yharbor_129" title="방문자센터6" onstart="" thumburl="panos/yharbor_129.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/yharbor_129.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/yharbor_129.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2046464012" style="skin_hotspotstyle" ath="25.375" atv="11.043" depth="1000.0" linkedscene="scene_yharbor_121" linkedscene_lookat="172.31,-8.67,131.49" />
+		<hotspot name="spot2046464268" style="skin_hotspotstyle" ath="-124.766" atv="9.24" depth="1000.0" linkedscene="scene_yharbor_130" linkedscene_lookat="0.0,0.0,120.0" />
+		<hotspot name="spot2046464361" style="skin_hotspotstyle" ath="-102.234" atv="-1.327" depth="1000.0" linkedscene="scene_yharbor_128" linkedscene_lookat="-164.48,3.0,120.0" />
+
+	</scene>
+
+	<scene name="scene_yharbor_130" title="방문자센터7" onstart="" thumburl="panos/yharbor_130.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/yharbor_130.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/yharbor_130.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+	</scene>
+	<scene name="scene_yharbor_121" title="방문자센터8" onstart="" thumburl="panos/yharbor_121.tiles/thumb.jpg" lat="37.26250278" lng="127.07102778" alt="80.10" heading="0.0">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.000" vlookat="0.000" fovtype="MFOV" fov="111.463" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/yharbor_121.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/yharbor_121.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
+		</image>
+
+		<hotspot name="spot2046464580" style="skin_hotspotstyle" ath="1.665" atv="4.158" depth="1000.0" linkedscene="scene_yharbor_129" linkedscene_lookat="154.11,-3.74,127.88" />
+
+	</scene>
+
 <scene name="scene_yharbor_1" title="블루밍가든"  menu_show="true" onstart="" thumburl="panos/yharbor_1.tiles/thumb.jpg"
 lat="37.26290833" lng="127.07152500" alt="79.34" heading="157.0">
 		<control bouncinglimits="calc:image.cube ? true : false" />
@@ -22,9 +152,6 @@ lat="37.26290833" lng="127.07152500" alt="79.34" heading="157.0">
 		<image prealign="0|157.0|0">
 			<cube url="panos/yharbor_1.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
 		</image>
-
-		
-
 
 	</scene>
 
@@ -958,136 +1085,5 @@ lat="37.26290833" lng="127.07152500" alt="79.34" heading="157.0">
 		</image>
 
 	</scene>
-
-	<scene name="scene_yharbor_123" title="방문자센터"  menu_show="true" onstart="" thumburl="panos/yharbor_123.tiles/thumb.jpg" lat="37.26226944" lng="127.07100833" alt="92.33" heading="0.0">
-		
-		<control bouncinglimits="calc:image.cube ? true : false" />
-
-		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
-
-		<preview url="panos/yharbor_123.tiles/preview.jpg" />
-
-		<image>
-			<cube url="panos/yharbor_123.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
-		</image>
-
-		<hotspot name="spot2046460520" style="skin_hotspotstyle" ath="-0.466" atv="6.489" depth="1000.0" linkedscene="scene_yharbor_125" linkedscene_lookat="-0.21,-8.01,111.43" />
-
-	</scene>
-
-	<scene name="scene_yharbor_125" title="방문자센터2" onstart="" thumburl="panos/yharbor_125.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
-		
-		<control bouncinglimits="calc:image.cube ? true : false" />
-
-		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
-
-		<preview url="panos/yharbor_125.tiles/preview.jpg" />
-
-		<image>
-			<cube url="panos/yharbor_125.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
-		</image>
-
-		<hotspot name="spot2046462166" style="skin_hotspotstyle" ath="41.898" atv="9.72" depth="1000.0" linkedscene="scene_yharbor_126" linkedscene_lookat="11.73,3.96,120.0" />
-		<hotspot name="spot2046462331" style="skin_hotspotstyle" ath="-51.494" atv="8.974" depth="1000.0" linkedscene="scene_yharbor_127" linkedscene_lookat="-11.91,18.34,120.0" />
-
-	</scene>
-
-	<scene name="scene_yharbor_126" title="방문자센터3" onstart="" thumburl="panos/yharbor_126.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
-		
-		<control bouncinglimits="calc:image.cube ? true : false" />
-
-		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
-
-		<preview url="panos/yharbor_126.tiles/preview.jpg" />
-
-		<image>
-			<cube url="panos/yharbor_126.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
-		</image>
-
-		<hotspot name="spot2046463018" style="skin_hotspotstyle" ath="125.13" atv="21.329" depth="1000.0" linkedscene="scene_yharbor_125" linkedscene_lookat="6.43,3.14,120.0" />
-
-	</scene>
-
-	<scene name="scene_yharbor_127" title="방문자센터4" onstart="" thumburl="panos/yharbor_127.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
-		
-		<control bouncinglimits="calc:image.cube ? true : false" />
-
-		<view hlookat="-15.498" vlookat="12.836" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
-
-		<preview url="panos/yharbor_127.tiles/preview.jpg" />
-
-		<image>
-			<cube url="panos/yharbor_127.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
-		</image>
-
-		<hotspot name="spot2046463212" style="skin_hotspotstyle" ath="120.853" atv="12.349" depth="1000.0" linkedscene="scene_yharbor_125" linkedscene_lookat="0.0,0.0,120.0" />
-		<hotspot name="spot2046463347" style="skin_hotspotstyle" ath="-29.033" atv="32.158" depth="1000.0" linkedscene="scene_yharbor_128" linkedscene_lookat="106.57,14.76,141.36" />
-
-	</scene>
-
-	<scene name="scene_yharbor_128" title="방문자센터5" onstart="" thumburl="panos/yharbor_128.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
-		
-		<control bouncinglimits="calc:image.cube ? true : false" />
-
-		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
-
-		<preview url="panos/yharbor_128.tiles/preview.jpg" />
-
-		<image>
-			<cube url="panos/yharbor_128.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
-		</image>
-
-		<hotspot name="spot2046463543" style="skin_hotspotstyle" ath="-143.909" atv="18.406" depth="1000.0" linkedscene="scene_yharbor_127" linkedscene_lookat="-202.37,-4.6,131.56" />
-		<hotspot name="spot2046463865" style="skin_hotspotstyle" ath="109.233" atv="37.364" depth="1000.0" linkedscene="scene_yharbor_129" linkedscene_lookat="31.87,0.46,120.0" />
-
-	</scene>
-
-	<scene name="scene_yharbor_129" title="방문자센터6" onstart="" thumburl="panos/yharbor_129.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
-		
-		<control bouncinglimits="calc:image.cube ? true : false" />
-
-		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
-
-		<preview url="panos/yharbor_129.tiles/preview.jpg" />
-
-		<image>
-			<cube url="panos/yharbor_129.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
-		</image>
-
-		<hotspot name="spot2046464012" style="skin_hotspotstyle" ath="25.375" atv="11.043" depth="1000.0" linkedscene="scene_yharbor_121" linkedscene_lookat="172.31,-8.67,131.49" />
-		<hotspot name="spot2046464268" style="skin_hotspotstyle" ath="-124.766" atv="9.24" depth="1000.0" linkedscene="scene_yharbor_130" linkedscene_lookat="0.0,0.0,120.0" />
-		<hotspot name="spot2046464361" style="skin_hotspotstyle" ath="-102.234" atv="-1.327" depth="1000.0" linkedscene="scene_yharbor_128" linkedscene_lookat="-164.48,3.0,120.0" />
-
-	</scene>
-
-	<scene name="scene_yharbor_130" title="방문자센터7" onstart="" thumburl="panos/yharbor_130.tiles/thumb.jpg" lat="37.26234722" lng="127.07094722" alt="89.70" heading="0.0">
-		
-		<control bouncinglimits="calc:image.cube ? true : false" />
-
-		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
-
-		<preview url="panos/yharbor_130.tiles/preview.jpg" />
-
-		<image>
-			<cube url="panos/yharbor_130.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
-		</image>
-
-	</scene>
-	<scene name="scene_yharbor_121" title="방문자센터8" onstart="" thumburl="panos/yharbor_121.tiles/thumb.jpg" lat="37.26250278" lng="127.07102778" alt="80.10" heading="0.0">
-		
-		<control bouncinglimits="calc:image.cube ? true : false" />
-
-		<view hlookat="0.000" vlookat="0.000" fovtype="MFOV" fov="111.463" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
-
-		<preview url="panos/yharbor_121.tiles/preview.jpg" />
-
-		<image>
-			<cube url="panos/yharbor_121.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536" />
-		</image>
-
-		<hotspot name="spot2046464580" style="skin_hotspotstyle" ath="1.665" atv="4.158" depth="1000.0" linkedscene="scene_yharbor_129" linkedscene_lookat="154.11,-3.74,127.88" />
-
-	</scene>
-
 
 </krpano>
