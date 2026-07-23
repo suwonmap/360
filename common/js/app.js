@@ -239,14 +239,22 @@
 
 
   async function handleShareButton(event) {
-    const shareButton = event?.currentTarget || document.getElementById("share-btn");
-    shareButton?.blur();
-    const data = getShareData();
-    const isMobile =
-      window.matchMedia("(max-width: 768px)").matches ||
-      window.matchMedia("(pointer: coarse)").matches;
+    const shareButton =
+      event?.currentTarget || document.getElementById("share-btn");
 
-    if (isMobile && typeof navigator.share === "function") {
+    shareButton?.blur();
+
+    const data = getShareData();
+    const userAgent = navigator.userAgent || "";
+
+    // 스마트폰만 기본 공유창 사용
+    // Android 태블릿은 일반적으로 "Mobile" 문자열이 없고,
+    // iPad는 별도로 제외되므로 기존 PC형 공유창을 사용합니다.
+    const isPhone =
+      /iPhone|iPod/i.test(userAgent) ||
+      (/Android/i.test(userAgent) && /Mobile/i.test(userAgent));
+
+    if (isPhone && typeof navigator.share === "function") {
       try {
         await navigator.share({
           title: data.title,
@@ -254,6 +262,7 @@
           url: data.url
         });
       } catch (error) {
+        // 사용자가 공유창을 닫은 경우에는 오류 메시지를 표시하지 않습니다.
         if (error?.name !== "AbortError") {
           setShareMessage("공유 기능을 실행하지 못했습니다.", true);
         }
@@ -261,6 +270,7 @@
       return;
     }
 
+    // 태블릿·PC 또는 기본 공유 기능 미지원 브라우저
     openShareLayer(event);
   }
 
