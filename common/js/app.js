@@ -316,9 +316,19 @@
     }, 250);
   }
 
-  // v96: 현재 viewer.html의 쿼리스트링을 제거하여 메인화면으로 이동
+  // 로고 클릭 시 현재 콘텐츠 XML의 첫 번째 scene으로 이동
   function goHome() {
-    window.location.href = window.location.pathname;
+    const krpano = window.Suwon360?.krpano;
+
+    if (!krpano || typeof krpano.call !== "function") {
+      setStatus("파노라마가 아직 준비되지 않았습니다.", true);
+      window.setTimeout(() => setStatus(""), 1500);
+      return;
+    }
+
+    krpano.call(
+      "loadscene(get(scene[0].name), null, MERGE, BLEND(0.5));"
+    );
   }
 
   document.addEventListener("DOMContentLoaded", () => {
