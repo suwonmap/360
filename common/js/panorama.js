@@ -3,6 +3,10 @@
 
   let sceneWatcher = null;
 
+  // 모든 파노라마 Scene에 공통으로 표시할 바닥 로고 설정입니다.
+  const FLOOR_LOGO_NAME = "s360_floor_logo";
+  const DEFAULT_FLOOR_LOGO_URL = "../common/images/수원이.png";
+
   function init() {
     const state = window.Suwon360;
     const app = window.Suwon360App;
@@ -39,6 +43,7 @@
     readScenes(krpano);
     readMapConfig(krpano);
     syncHotspotSceneLabels(krpano);
+    addFloorLogo(krpano);
 
     const title = String(get(krpano, "title") || state.config.tour);
     const shootingDate = String(get(krpano, "capturedate") || get(krpano, "shooting_date") || "");
@@ -132,6 +137,42 @@
     };
     state.mapConfig = config;
     window.Suwon360Map?.setConfig?.(config);
+  }
+
+
+  // 공통 바닥 로고를 생성하거나 기존 로고의 설정을 갱신합니다.
+  // 개별 투어 XML과 skin 파일은 수정하지 않습니다.
+  function addFloorLogo(krpano) {
+    if (!krpano) return;
+
+    const state = window.Suwon360;
+    const configuredUrl = String(state?.config?.floorLogoPath || "").trim();
+    const logoUrl = configuredUrl || DEFAULT_FLOOR_LOGO_URL;
+
+    try {
+      // keep=true이므로 Scene 전환 후에도 유지됩니다. 이미 존재하면 중복 생성하지 않습니다.
+      if (!get(krpano, `hotspot[${FLOOR_LOGO_NAME}]`)) {
+        krpano.call(`addhotspot('${FLOOR_LOGO_NAME}');`);
+      }
+
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].url`, logoUrl);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].ath`, 0);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].atv`, 90);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].distorted`, true);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].scale`, 0.22);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].alpha`, 0.84);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].enabled`, false);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].capture`, false);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].handcursor`, false);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].keep`, true);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].renderer`, "webgl");
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].mipmapping`, true);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].oversampling`, 2);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].zorder`, 1);
+      krpano.set(`hotspot[${FLOOR_LOGO_NAME}].visible`, true);
+    } catch (error) {
+      console.warn("바닥 로고 생성 경고:", error);
+    }
   }
 
 
@@ -238,7 +279,10 @@
 
         window.Suwon360Menu?.select?.(currentScene);
         window.Suwon360Map?.updateFromScene?.(currentScene);
-        window.setTimeout(() => syncHotspotSceneLabels(krpano), 120);
+        window.setTimeout(() => {
+          syncHotspotSceneLabels(krpano);
+          addFloorLogo(krpano);
+        }, 120);
       }
 
       // v125: 일부 모바일 환경에서 krpano onviewchange 이벤트가
@@ -315,7 +359,10 @@
     if (!sceneName) return;
     window.Suwon360Menu?.select?.(sceneName);
     window.Suwon360Map?.updateFromScene?.(sceneName);
-    window.setTimeout(() => syncHotspotSceneLabels(krpano), 120);
+    window.setTimeout(() => {
+      syncHotspotSceneLabels(krpano);
+      addFloorLogo(krpano);
+    }, 120);
   };
 
   window.js_suwon360_on_view_changed = function () {
