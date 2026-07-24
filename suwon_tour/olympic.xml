@@ -137,7 +137,7 @@
 
 	</scene>
 
-	<scene name="scene_test9" title="중간2"  onstart="" thumburl="panos/test9.tiles/thumb.jpg" lat="37.26078898" lng="127.02755833" alt="85.00" heading="28.5">
+	<scene name="scene_test9" title="중간2"  onstart="" thumburl="panos/test9.tiles/thumb.jpg" lat="37.26078899" lng="127.02755834" alt="85.00" heading="28.5">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
